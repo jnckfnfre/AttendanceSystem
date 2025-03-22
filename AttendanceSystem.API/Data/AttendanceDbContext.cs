@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;  // Imports EF Core to interact with the database
-using AttendanceSystem.API.Models;   // Imports the Attendance model
+using AttendanceSystem.API.Models;
 
 namespace AttendanceSystem.API.Data 
 {

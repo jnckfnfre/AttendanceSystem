@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AttendanceSystem.API.Models;
+
 
 // Nahyan Munawar 3/21/2025
 // Model which maps to the Attended_By table

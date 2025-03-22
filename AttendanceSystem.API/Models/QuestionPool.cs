@@ -12,4 +12,7 @@ public class QuestionPool
 
     [Column("POOL_NAME")]
     public string PoolName { get; set; } // Name of the question pool
+
+    public ICollection<Quiz> Quizzes { get; set; }
+    public ICollection<Question> Questions { get; set; }
 }

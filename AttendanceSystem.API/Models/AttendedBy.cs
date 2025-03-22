@@ -18,4 +18,10 @@ public class AttendedBy
 
     [Column("UTD_ID")]
     public string UtdId { get; set; } // Student who attended
+
+    [ForeignKey("UtdId")]
+    public Student Student { get; set; }
+
+    [ForeignKey("CourseId, SessionDate")]
+    public ClassSession ClassSession { get; set; }
 }

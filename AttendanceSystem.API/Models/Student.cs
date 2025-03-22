@@ -25,4 +25,9 @@ public class Student
 
     [Column("NET_ID")]
     public string Net_Id { get; set; }      // Student's UTD NetID used for login
+
+    // Navigation properties since submission and attendedby have foreignkeys to this model
+    public ICollection<Submission> Submissions { get; set; }
+    public ICollection<AttendedBy> AttendanceRecords { get; set; }
 }
+

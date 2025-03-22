@@ -20,10 +20,38 @@ namespace AttendanceSystem.API.Data
         {
         }
 
-        // This property represents the `Attendances` table in the database.
-        // DbSet<Attendance> allows us to query and modify attendance records.
-        /// Each `Attendance` object corresponds to a row in the database table.
-         public DbSet<Attendance> Attendances { get; set; }
+        // DbSet properties: each represents a table
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<ClassSession> ClassSessions { get; set; }
+        public DbSet<AttendedBy> AttendedBy { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<QuestionPool> QuestionPools { get; set; }
+        public DbSet<Question> Questions { get; set; }
+
+        // this method is needed to implement our composite key which exists in ClassSession
+        // and foreign keys that map to it in AttendedBy and Submission
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Composite Primary Key for class_session
+            modelBuilder.Entity<ClassSession>()
+                .HasKey(cs => new { cs.SessionDate, cs.CourseId });
+
+            // Composite Foreign Key for Attended_By -> class_session
+            modelBuilder.Entity<AttendedBy>()
+                .HasOne(a => a.ClassSession)
+                .WithMany(cs => cs.AttendanceRecords)
+                .HasForeignKey(a => new { a.SessionDate, a.CourseId });
+
+            // Composite Foreign Key for Submissions -> class_session
+            modelBuilder.Entity<Submission>()
+                .HasOne(s => s.ClassSession)
+                .WithMany(cs => cs.Submissions)
+                .HasForeignKey(s => new { s.SessionDate, s.CourseId });
+        }
     }
 }
 

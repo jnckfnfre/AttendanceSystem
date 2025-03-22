@@ -15,4 +15,11 @@ public class Quiz
 
     [Column("POOL_ID")]
     public int PoolId { get; set; } // Foreign key linking to Question_Pool
+
+    [ForeignKey("PoolId")]
+    public QuestionPool QuestionPool { get; set; }
+
+    public ICollection<Question> Questions { get; set; }
+    public ICollection<ClassSession> Sessions { get; set; }
+    public ICollection<Submission> Submissions { get; set; }
 }

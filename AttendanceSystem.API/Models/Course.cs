@@ -21,4 +21,9 @@ public class Course
 
     [Column("END_TIME")]
     public TimeSpan EndTime { get; set; }   // Time the class ends
+
+    // Navigation properties
+    public ICollection<ClassSession> Sessions { get; set; }
+    public ICollection<Submission> Submissions { get; set; }
+    public ICollection<AttendedBy> AttendanceRecords { get; set; }
 }

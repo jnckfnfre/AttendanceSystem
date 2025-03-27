@@ -27,6 +27,18 @@ public class CoursesController : ControllerBase {
         return Ok(courses);
     }
 
+    // GET: api/Courses/{id}
+    // Gets a course by id
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCourse(string id) {
+        var course = await _context.Courses.FindAsync(id);
+        if (course == null) {
+            return NotFound();
+        }
+        
+        return Ok(course);
+    }
+
     // POST: api/Courses
     // Adds a course
     [HttpPost]

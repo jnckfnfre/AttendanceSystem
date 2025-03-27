@@ -7,6 +7,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Models;
+using AttendanceSystem.API.Data;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,10 +20,10 @@ namespace AttendanceSystem.API.Controllers
     public class ClassSessionController : ControllerBase
     {
         // Database context for performing database operations
-        private readonly AttendanceSystemContext _context;
+        private readonly AttendanceDbContext _context;
 
         // Constructor injection of the database context
-        public ClassSessionController(AttendanceSystemContext context)
+        public ClassSessionController(AttendanceDbContext context)
         {
             _context = context;
         }

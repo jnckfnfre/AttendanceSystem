@@ -10,34 +10,34 @@ public class Submission
 {
     [Key]
     [Column("SUBMISSION_ID")]
-    public int SubmissionId { get; set; }
+    public int Submission_Id { get; set; }
 
     [Column("COURSE_ID")]
-    public string CourseId { get; set; }
+    public string Course_Id { get; set; }
 
     [Column("SESSION_DATE")]
-    public DateTime SessionDate { get; set; }
+    public DateTime Session_Date { get; set; }
 
     [Column("UTD_ID")]
-    public string UtdId { get; set; }
+    public string Utd_Id { get; set; }
 
     [Column("QUIZ_ID")]
-    public int QuizId { get; set; }
+    public int Quiz_Id { get; set; }
 
     [Column("IP_ADDRESS")]
-    public string IpAddress { get; set; }
+    public string Ip_Address { get; set; }
 
     [Column("SUBMISSION_TIME")]
-    public DateTime SubmissionTime { get; set; }
+    public DateTime Submission_Time { get; set; }
 
     [Column("ANSWER1")]
-    public string Answer1 { get; set; }
+    public string Answer_1 { get; set; }
 
     [Column("ANSWER2")]
-    public string Answer2 { get; set; }
+    public string Answer_2 { get; set; }
 
     [Column("ANSWER3")]
-    public string Answer3 { get; set; }
+    public string Answer_3 { get; set; }
 
     [Column("STATUS")]
     public string Status { get; set; }

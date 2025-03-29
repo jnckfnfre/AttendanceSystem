@@ -50,7 +50,7 @@ namespace AttendanceSystem.API.Data
             modelBuilder.Entity<Submission>()
                 .HasOne(s => s.ClassSession)
                 .WithMany(cs => cs.Submissions)
-                .HasForeignKey(s => new { s.SessionDate, s.CourseId });
+                .HasForeignKey(s => new { s.Session_Date, s.Course_Id });
         }
     }
 }

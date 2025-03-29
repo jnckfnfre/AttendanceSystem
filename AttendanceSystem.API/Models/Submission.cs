@@ -28,7 +28,7 @@ public class Submission
     public string Ip_Address { get; set; }
 
     [Column("SUBMISSION_TIME")]
-    public DateTime Submission_Time { get; set; }
+    public TimeSpan Submission_Time { get; set; }
 
     [Column("ANSWER1")]
     public string Answer_1 { get; set; }
@@ -42,12 +42,12 @@ public class Submission
     [Column("STATUS")]
     public string Status { get; set; }
 
-    [ForeignKey("UtdId")]
+    [ForeignKey("Utd_Id")]
     public Student Student { get; set; }
 
-    [ForeignKey("QuizId")]
+    [ForeignKey("Quiz_Id")]
     public Quiz Quiz { get; set; }
 
-    [ForeignKey("CourseId, SessionDate")]
+    [ForeignKey("Course_Id, Session_Date")]
     public ClassSession ClassSession { get; set; }
 }

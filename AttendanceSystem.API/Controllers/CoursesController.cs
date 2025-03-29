@@ -13,8 +13,12 @@ using AttendanceSystem.API.Models;
 [Route("api/[controller]")]
 
 public class CoursesController : ControllerBase {
+    // database context for accessing the database
+    // handles all database operations for courses
     private readonly AttendanceDbContext _context;
 
+    // constructor for the CoursesController
+    // injects the database context into the controller
     public CoursesController(AttendanceDbContext context) {
         _context = context;
     }

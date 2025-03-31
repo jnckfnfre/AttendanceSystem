@@ -6,11 +6,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("class_session")]
 public class ClassSession
 {
+    [Key]
     [Column("SESSION_DATE")]
     public DateTime SessionDate { get; set; }
 
+    [Key]
     [Column("COURSE_ID")]
-    public string CourseId { get; set; }
+    public string Course_Id { get; set; }
 
     [Column("PASSWORD")]
     public string Password { get; set; }
@@ -18,7 +20,7 @@ public class ClassSession
     [Column("QUIZ_ID")]
     public int QuizId { get; set; }
 
-    [ForeignKey("CourseId")]
+    [ForeignKey("Course_Id")]
     public Course Course { get; set; }
 
     [ForeignKey("QuizId")]

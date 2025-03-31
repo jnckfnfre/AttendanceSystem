@@ -38,19 +38,19 @@ namespace AttendanceSystem.API.Data
 
             // Composite Primary Key for class_session
             modelBuilder.Entity<ClassSession>()
-                .HasKey(cs => new { cs.SessionDate, cs.CourseId });
+                .HasKey(cs => new { cs.SessionDate, cs.Course_Id });
 
             // Composite Foreign Key for Attended_By -> class_session
             modelBuilder.Entity<AttendedBy>()
                 .HasOne(a => a.ClassSession)
                 .WithMany(cs => cs.AttendanceRecords)
-                .HasForeignKey(a => new { a.SessionDate, a.CourseId });
+                .HasForeignKey(a => new { a.SessionDate, a.Course_Id });
 
             // Composite Foreign Key for Submissions -> class_session
             modelBuilder.Entity<Submission>()
                 .HasOne(s => s.ClassSession)
                 .WithMany(cs => cs.Submissions)
-                .HasForeignKey(s => new { s.Session_Date, s.Course_Id });
+                .HasForeignKey(s => new { s.SessionDate, s.Course_Id });
         }
     }
 }

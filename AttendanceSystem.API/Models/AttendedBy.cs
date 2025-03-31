@@ -16,7 +16,7 @@ public class AttendedBy
     public DateTime SessionDate { get; set; } // Date of the session
 
     [Column("COURSE_ID")]
-    public string CourseId { get; set; } // Course attended
+    public string Course_Id { get; set; } // Course attended
 
     [Column("UTD_ID")]
     public string UtdId { get; set; } // Student who attended
@@ -24,6 +24,6 @@ public class AttendedBy
     [ForeignKey("UtdId")]
     public Student Student { get; set; }
 
-    [ForeignKey("CourseId, SessionDate")]
+    [ForeignKey("Course_Id, SessionDate")]
     public ClassSession ClassSession { get; set; }
 }

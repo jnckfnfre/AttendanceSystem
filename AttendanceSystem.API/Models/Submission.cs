@@ -16,7 +16,7 @@ public class Submission
     public string Course_Id { get; set; }
 
     [Column("SESSION_DATE")]
-    public DateTime Session_Date { get; set; }
+    public DateTime SessionDate { get; set; }
 
     [Column("UTD_ID")]
     public string Utd_Id { get; set; }
@@ -48,6 +48,6 @@ public class Submission
     [ForeignKey("Quiz_Id")]
     public Quiz Quiz { get; set; }
 
-    [ForeignKey("Course_Id, Session_Date")]
+    [ForeignKey("Course_Id, SessionDate")]
     public ClassSession ClassSession { get; set; }
 }

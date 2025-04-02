@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 // Nahyan Munawar 3/21/2025
 // Model which maps to the Quiz table
@@ -16,10 +17,16 @@ public class Quiz
     [Column("POOL_ID")]
     public int PoolId { get; set; } // Foreign key linking to Question_Pool
 
+    [JsonIgnore]
     [ForeignKey("PoolId")]
     public QuestionPool QuestionPool { get; set; }
 
+    [JsonIgnore]
     public ICollection<Question> Questions { get; set; }
+
+    [JsonIgnore]
     public ICollection<ClassSession> Sessions { get; set; }
+
+    [JsonIgnore]
     public ICollection<Submission> Submissions { get; set; }
 }

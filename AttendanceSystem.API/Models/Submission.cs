@@ -27,8 +27,11 @@ public class Submission
     [Column("IP_ADDRESS")]
     public string Ip_Address { get; set; }
 
+    // Changed from TimeSpan to DateTime to match database schema
+    // The database stores SUBMISSION_TIME as datetime, so we need to use DateTime here
+    // This ensures proper type casting between the database and C# model
     [Column("SUBMISSION_TIME")]
-    public TimeSpan Submission_Time { get; set; }
+    public DateTime Submission_Time { get; set; }
 
     [Column("ANSWER1")]
     public string Answer_1 { get; set; }

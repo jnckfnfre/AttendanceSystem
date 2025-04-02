@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
 using AttendanceSystem.API.Models;
+using AttendanceSystem.API.DTOs;
 
 namespace AttendanceSystem.API.Controllers
 {
@@ -45,8 +46,22 @@ namespace AttendanceSystem.API.Controllers
 
         // POST: api/Quiz
         [HttpPost]
-        public async Task<IActionResult> CreateQuiz([FromBody] Quiz quiz)
+        public async Task<IActionResult> CreateQuiz([FromBody] QuizCreateDto dto)
         {
+            // Validate that the question pool exists
+            var poolExists = await _context.QuestionPools.AnyAsync(p => p.PoolId == dto.PoolId);
+            if (!poolExists)
+                return BadRequest("Invalid Pool ID");
+
+            var quiz = new Quiz
+            {
+                DueDate = dto.DueDate,
+                PoolId = dto.PoolId,
+                Questions = new List<Question>(),
+                Sessions = new List<ClassSession>(),
+                Submissions = new List<Submission>()
+            };
+
             _context.Quizzes.Add(quiz);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetQuizById), new { id = quiz.QuizId }, quiz);
@@ -54,12 +69,19 @@ namespace AttendanceSystem.API.Controllers
 
         // PUT: api/Quiz/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuiz(int id, [FromBody] Quiz updatedQuiz)
+        public async Task<IActionResult> UpdateQuiz(int id, [FromBody] QuizCreateDto dto)
         {
-            if (id != updatedQuiz.QuizId)
-                return BadRequest("Quiz ID mismatch");
+            var quiz = await _context.Quizzes.FindAsync(id);
+            if (quiz == null)
+                return NotFound();
 
-            _context.Entry(updatedQuiz).State = EntityState.Modified;
+            // Validate that the question pool exists
+            var poolExists = await _context.QuestionPools.AnyAsync(p => p.PoolId == dto.PoolId);
+            if (!poolExists)
+                return BadRequest("Invalid Pool ID");
+
+            quiz.DueDate = dto.DueDate;
+            quiz.PoolId = dto.PoolId;
 
             try
             {
@@ -69,7 +91,6 @@ namespace AttendanceSystem.API.Controllers
             {
                 if (!_context.Quizzes.Any(q => q.QuizId == id))
                     return NotFound();
-
                 throw;
             }
 

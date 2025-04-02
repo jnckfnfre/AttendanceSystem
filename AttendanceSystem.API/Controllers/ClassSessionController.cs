@@ -60,15 +60,19 @@ namespace AttendanceSystem.API.Controllers
             return classSession;
         }
 
-        /// GET /api/ClassSession/{id}/detailed
+        /// GET /api/ClassSession/{courseId}/{sessionDate}/detailed
         /// Retrieves a detailed view of a class session including related course and quiz information.
-        [HttpGet("{id}/detailed")]
-        public async Task<ActionResult<ClassSession>> GetClassSessionDetailed(int id)
+        [HttpGet("{courseId}/{sessionDate}/detailed")]
+        public async Task<ActionResult<ClassSession>> GetClassSessionDetailed(string courseId, DateTime sessionDate)
         {
             var classSession = await _context.ClassSessions
                 .Include(cs => cs.Course)
                 .Include(cs => cs.Quiz)
-                .FirstOrDefaultAsync(cs => cs.QuizId == id);
+                .Include(cs => cs.AttendanceRecords)
+                    .ThenInclude(a => a.Student)
+                .Include(cs => cs.Submissions)
+                    .ThenInclude(s => s.Student)
+                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.SessionDate == sessionDate);
 
             if (classSession == null)
             {

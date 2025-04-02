@@ -1,0 +1,104 @@
+@page "/attendance"
+@* This sets the route for the page; visiting "/attendance" in the browser renders this component. *@
+
+@using System.Net.Http.Json
+@* Imports extension methods like PostAsJsonAsync so we can easily send JSON to the backend API. *@
+@using System.ComponentModel.DataAnnotations;
+
+
+<h3>Attendance Form</h3>
+@* A simple heading for the form UI. *@
+
+@if (!string.IsNullOrEmpty(ResponseMessage))
+{
+    <p>@ResponseMessage</p>
+}
+@* If a response message (success or error) exists, display it inside a paragraph tag. *@
+
+<EditForm Model="formData" OnValidSubmit="HandleSubmit" FormName="mainForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>UTD ID</label>
+        <InputText @bind-Value="formData.UtdId" class="form-control" />
+        <ValidationMessage For="@(() => formData.UtdId)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Class Password</label>
+        <InputText @bind-Value="formData.Password" class="form-control" type="password" />
+        <ValidationMessage For="@(() => formData.Password)" />
+    </div>
+
+    <p>Quiz Questions (if any):</p>
+
+    <div class="mb-2">
+        <InputText @bind-Value="formData.Answer1" class="form-control" placeholder="Answer to Question 1" />
+    </div>
+    <div class="mb-2">
+        <InputText @bind-Value="formData.Answer2" class="form-control" placeholder="Answer to Question 2" />
+    </div>
+    <div class="mb-2">
+        <InputText @bind-Value="formData.Answer3" class="form-control" placeholder="Answer to Question 3" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+@code {
+    public class AttendanceData
+    
+    {
+        
+        public string UtdId { get; set; } = string.Empty;     // Stores the student's UTD ID input
+        
+        public string Password { get; set; } = string.Empty;   // Stores the class-specific password
+        public string Answer1 { get; set; } = string.Empty;      // Quiz answer 1
+        public string Answer2 { get; set; } = string.Empty;     // Quiz answer 2
+        public string Answer3 { get; set; } = string.Empty;     // Quiz answer 3
+    }
+
+    private AttendanceData formData = new();
+    // This is the instance of our model that the form binds to. It gets populated as the user types.
+
+    private string ResponseMessage;
+    // A string to hold feedback from the backend (either success or error).
+
+    [Inject]
+    private HttpClient Http { get; set; }
+    // This injects the shared HttpClient instance configured in Program.cs. We'll use this to call our backend API.
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            // Send the form data as JSON to the backend attendance API
+            var result = await Http.PostAsJsonAsync("http://localhost:5001/api/attendance", formData);
+
+            if (result.IsSuccessStatusCode)
+            {
+                // Read the response JSON as a dictionary (e.g., {"message": "...", "ip": "..."})
+                var response = await result.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                @* ResponseMessage = "Attendance recorded successfully!";
+                // If the API responded with 200 OK, show a success message. *@
+                // Display the success message along with the student's IP address
+                ResponseMessage = $"{response["message"]} (IP: {response["ip"]})";
+            }
+            else
+            {
+                @* If the response status is an error, read and display the raw error text *@
+                var errorText = await result.Content.ReadAsStringAsync();
+                ResponseMessage = $"Error: {errorText}";
+                @* ResponseMessage = "Error: " + await result.Content.ReadAsStringAsync(); *@
+                // If there's an error (like 400/401/500), show the error message returned by the server.
+            }
+        }
+        catch (Exception ex)
+        {
+            ResponseMessage = "Submission failed: " + ex.Message;
+            // If the HTTP request itself fails (e.g., no connection), catch and show the exception message.
+        }
+    }
+}

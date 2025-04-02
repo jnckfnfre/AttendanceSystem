@@ -1,8 +1,7 @@
 /*
     David Sajdak 3/28/2025
     Controller for the Submission model
-    Get, put, post methods for the Submission model
-    No delete method necessary because we don't want to delete submissions
+    Get, put, post, delete methods for the Submission model
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -103,5 +102,18 @@ public class SubmissionsController : ControllerBase {
         await _context.SaveChangesAsync();
         return NoContent();
     }
-    
+
+    // DELETE: api/Submissions/{id}
+    // Deletes a submission by id
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteSubmission(int id) {
+        var submission = await _context.Submissions.FindAsync(id);
+        if (submission == null) {
+            return NotFound();
+        }
+
+        _context.Submissions.Remove(submission);
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 }

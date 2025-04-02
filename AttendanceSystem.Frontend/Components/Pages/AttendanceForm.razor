@@ -63,11 +63,11 @@
     private AttendanceData formData = new();
     // This is the instance of our model that the form binds to. It gets populated as the user types.
 
-    private string ResponseMessage;
+    private string ResponseMessage = string.Empty;
     // A string to hold feedback from the backend (either success or error).
 
     [Inject]
-    private HttpClient Http { get; set; }
+    public required HttpClient Http { get; set; }
     // This injects the shared HttpClient instance configured in Program.cs. We'll use this to call our backend API.
 
     private async Task HandleSubmit()

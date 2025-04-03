@@ -36,6 +36,27 @@ namespace AttendanceSystem.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure Student entity
+            modelBuilder.Entity<Student>()
+                .ToTable("Student")
+                .HasKey(s => s.UtdId);
+
+            modelBuilder.Entity<Student>()
+                .Property(s => s.UtdId)
+                .HasColumnName("UTD_ID");
+
+            modelBuilder.Entity<Student>()
+                .Property(s => s.FirstName)
+                .HasColumnName("FIRST_NAME");
+
+            modelBuilder.Entity<Student>()
+                .Property(s => s.LastName)
+                .HasColumnName("LAST_NAME");
+
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Net_Id)
+                .HasColumnName("NET_ID");
+
             // Composite Primary Key for class_session
             modelBuilder.Entity<ClassSession>()
                 .HasKey(cs => new { cs.SessionDate, cs.Course_Id });

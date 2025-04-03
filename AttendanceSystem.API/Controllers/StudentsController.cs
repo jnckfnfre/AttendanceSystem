@@ -39,8 +39,8 @@ public class StudentsController : ControllerBase
         if (student == null)
             return NotFound();
 
-        student.First_Name = updated.First_Name;
-        student.Last_Name = updated.Last_Name;
+        student.FirstName = updated.FirstName;
+        student.LastName = updated.LastName;
         student.Net_Id = updated.Net_Id;
 
         await _context.SaveChangesAsync();

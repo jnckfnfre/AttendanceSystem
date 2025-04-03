@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AttendanceSystem.API.Models
 {
@@ -19,17 +20,19 @@ namespace AttendanceSystem.API.Models
         // otherwise we can use [Column()] as below
 
         [Column("FIRST_NAME")]
-        public string First_Name { get; set; }  // Student's first name
+        public string FirstName { get; set; }  // Student's first name
 
         [Column("LAST_NAME")]
-        public string Last_Name { get; set; }   // Student's last name
+        public string LastName { get; set; }   // Student's last name
 
         [Column("NET_ID")]
         public string Net_Id { get; set; }      // Student's UTD NetID used for login
 
         // Navigation properties since submission and attendedby have foreign keys to this model
         // initialize with empty list to avoid null error
-        public ICollection<Submission> Submissions { get; set; }  = new List<Submission>();
+        [JsonIgnore]
+        public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
+        [JsonIgnore]
         public ICollection<AttendedBy> AttendanceRecords { get; set; } = new List<AttendedBy>();
     }
 }

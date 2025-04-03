@@ -83,21 +83,19 @@ public class SubmissionsController : ControllerBase {
     }
     
     // PUT: api/Submissions/{id}
-    // Updates a submission by id
+    // Updates only modifiable fields of a submission (answers and status)
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSubmission(int id, [FromBody] Submission updated) {
+    public async Task<IActionResult> UpdateSubmission(int id, [FromBody] SubmissionUpdateDto dto) {
         var submission = await _context.Submissions.FindAsync(id);
         if (submission == null) {
             return NotFound();
         }
 
-        // don't update PK or FKs
-        submission.Ip_Address = updated.Ip_Address;
-        submission.Submission_Time = updated.Submission_Time;
-        submission.Answer_1 = updated.Answer_1;
-        submission.Answer_2 = updated.Answer_2;
-        submission.Answer_3 = updated.Answer_3;
-        submission.Status = updated.Status;
+        // Only update modifiable fields
+        submission.Answer_1 = dto.Answer_1;
+        submission.Answer_2 = dto.Answer_2;
+        submission.Answer_3 = dto.Answer_3;
+        submission.Status = dto.Status;
 
         await _context.SaveChangesAsync();
         return NoContent();

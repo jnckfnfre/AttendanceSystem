@@ -1,5 +1,5 @@
 /*
-    David Sajdak 3/26/2025
+    David Sajdak Started: 3/26/2025
     Controller for the Course model
     Get, put, post, delete methods for the Course model
 */

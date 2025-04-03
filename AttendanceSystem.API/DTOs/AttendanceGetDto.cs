@@ -1,4 +1,4 @@
-// Created by Nahyan Munawar 2025-04-02T00:00:00
+// Created by Nahyan Munawar 4/2/2025
 // DTO for getting attendance records
 
 namespace AttendanceSystem.API.DTOs

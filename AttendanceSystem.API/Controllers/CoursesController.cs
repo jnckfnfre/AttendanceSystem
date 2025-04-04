@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
 using AttendanceSystem.API.Models;
+using AttendanceSystem.API.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -46,7 +47,19 @@ public class CoursesController : ControllerBase {
     // POST: api/Courses
     // Adds a course
     [HttpPost]
-    public async Task<IActionResult> AddCourse([FromBody] Course course) {
+    public async Task<IActionResult> AddCourse([FromBody] CourseCreateDto courseDto) {
+        // _context.Courses.Add(course);
+        // await _context.SaveChangesAsync();
+        // return CreatedAtAction(nameof(GetCourses), new { id = course.Course_Id }, course);
+
+        // convert DTO to Course object
+        var course = new Course {
+            Course_Id = courseDto.Course_Id,
+            Course_Name = courseDto.Course_Name,
+            Start_Time = courseDto.Start_Time,
+            End_Time = courseDto.End_Time
+        };
+
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCourses), new { id = course.Course_Id }, course);
@@ -55,15 +68,16 @@ public class CoursesController : ControllerBase {
     // PUT: api/Courses/{id}
     // Updates a course
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCourse(string id, [FromBody] Course updated) {
+    public async Task<IActionResult> UpdateCourse(string id, [FromBody] CourseCreateDto courseDto) {
         var course = await _context.Courses.FindAsync(id);
         if (course == null) {
             return NotFound();
         }
 
-        course.Course_Name = updated.Course_Name;
-        course.Start_Time = updated.Start_Time;
-        course.End_Time = updated.End_Time;
+        // update non primary key fields in DTO
+        course.Course_Name = courseDto.Course_Name;
+        course.Start_Time = courseDto.Start_Time;
+        course.End_Time = courseDto.End_Time;
 
         await _context.SaveChangesAsync();
         return NoContent();

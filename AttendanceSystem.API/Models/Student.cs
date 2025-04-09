@@ -26,7 +26,7 @@ namespace AttendanceSystem.API.Models
         public string LastName { get; set; }   // Student's last name
 
         [Column("NET_ID")]
-        public string Net_Id { get; set; }      // Student's UTD NetID used for login
+        public string? Net_Id { get; set; }      // Student's UTD NetID used for login
 
         // Navigation properties since submission and attendedby have foreign keys to this model
         // initialize with empty list to avoid null error

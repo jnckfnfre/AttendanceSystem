@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
 using AttendanceSystem.API.Models;
+using AttendanceSystem.API.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,8 +25,16 @@ public class StudentsController : ControllerBase
 
     // POST: api/Students
     [HttpPost]
-    public async Task<IActionResult> AddStudent([FromBody] Student student)
+    public async Task<IActionResult> AddStudent([FromBody] StudentCreateDto studentCreateDto)
     {
+        // convert DTO to Student object
+        var student = new Student {
+            UtdId = studentCreateDto.UTDId,
+            FirstName = studentCreateDto.First_Name,
+            LastName = studentCreateDto.Last_Name,
+            Net_Id = studentCreateDto.Net_Id
+        };
+
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetStudents), new { id = student.UtdId }, student);

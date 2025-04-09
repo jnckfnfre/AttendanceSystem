@@ -30,8 +30,8 @@ public class StudentsController : ControllerBase
         // convert DTO to Student object
         var student = new Student {
             UtdId = studentCreateDto.UTDId,
-            FirstName = studentCreateDto.First_Name,
-            LastName = studentCreateDto.Last_Name,
+            FirstName = studentCreateDto.FirstName,
+            LastName = studentCreateDto.LastName,
             Net_Id = studentCreateDto.Net_Id
         };
 
@@ -42,15 +42,15 @@ public class StudentsController : ControllerBase
 
     // PUT: api/Students/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateStudent(string id, [FromBody] Student updated)
+    public async Task<IActionResult> UpdateStudent(string id, [FromBody] StudentUpdateDto studentUpdateDto)
     {
         var student = await _context.Students.FindAsync(id);
         if (student == null)
             return NotFound();
 
-        student.FirstName = updated.FirstName;
-        student.LastName = updated.LastName;
-        student.Net_Id = updated.Net_Id;
+        student.FirstName = studentUpdateDto.FirstName;
+        student.LastName = studentUpdateDto.LastName;
+        student.Net_Id = studentUpdateDto.Net_Id;
 
         await _context.SaveChangesAsync();
         return NoContent();

@@ -68,16 +68,16 @@ public class CoursesController : ControllerBase {
     // PUT: api/Courses/{id}
     // Updates a course
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCourse(string id, [FromBody] CourseCreateDto courseDto) {
+    public async Task<IActionResult> UpdateCourse(string id, [FromBody] CourseUpdateDto courseUpdateDto) {
         var course = await _context.Courses.FindAsync(id);
         if (course == null) {
             return NotFound();
         }
 
         // update non primary key fields in DTO
-        course.Course_Name = courseDto.Course_Name;
-        course.Start_Time = courseDto.Start_Time;
-        course.End_Time = courseDto.End_Time;
+        course.Course_Name = courseUpdateDto.Course_Name;
+        course.Start_Time = courseUpdateDto.Start_Time;
+        course.End_Time = courseUpdateDto.End_Time;
 
         await _context.SaveChangesAsync();
         return NoContent();

@@ -1,3 +1,5 @@
+// Nahyan Munawar
+// Revised by David Sajdak 4/9/2025, see belowe comments for further details
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
@@ -39,6 +41,35 @@ public class StudentsController : ControllerBase
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetStudents), new { id = student.UtdId }, student);
     }
+
+    /* 
+        David Sajdak Started 4/9/2025
+        Batch insert students, created to help with uploading CSV
+        functionality in desktop application
+    */
+    // POST: api/Students/batch-upload
+    [HttpPost("batch-upload")]
+    public async Task<IActionResult> BatchUploadStudents([FromBody] List<StudentCreateDto> studentDtos)
+    {
+        if (studentDtos == null || studentDtos.Count == 0)
+        {
+            return BadRequest("No students provided for upload.");
+        }
+
+        var students = studentDtos.Select(dto => new Student
+        {
+            UtdId = dto.UTDId,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            Net_Id = dto.Net_Id
+        }).ToList();
+
+        await _context.Students.AddRangeAsync(students);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { inserted = students.Count });
+    }
+
 
     // PUT: api/Students/{id}
     [HttpPut("{id}")]

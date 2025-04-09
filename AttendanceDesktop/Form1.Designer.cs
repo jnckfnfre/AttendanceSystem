@@ -6,6 +6,7 @@ partial class Form1
     ///  Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
+    private Button uploadButton;
 
     /// <summary>
     ///  Clean up any resources being used.
@@ -32,6 +33,16 @@ partial class Form1
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(800, 450);
         this.Text = "Form1";
+
+        /*
+            David Sajdak 4/9/2025
+            button to upload professor csv
+        */
+        this.uploadButton = new Button();
+        this.uploadButton.Text = "Upload CSV";
+        this.uploadButton.Location = new Point(200, 200);
+        this.uploadButton.Click += new EventHandler(this.uploadButton_Click);
+        this.Controls.Add(this.uploadButton);
     }
 
     #endregion

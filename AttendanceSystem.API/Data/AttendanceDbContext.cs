@@ -72,6 +72,15 @@ namespace AttendanceSystem.API.Data
                 .HasOne(s => s.ClassSession)
                 .WithMany(cs => cs.Submissions)
                 .HasForeignKey(s => new { s.SessionDate, s.Course_Id });
+
+            // Configure unique constraints
+            modelBuilder.Entity<AttendedBy>()
+                .HasIndex(a => new { a.SessionDate, a.Course_Id, a.UtdId })
+                .IsUnique();
+
+            modelBuilder.Entity<Submissions>()
+                .HasIndex(s => new { s.Course_Id, s.SessionDate, s.UtdId, s.QuizId })
+                .IsUnique();
         }
     }
 }

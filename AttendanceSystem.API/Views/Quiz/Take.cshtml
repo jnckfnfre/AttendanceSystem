@@ -1,0 +1,33 @@
+@model AttendanceSystem.API.Models.Quiz
+<!-- This view expects a Quiz object with a collection of Questions -->
+
+<h2 class="mb-4">Quiz: @Model.Title</h2> //printing title of the quiz 
+
+@if (Model.Questions == null || !Model.Questions.Any()) //ensures that if there are no questions, display a message.
+{
+    <p>No quiz questions available.</p>
+}
+else
+{
+    <form method="post" asp-action="SubmitAnswers">
+        @for (int i = 0; i < Model.Questions.Count; i++) // each iteration displays the question text and options.
+        {
+            var question = Model.Questions.ToList()[i]; 
+            // convert the ICollection to a List to allow indexing 
+            <div class="mb-4">
+                <p><strong>Question @(@i + 1):</strong> @question.Text</p>
+                <!-- Display each answer option as radio buttons -->
+                <div>
+                    <input type="radio" name="Answers[@i]" value="A" required /> A. @question.OptionA <br />
+                    <input type="radio" name="Answers[@i]" value="B" /> B. @question.OptionB <br />
+                    <input type="radio" name="Answers[@i]" value="C" /> C. @question.OptionC <br />
+                    <input type="radio" name="Answers[@i]" value="D" /> D. @question.OptionD
+                </div>
+            </div>
+        }
+        <!-- Hidden field to send the Quiz ID, this sends the Quiz ID along with the answers so the controller knows which quiz the responses belong to. -->
+        <input type="hidden" name="QuizId" value="@Model.QuizId" /> 
+        <button type="submit" class="btn btn-success">Submit Answers</button>
+    </form>
+}
+

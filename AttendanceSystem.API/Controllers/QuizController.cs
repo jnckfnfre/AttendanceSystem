@@ -19,7 +19,7 @@ namespace AttendanceSystem.API.Controllers
 
         // GET: api/Quiz
         [HttpGet]
-        public async Task<IActionResult> GetAllQuizzes()
+        public async Task<IActionResult> GetAllQuizzes() // This end point(at api/Quiz) returns all quizzes as JSON - useful for admin
         {
             var quizzes = await _context.Quizzes
                 .Include(q => q.Questions)
@@ -28,10 +28,26 @@ namespace AttendanceSystem.API.Controllers
 
             return Ok(quizzes);
         }
+        /*
+        Hamza Khawaja 4/11/2025 
+        - Looks up quiz by id
+        - includes related Questions 
+        - Sends all that to the razor view
+        */
+        // [HttpGet("/Quiz/Take/{id}")]
+        // public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
+        //     var quiz = await _context.Quizzes
+        //         .Include(q => q.Questions) //
+        //         .Include(q => q.QuestionPool)
+        //         .FirstOrDefaultAsync(q => q.QuizId == id);
 
+        //     if (quiz == null)
+        //         return NotFound();
+        //     return View(quiz);
+        // }
         // GET: api/Quiz/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetQuizById(int id)
+        public async Task<IActionResult> GetQuizById(int id) // This endpoint (at api/Quiz/{id}) returns a single quiz, with related quetion pool and questions as JSON
         {
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions)

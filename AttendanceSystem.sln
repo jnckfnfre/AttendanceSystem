@@ -5,8 +5,6 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceSystem.API", "AttendanceSystem.API\AttendanceSystem.API.csproj", "{1A7F0B34-D254-3D24-C2A7-988503DB99D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceSystem.Frontend", "AttendanceSystem.Frontend\AttendanceSystem.Frontend.csproj", "{653B2D55-CB61-45C3-9287-40C34C35CEF5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,18 +27,6 @@ Global
 		{1A7F0B34-D254-3D24-C2A7-988503DB99D7}.Release|x64.Build.0 = Release|Any CPU
 		{1A7F0B34-D254-3D24-C2A7-988503DB99D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{1A7F0B34-D254-3D24-C2A7-988503DB99D7}.Release|x86.Build.0 = Release|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Debug|x64.Build.0 = Debug|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Debug|x86.Build.0 = Debug|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Release|x64.ActiveCfg = Release|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Release|x64.Build.0 = Release|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Release|x86.ActiveCfg = Release|Any CPU
-		{653B2D55-CB61-45C3-9287-40C34C35CEF5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,12 +4,16 @@ using System.Text.Json.Serialization;
 
 // Nahyan Munawar 3/21/2025
 // Model which maps to the Quiz table
-[Table("Quiz")]
-public class Quiz
+namespace AttendanceSystem.API.Models
 {
+  [Table("Quiz")]
+  public class Quiz{
     [Key]
     [Column("QUIZ_ID")]
     public int QuizId { get; set; }  // Primary key for each quiz
+
+    [Column("TITLE")]
+    public string Title {get; set;} // to display title of quiz in view
 
     [Column("DUE_DATE")]
     public DateTime? DueDate { get; set; } // Optional due date for the quiz
@@ -29,4 +33,6 @@ public class Quiz
 
     [JsonIgnore]
     public ICollection<Submission> Submissions { get; set; }
+  }  
 }
+

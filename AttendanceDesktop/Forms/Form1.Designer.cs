@@ -42,6 +42,7 @@ partial class Form1
         this.uploadButton = new Button();
         this.uploadButton.Text = "Upload CSV";
         this.uploadButton.Location = new Point(200, 200);
+        this.uploadButton.Size = new Size(150, 50);
         this.uploadButton.Click += new EventHandler(this.uploadButton_Click);
         this.Controls.Add(this.uploadButton);
 

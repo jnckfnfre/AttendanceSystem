@@ -46,7 +46,7 @@ partial class Form1
         Label titleLabel = new Label();
         titleLabel.Text = "Attendance Manager";
         titleLabel.Font = new Font("Segoe UI", 40, FontStyle.Bold);
-        titleLabel.ForeColor = Color.FromArgb(0, 133, 66); // green
+        titleLabel.ForeColor = Color.FromArgb(0, 133, 66);
         titleLabel.TextAlign = ContentAlignment.MiddleCenter;
         titleLabel.AutoSize = true;
         titleLabel.Anchor = AnchorStyles.None;

@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Text.Json;
 
 namespace AttendanceDesktop
 {
@@ -121,11 +122,46 @@ namespace AttendanceDesktop
             LoadClasses();
         }
 
-        private void LoadClasses()
+        /* 
+            David Sajdak & Eduardo Zamora 4/15/25
+            Function uses api request to load classes for reporting functionality
+        */
+        private async void LoadClasses()
         {
-            // Simulate loading classes (replace with actual data fetching logic)
-            var classes = new List<string> { "Math 101", "Physics 201", "Chemistry 301" };
-            this.classComboBox.Items.AddRange(classes.ToArray());
+            try
+            {
+                // Define the API endpoint
+                string apiUrl = "http://localhost:5257/api/courses";
+
+                // Create an HttpClient instance
+                using (HttpClient client = new HttpClient())
+                {
+                    // Make the GET request to fetch classes
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    // Ensure the request was successful
+                    response.EnsureSuccessStatusCode();
+
+                    // Deserialize the JSON response into a list of class names
+                    var json = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show("Json to deserialize: " + json);
+                    var doc = JsonDocument.Parse(json); // parse json
+                    MessageBox.Show(doc.RootElement.ToString());
+                    var classes = doc.RootElement.EnumerateArray()
+                                .Select(element => element.GetProperty("course_Name").GetString())
+                                .ToList(); // get only class names
+
+
+                    // Populate the classComboBox with class names
+                    this.classComboBox.Items.Clear();
+                    this.classComboBox.Items.AddRange(classes.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle errors (e.g., network issues, API errors)
+                MessageBox.Show($"Error fetching classes: {ex.Message}");
+            }
         }
 
         private void ClassComboBox_SelectedIndexChanged(object sender, EventArgs e)

@@ -78,8 +78,8 @@ namespace AttendanceSystem.API.Data
                 .HasIndex(a => new { a.SessionDate, a.Course_Id, a.UtdId })
                 .IsUnique();
 
-            modelBuilder.Entity<Submissions>()
-                .HasIndex(s => new { s.Course_Id, s.SessionDate, s.UtdId, s.QuizId })
+            modelBuilder.Entity<Submission>()
+                .HasIndex(s => new { s.Course_Id, s.SessionDate, s.Utd_Id, s.Quiz_Id })
                 .IsUnique();
         }
     }

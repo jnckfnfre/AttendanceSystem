@@ -20,7 +20,7 @@ public partial class Form1 : Form
     private async void uploadButton_Click(object sender, EventArgs e) {
         using (OpenFileDialog ofd = new OpenFileDialog()) {
             // filter for csv/tsv
-            ofd.Filter = "All files|*.*|CSV Files (*.csv)|*.csv|TSV Files (*.tsv)|.tsv";
+            ofd.Filter = "All files|*.*|CSV Files (*.csv)|*.csv|TSV Files (*.tsv)|*.tsv|TXT Files (*.txt)|*.txt";
 
             if (ofd.ShowDialog() == DialogResult.OK) {
                 string path = ofd.FileName; // grab file name

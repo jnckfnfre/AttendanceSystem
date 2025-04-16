@@ -10,7 +10,7 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
     
     public int QuestionId { get; set; }
 
-    [Column("TEXT")]
+    [Column("TEXT")] // Hamza Khawaja 4/14/2025 - Question model was missing Text field
     public string Text {get; set;} // Hamza Khawaja 4/11/2025 - added this because the actual question prompt was missing from the model
 
     [Column("OPTION_A")]

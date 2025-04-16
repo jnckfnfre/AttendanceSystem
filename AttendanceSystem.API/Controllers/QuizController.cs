@@ -3,12 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
 using AttendanceSystem.API.Models;
 using AttendanceSystem.API.DTOs;
+/*
+        Hamza Khawaja 4/11/2025 
+        - Looks up quiz by id
+        - includes related Questions 
+        - Sends all that to the razor view
+        - handle quiz submission
+*/
 
 namespace AttendanceSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class QuizController : ControllerBase
+    public class QuizController : Controller // Hamza Khawaja *4/13/2025* change inheritance from controllerbase to controller so that we can return a View()
     {
         private readonly AttendanceDbContext _context;
 
@@ -28,23 +35,19 @@ namespace AttendanceSystem.API.Controllers
 
             return Ok(quizzes);
         }
-        /*
-        Hamza Khawaja 4/11/2025 
-        - Looks up quiz by id
-        - includes related Questions 
-        - Sends all that to the razor view
-        */
-        // [HttpGet("/Quiz/Take/{id}")]
-        // public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
-        //     var quiz = await _context.Quizzes
-        //         .Include(q => q.Questions) //
-        //         .Include(q => q.QuestionPool)
-        //         .FirstOrDefaultAsync(q => q.QuizId == id);
+        
 
-        //     if (quiz == null)
-        //         return NotFound();
-        //     return View(quiz);
-        // }
+        [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
+        public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
+            var quiz = await _context.Quizzes // fetch the quiz, including its related questions and question pool 
+                .Include(q => q.Questions) //
+                .Include(q => q.QuestionPool)
+                .FirstOrDefaultAsync(q => q.QuizId == id);
+
+            if (quiz == null) // if no quiz is found, return a 404, no result found
+                return NotFound();
+            return View(quiz);
+        }
         // GET: api/Quiz/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuizById(int id) // This endpoint (at api/Quiz/{id}) returns a single quiz, with related quetion pool and questions as JSON
@@ -127,4 +130,12 @@ namespace AttendanceSystem.API.Controllers
             return NoContent();
         }
     }
+
+    /*
+    Hamza Khawaja 4/14/2025
+    - Submission method
+    - POST action handles quiz submissions
+    - It accepts the quiz ID and a list of answers from the form.
+    */
+    
 }

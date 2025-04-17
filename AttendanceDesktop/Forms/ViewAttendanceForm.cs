@@ -164,10 +164,10 @@ namespace AttendanceDesktop
                     response.EnsureSuccessStatusCode();
 
                     var json = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show("Json to deserialize: " + json);
+                    // MessageBox.Show("Json to deserialize: " + json);
 
                     var doc = JsonDocument.Parse(json);
-                    MessageBox.Show(doc.RootElement.ToString());
+                    // MessageBox.Show(doc.RootElement.ToString());
 
                     var classes = doc.RootElement.EnumerateArray()
                                     .Select(element => new Course
@@ -280,6 +280,11 @@ namespace AttendanceDesktop
             this.attendanceDataGridView.DataSource = filteredRecords;
         }
 
+        /* 
+            Eduardo Zamora
+            Revised by David Sajdak 4/17/2025
+            Displays attendance information by class and session date
+        */
         private async void ViewAttendanceButton_Click(object sender, EventArgs e)
         {
             // Validate that both class and session are selected
@@ -300,7 +305,7 @@ namespace AttendanceDesktop
 
             try
             {
-                string submissionsApiUrl = "http://localhost:5257/api/Submissions";
+                string submissionsApiUrl = "http://localhost:5257/api/Submissions/WithStudent";
                 List<Submission> allSubmissions;
 
                 using (HttpClient client = new HttpClient())
@@ -336,14 +341,15 @@ namespace AttendanceDesktop
                  // Set full data first
                 this.attendanceDataGridView.DataSource = filteredSubmissions;
 
-                // ✅ Now hide the columns you don't want to see
+                // hide the columns don't want to see
                 foreach (DataGridViewColumn column in attendanceDataGridView.Columns)
                 {
                     if (
                         column.Name != "submission_Id" &&
                         column.Name != "course_Id" &&
                         column.Name != "utd_Id" &&
-                        column.Name != "status")
+                        column.Name != "status" &&
+                        column.Name != "student_Name")
                     {
                         column.Visible = false;
                     }
@@ -440,6 +446,7 @@ namespace AttendanceDesktop
             public string course_Id { get; set; }
             public DateTime sessionDate { get; set; }
             public string utd_Id { get; set; }
+            public string student_Name { get; set; }
             public int quiz_Id { get; set; }
             public string ip_Address { get; set; }
             public DateTime submission_Time { get; set; }

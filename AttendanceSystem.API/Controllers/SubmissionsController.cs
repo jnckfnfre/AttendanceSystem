@@ -43,6 +43,29 @@ public class SubmissionsController : ControllerBase {
         return Ok(submission);
     }
 
+    // GET: api/Submissions/WithStudent
+    // gets all submissions with student name included
+    [HttpGet("WithStudent")]
+    public async Task<IActionResult> GetSubmissionsWithStudent()
+    {
+        var submissions = await _context.Submissions
+            .Include(s => s.Student) // join with student table
+            .Select(s => new SubmissionWithStudentDto
+            {
+                Submission_Id = s.Submission_Id,
+                Course_Id = s.Course_Id,
+                SessionDate = s.SessionDate,
+                Utd_Id = s.Utd_Id,
+                Student_Name = s.Student.FirstName + " " + s.Student.LastName, // get student name from student table
+                Quiz_Id = s.Quiz_Id,
+                Submission_Time = s.Submission_Time,
+                Status = s.Status
+            })
+            .ToListAsync();
+
+        return Ok(submissions);
+    }
+
     // POST: api/Submissions
     // Creates a new submission
     [HttpPost]

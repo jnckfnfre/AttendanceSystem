@@ -130,59 +130,90 @@ namespace AttendanceDesktop
         {
             try
             {
-                // Define the API endpoint
                 string apiUrl = "http://localhost:5257/api/courses";
 
-                // Create an HttpClient instance
                 using (HttpClient client = new HttpClient())
                 {
-                    // Make the GET request to fetch classes
                     HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                    // Ensure the request was successful
                     response.EnsureSuccessStatusCode();
 
-                    // Deserialize the JSON response into a list of class names
                     var json = await response.Content.ReadAsStringAsync();
                     MessageBox.Show("Json to deserialize: " + json);
-                    var doc = JsonDocument.Parse(json); // parse json
+
+                    var doc = JsonDocument.Parse(json);
                     MessageBox.Show(doc.RootElement.ToString());
+
                     var classes = doc.RootElement.EnumerateArray()
-                                .Select(element => element.GetProperty("course_Name").GetString())
-                                .ToList(); // get only class names
+                                    .Select(element => new Course
+                                    {
+                                        CourseId = element.GetProperty("course_Id").GetString(),
+                                        CourseName = element.GetProperty("course_Name").GetString()
+                                    })
+                                    .ToList();
 
+                    classComboBox.Items.Clear();
+                    foreach (var course in classes)
+                    {
+                        classComboBox.Items.Add(course);
+                    }
 
-                    // Populate the classComboBox with class names
-                    this.classComboBox.Items.Clear();
-                    this.classComboBox.Items.AddRange(classes.ToArray());
+                    classComboBox.DisplayMember = "CourseName";
+                    classComboBox.ValueMember = "CourseId";
                 }
             }
             catch (Exception ex)
             {
-                // Handle errors (e.g., network issues, API errors)
                 MessageBox.Show($"Error fetching classes: {ex.Message}");
             }
         }
 
-        private void ClassComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        // Eduardo Zamora 4/16/2025
+        // Function uses api request to load class sessions for reporting functionality
+        // This function is called when the selected class changes in the classComboBox.
+        private async void ClassComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Simulate loading sessions for the selected class (replace with actual data fetching logic)
-            this.sessionComboBox.Items.Clear();
-            if (this.classComboBox.SelectedItem != null)
+            if (this.classComboBox.SelectedItem is Course selectedCourse)
             {
-                var selectedClass = this.classComboBox.SelectedItem.ToString();
-                var sessions = new List<string>();
+                string courseId = selectedCourse.CourseId;
+                string apiUrl = "http://localhost:5257/api/ClassSession";
 
-                if (selectedClass == "Math 101")
-                    sessions = new List<string> { "Session 1", "Session 2", "Session 3" };
-                else if (selectedClass == "Physics 201")
-                    sessions = new List<string> { "Session A", "Session B" };
-                else if (selectedClass == "Chemistry 301")
-                    sessions = new List<string> { "Session X", "Session Y", "Session Z" };
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(apiUrl);
+                        response.EnsureSuccessStatusCode();
 
-                this.sessionComboBox.Items.AddRange(sessions.ToArray());
+                        var json = await response.Content.ReadAsStringAsync();
+                        var doc = JsonDocument.Parse(json);
+
+                        var filteredSessions = doc.RootElement.EnumerateArray()
+                            .Where(element =>
+                                element.TryGetProperty("course_Id", out var cidProp) &&
+                                cidProp.GetString() == courseId &&
+                                element.TryGetProperty("sessionDate", out _) &&
+                                element.TryGetProperty("quizId", out _))
+                            .Select(element =>
+                                $"{element.GetProperty("sessionDate").GetString()} - Quiz {element.GetProperty("quizId").GetInt32()}")
+                            .ToList();
+
+
+                        this.sessionComboBox.Items.Clear();
+                        this.sessionComboBox.Items.AddRange(filteredSessions.ToArray());
+
+                        if (filteredSessions.Count == 0)
+                        {
+                            MessageBox.Show($"No sessions found for course: {courseId}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error fetching sessions: " + ex.Message);
+                    }
+                }
             }
         }
+
 
         private void ApplyFilterButton_Click(object sender, EventArgs e)
         {
@@ -318,6 +349,17 @@ namespace AttendanceDesktop
         
             return null;
         }
+
+        public class Course
+        {
+            public string CourseId { get; set; }
+            public string CourseName { get; set; }
+            public override string ToString()
+            {
+                return CourseName; // Ensures the name shows in the dropdown
+            }
+        }
+
 
 
         // Simulated attendance record class (replace with actual model class!!)

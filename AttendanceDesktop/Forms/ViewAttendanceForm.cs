@@ -35,72 +35,92 @@ namespace AttendanceDesktop
         {
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.Text = "View Attendance Page";
+            this.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            Color primaryColor = Color.FromArgb(199, 91, 18);  // (199, 91, 18)
+            Color secondaryColor = Color.FromArgb(0, 133, 66); // (0, 133, 66)
 
             // Filter Panel
             this.filterPanel = new Panel();
             this.filterPanel.Location = new System.Drawing.Point(50, 10);
-            this.filterPanel.Size = new System.Drawing.Size(700, 40);
+            this.filterPanel.Size = new System.Drawing.Size(700, 50);  // Keep this the same
+            this.filterPanel.BackColor = secondaryColor;
+            this.filterPanel.BorderStyle = BorderStyle.FixedSingle;
             this.Controls.Add(this.filterPanel);
 
             // Filter Label
             this.filterLabel = new Label();
             this.filterLabel.Text = "Filter By:";
-            this.filterLabel.Location = new System.Drawing.Point(0, 10);
+            this.filterLabel.Font = new System.Drawing.Font("Segoe UI", 10F, FontStyle.Bold);
+            this.filterLabel.ForeColor = Color.White;
+            this.filterLabel.Location = new System.Drawing.Point(10, 15);  // Keep position
+            this.filterLabel.AutoSize = true;
             this.filterPanel.Controls.Add(this.filterLabel);
 
-            // Filter ComboBox
+            // Filter ComboBox - Move it to the right a bit
             this.filterComboBox = new ComboBox();
-            this.filterComboBox.Location = new System.Drawing.Point(70, 5);
-            this.filterComboBox.Size = new System.Drawing.Size(200, 30);
-            this.filterComboBox.Items.AddRange(new string[]
-            {
-                "Missed 3 classes in a row",
-                "More than X absences"
-            });
+            this.filterComboBox.Location = new System.Drawing.Point(120, 10);  // Keep position
+            this.filterComboBox.Size = new System.Drawing.Size(200, 25);  // Keep size
             this.filterPanel.Controls.Add(this.filterComboBox);
 
-            // Filter TextBox
+            // Filter TextBox - Move it further to the right
             this.filterTextBox = new TextBox();
-            this.filterTextBox.Location = new System.Drawing.Point(280, 5);
-            this.filterTextBox.Size = new System.Drawing.Size(100, 30);
+            this.filterTextBox.Location = new System.Drawing.Point(340, 10);  // Moved 10px right
+            this.filterTextBox.Size = new System.Drawing.Size(70, 25);  // Increased width to 100
             this.filterPanel.Controls.Add(this.filterTextBox);
 
-            // Apply Filter Button
+            // Apply Filter Button - Move it further to the right and make it wider
             this.applyFilterButton = new Button();
-            this.applyFilterButton.Text = "Apply Filter";
-            this.applyFilterButton.Location = new System.Drawing.Point(390, 5);
+            this.applyFilterButton.Text = "Apply";
+            this.applyFilterButton.BackColor = primaryColor;
+            this.applyFilterButton.ForeColor = Color.White;
+            this.applyFilterButton.FlatStyle = FlatStyle.Flat;
+            this.applyFilterButton.Font = new System.Drawing.Font("Segoe UI", 9F, FontStyle.Bold);
+            this.applyFilterButton.Location = new System.Drawing.Point(590, 10);  // Moved further right
+            this.applyFilterButton.Size = new System.Drawing.Size(100, 35);  // Increased width to 100
             this.applyFilterButton.Click += new EventHandler(this.ApplyFilterButton_Click);
             this.filterPanel.Controls.Add(this.applyFilterButton);
 
             // Class Label
             this.classLabel = new Label();
             this.classLabel.Text = "Class:";
-            this.classLabel.Location = new System.Drawing.Point(50, 50);
+            this.classLabel.Font = new System.Drawing.Font("Segoe UI", 10F, FontStyle.Bold);
+            this.classLabel.ForeColor = primaryColor;
+            this.classLabel.Location = new System.Drawing.Point(50, 70);
+            this.classLabel.AutoSize = true;
             this.Controls.Add(this.classLabel);
 
             // Class ComboBox
             this.classComboBox = new ComboBox();
-            this.classComboBox.Location = new System.Drawing.Point(150, 50);
-            this.classComboBox.Size = new System.Drawing.Size(200, 30);
+            this.classComboBox.Location = new System.Drawing.Point(150, 70);
+            this.classComboBox.Size = new System.Drawing.Size(300, 25);
             this.classComboBox.SelectedIndexChanged += new EventHandler(this.ClassComboBox_SelectedIndexChanged);
             this.Controls.Add(this.classComboBox);
 
             // Session Label
             this.sessionLabel = new Label();
-            this.sessionLabel.Text = "Class Session:";
-            this.sessionLabel.Location = new System.Drawing.Point(50, 100);
+            this.sessionLabel.Text = "Session:";
+            this.sessionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, FontStyle.Bold);
+            this.sessionLabel.ForeColor = primaryColor;
+            this.sessionLabel.Location = new System.Drawing.Point(50, 110);
+            this.sessionLabel.AutoSize = true;
             this.Controls.Add(this.sessionLabel);
 
             // Session ComboBox
             this.sessionComboBox = new ComboBox();
-            this.sessionComboBox.Location = new System.Drawing.Point(150, 100);
-            this.sessionComboBox.Size = new System.Drawing.Size(200, 30);
+            this.sessionComboBox.Location = new System.Drawing.Point(150, 110);
+            this.sessionComboBox.Size = new System.Drawing.Size(300, 25);
             this.Controls.Add(this.sessionComboBox);
 
             // View Attendance Button
             this.viewAttendanceButton = new Button();
             this.viewAttendanceButton.Text = "View Attendance";
+            this.viewAttendanceButton.BackColor = secondaryColor;
+            this.viewAttendanceButton.ForeColor = Color.White;
+            this.viewAttendanceButton.FlatStyle = FlatStyle.Flat;
+            this.viewAttendanceButton.Font = new System.Drawing.Font("Segoe UI", 9F, FontStyle.Bold);
             this.viewAttendanceButton.Location = new System.Drawing.Point(150, 150);
+            this.viewAttendanceButton.Size = new System.Drawing.Size(200, 30);
             this.viewAttendanceButton.Click += new EventHandler(this.ViewAttendanceButton_Click);
             this.Controls.Add(this.viewAttendanceButton);
 
@@ -109,16 +129,22 @@ namespace AttendanceDesktop
             this.attendanceDataGridView.Location = new System.Drawing.Point(50, 200);
             this.attendanceDataGridView.Size = new System.Drawing.Size(700, 350);
             this.attendanceDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.attendanceDataGridView.BorderStyle = BorderStyle.Fixed3D;
+            this.attendanceDataGridView.BackgroundColor = Color.FromArgb(169, 169, 169);
+            this.attendanceDataGridView.GridColor = primaryColor;
+            this.attendanceDataGridView.DefaultCellStyle.BackColor = Color.White;
+            this.attendanceDataGridView.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 235, 224); // subtle orange highlight
+            this.attendanceDataGridView.DefaultCellStyle.SelectionForeColor = Color.Black;
+            this.attendanceDataGridView.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.attendanceDataGridView.ReadOnly = true;  // Make grid non-editable
             this.Controls.Add(this.attendanceDataGridView);
 
             // Context Menu for DataGridView
             this.attendanceContextMenu = new ContextMenuStrip();
             this.attendanceContextMenu.Items.Add("Change Status", null, this.ChangeStatus_Click);
-
-            // Attach the context menu to the DataGridView
             this.attendanceDataGridView.ContextMenuStrip = this.attendanceContextMenu;
 
-            // Load classes into the classComboBox
+            // Load class list
             LoadClasses();
         }
 
@@ -191,10 +217,10 @@ namespace AttendanceDesktop
                             .Where(element =>
                                 element.TryGetProperty("course_Id", out var cidProp) &&
                                 cidProp.GetString() == courseId &&
-                                element.TryGetProperty("sessionDate", out _) &&
-                                element.TryGetProperty("quizId", out _))
+                                element.TryGetProperty("sessionDate", out _)) //&&
+                                //element.TryGetProperty("quizId", out _))
                             .Select(element =>
-                                $"{element.GetProperty("sessionDate").GetString()} - Quiz {element.GetProperty("quizId").GetInt32()}")
+                                $"{element.GetProperty("sessionDate").GetString()}")
                             .ToList();
 
 
@@ -254,7 +280,7 @@ namespace AttendanceDesktop
             this.attendanceDataGridView.DataSource = filteredRecords;
         }
 
-        private void ViewAttendanceButton_Click(object sender, EventArgs e)
+        private async void ViewAttendanceButton_Click(object sender, EventArgs e)
         {
             // Validate that both class and session are selected
             if (this.classComboBox.SelectedItem == null || this.sessionComboBox.SelectedItem == null)
@@ -263,25 +289,73 @@ namespace AttendanceDesktop
                 return;
             }
 
-            // Simulate fetching attendance records (replace with actual data fetching logic)
-            var attendanceRecords = new List<AttendanceRecord>
-            {
-                new AttendanceRecord { StudentId = "12345", Name = "John Doe", Status = "Present" },
-                new AttendanceRecord { StudentId = "67890", Name = "Jane Smith", Status = "Absent" }
-            };
+            var selectedCourse = this.classComboBox.SelectedItem as Course;
+            var selectedSession = this.sessionComboBox.SelectedItem.ToString();
 
-            // Update TotalAbsences based on the initial Status
-            foreach (var record in attendanceRecords)
+            if (selectedCourse == null || string.IsNullOrEmpty(selectedSession))
             {
-                if (record.Status == "Absent")
-                {
-                    record.TotalAbsences++; // Increment TotalAbsences if the student is absent
-                }
+                MessageBox.Show("Invalid class or session selection.");
+                return;
             }
 
-            // Bind the attendance records to the DataGridView
-            this.attendanceDataGridView.DataSource = attendanceRecords;
+            try
+            {
+                string submissionsApiUrl = "http://localhost:5257/api/Submissions";
+                List<Submission> allSubmissions;
+
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(submissionsApiUrl);
+                    response.EnsureSuccessStatusCode();
+
+                    var json = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show(json);
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    allSubmissions = JsonSerializer.Deserialize<List<Submission>>(json, options);
+                }
+
+                MessageBox.Show($"Selected Course ID: {selectedCourse.CourseId}, Selected Session: {selectedSession}");
+
+                // Filter for selected course and session
+                var filteredSubmissions = allSubmissions
+                    .Where(s => s.course_Id == selectedCourse.CourseId &&
+                                s.sessionDate.ToString("yyyy-MM-dd") == DateTime.Parse(selectedSession).ToString("yyyy-MM-dd"))
+                    .ToList();
+
+                if (filteredSubmissions.Count == 0)
+                {
+                    MessageBox.Show("No attendance records found for the selected class and session.");
+                    return;
+                }
+
+                 // Set full data first
+                this.attendanceDataGridView.DataSource = filteredSubmissions;
+
+                // ✅ Now hide the columns you don't want to see
+                foreach (DataGridViewColumn column in attendanceDataGridView.Columns)
+                {
+                    if (
+                        column.Name != "submission_Id" &&
+                        column.Name != "course_Id" &&
+                        column.Name != "utd_Id" &&
+                        column.Name != "status")
+                    {
+                        column.Visible = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fetching attendance: " + ex.Message);
+            }
         }
+
+
 
 
         // method to chanhge status of attendance record
@@ -358,6 +432,28 @@ namespace AttendanceDesktop
             {
                 return CourseName; // Ensures the name shows in the dropdown
             }
+        }
+
+        public class Submission
+        {
+            public int submission_Id { get; set; }
+            public string course_Id { get; set; }
+            public DateTime sessionDate { get; set; }
+            public string utd_Id { get; set; }
+            public int quiz_Id { get; set; }
+            public string ip_Address { get; set; }
+            public DateTime submission_Time { get; set; }
+            public string answer_1 { get; set; }
+            public string answer_2 { get; set; }
+            public string answer_3 { get; set; }
+            public string status { get; set; }
+        }
+
+        private class Student
+        {
+            public string utd_Id { get; set; }
+            public string firstName { get; set; }
+            public string lastName { get; set; }
         }
 
 

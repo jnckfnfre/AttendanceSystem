@@ -59,6 +59,10 @@ public class SubmissionsController : ControllerBase {
                 Student_Name = s.Student.FirstName + " " + s.Student.LastName, // get student name from student table
                 Quiz_Id = s.Quiz_Id,
                 Submission_Time = s.Submission_Time,
+                Ip_Address = s.Ip_Address,
+                Answer_1 = s.Answer_1,
+                Answer_2 = s.Answer_2,
+                Answer_3 = s.Answer_3,
                 Status = s.Status
             })
             .ToListAsync();

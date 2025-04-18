@@ -349,6 +349,7 @@ namespace AttendanceDesktop
                         column.Name != "course_Id" &&
                         column.Name != "utd_Id" &&
                         column.Name != "status" &&
+                        column.Name != "ip_Address" &&
                         column.Name != "student_Name")
                     {
                         column.Visible = false;

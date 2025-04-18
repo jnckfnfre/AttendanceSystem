@@ -19,6 +19,13 @@ namespace AttendanceSystem.API.Models
         // EF Core automatically matches property names to column names if they are the same,
         // otherwise we can use [Column()] as below
 
+        // Hamza Khawaja 4/17/2025
+        // add courseId column, want to dynamically asign quiz
+        // student based on the course they are taking
+        [Column("COURSE_ID")]
+        public string Course_Id {get; set;}
+        
+
         [Column("FIRST_NAME")]
         public string FirstName { get; set; }  // Student's first name
 
@@ -34,5 +41,9 @@ namespace AttendanceSystem.API.Models
         public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
         [JsonIgnore]
         public ICollection<AttendedBy> AttendanceRecords { get; set; } = new List<AttendedBy>();
+        
+        [ForeignKey(nameof(Course_Id))]
+        [JsonIgnore]
+        public Course Course {get; set;}
     }
 }

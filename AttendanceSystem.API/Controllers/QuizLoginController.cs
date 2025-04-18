@@ -54,8 +54,8 @@ namespace AttendanceSystem.API.Controllers
                 // store their name for next view
                 TempData["StudentName"] = $"{student.LastName}, {student.FirstName}";
 
-                // Redirect to quiz view
-                return RedirectToAction("Index");
+                // Hamza Khawaja 4/17/2025 - Redirect to quiz view based on their utd id which has course linked to them
+                return RedirectToAction("TakeByCourse", "Quiz", new { utdId = student.UtdId });
 
             }
 

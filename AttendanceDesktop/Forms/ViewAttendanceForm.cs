@@ -33,6 +33,7 @@ namespace AttendanceDesktop
 
         private void InitializeComponent()
         {
+            this.WindowState = FormWindowState.Maximized;
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.Text = "View Attendance Page";
             this.Font = new System.Drawing.Font("Segoe UI", 10F);
@@ -42,8 +43,8 @@ namespace AttendanceDesktop
 
             // Filter Panel
             this.filterPanel = new Panel();
-            this.filterPanel.Location = new System.Drawing.Point(50, 10);
-            this.filterPanel.Size = new System.Drawing.Size(700, 50);  // Keep this the same
+            this.filterPanel.Dock = DockStyle.Top;
+            this.filterPanel.Height = 60;  // Keep this the same
             this.filterPanel.BackColor = secondaryColor;
             this.filterPanel.BorderStyle = BorderStyle.FixedSingle;
             this.Controls.Add(this.filterPanel);
@@ -57,26 +58,26 @@ namespace AttendanceDesktop
             this.filterLabel.AutoSize = true;
             this.filterPanel.Controls.Add(this.filterLabel);
 
-            // Filter ComboBox - Move it to the right a bit
+            // Filter ComboBox 
             this.filterComboBox = new ComboBox();
             this.filterComboBox.Location = new System.Drawing.Point(120, 10);  // Keep position
-            this.filterComboBox.Size = new System.Drawing.Size(200, 25);  // Keep size
+            this.filterComboBox.Size = new System.Drawing.Size(300, 25);  // Keep size
             this.filterPanel.Controls.Add(this.filterComboBox);
 
-            // Filter TextBox - Move it further to the right
+            // Filter TextBox 
             this.filterTextBox = new TextBox();
-            this.filterTextBox.Location = new System.Drawing.Point(340, 10);  // Moved 10px right
+            this.filterTextBox.Location = new System.Drawing.Point(440, 10);  // Moved 10px right
             this.filterTextBox.Size = new System.Drawing.Size(70, 25);  // Increased width to 100
             this.filterPanel.Controls.Add(this.filterTextBox);
 
-            // Apply Filter Button - Move it further to the right and make it wider
+            // Apply Filter Button 
             this.applyFilterButton = new Button();
             this.applyFilterButton.Text = "Apply";
             this.applyFilterButton.BackColor = primaryColor;
             this.applyFilterButton.ForeColor = Color.White;
             this.applyFilterButton.FlatStyle = FlatStyle.Flat;
             this.applyFilterButton.Font = new System.Drawing.Font("Segoe UI", 9F, FontStyle.Bold);
-            this.applyFilterButton.Location = new System.Drawing.Point(590, 10);  // Moved further right
+            this.applyFilterButton.Location = new System.Drawing.Point(525, 10);  // Moved further right
             this.applyFilterButton.Size = new System.Drawing.Size(100, 35);  // Increased width to 100
             this.applyFilterButton.Click += new EventHandler(this.ApplyFilterButton_Click);
             this.filterPanel.Controls.Add(this.applyFilterButton);
@@ -94,6 +95,7 @@ namespace AttendanceDesktop
             this.classComboBox = new ComboBox();
             this.classComboBox.Location = new System.Drawing.Point(150, 70);
             this.classComboBox.Size = new System.Drawing.Size(300, 25);
+            //this.classComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             this.classComboBox.SelectedIndexChanged += new EventHandler(this.ClassComboBox_SelectedIndexChanged);
             this.Controls.Add(this.classComboBox);
 
@@ -120,13 +122,15 @@ namespace AttendanceDesktop
             this.viewAttendanceButton.FlatStyle = FlatStyle.Flat;
             this.viewAttendanceButton.Font = new System.Drawing.Font("Segoe UI", 9F, FontStyle.Bold);
             this.viewAttendanceButton.Location = new System.Drawing.Point(150, 150);
-            this.viewAttendanceButton.Size = new System.Drawing.Size(200, 30);
+            this.viewAttendanceButton.Size = new System.Drawing.Size(200, 45);
             this.viewAttendanceButton.Click += new EventHandler(this.ViewAttendanceButton_Click);
             this.Controls.Add(this.viewAttendanceButton);
 
             // Attendance DataGridView
             this.attendanceDataGridView = new DataGridView();
+            this.attendanceDataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.attendanceDataGridView.Location = new System.Drawing.Point(50, 200);
+            this.attendanceDataGridView.Size = new System.Drawing.Size(this.ClientSize.Width - 100, this.ClientSize.Height - 250); // Adjusts dynamically
             this.attendanceDataGridView.Size = new System.Drawing.Size(700, 350);
             this.attendanceDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.attendanceDataGridView.BorderStyle = BorderStyle.Fixed3D;
@@ -143,6 +147,12 @@ namespace AttendanceDesktop
             this.attendanceContextMenu = new ContextMenuStrip();
             this.attendanceContextMenu.Items.Add("Change Status", null, this.ChangeStatus_Click);
             this.attendanceDataGridView.ContextMenuStrip = this.attendanceContextMenu;
+
+            filterComboBox.Items.AddRange(new string[] {
+                "IP Address",
+                "Missing 3 Classes in a Row",
+                "Absences >= N"
+            });
 
             // Load class list
             LoadClasses();
@@ -241,6 +251,8 @@ namespace AttendanceDesktop
         }
 
 
+        private List<AttendanceRecord> allAttendanceRecords = new List<AttendanceRecord>(); // populate from your API
+
         private void ApplyFilterButton_Click(object sender, EventArgs e)
         {
             if (this.filterComboBox.SelectedItem == null)
@@ -248,37 +260,79 @@ namespace AttendanceDesktop
                 MessageBox.Show("Please select a filter criteria.");
                 return;
             }
-        
+
             string selectedFilter = this.filterComboBox.SelectedItem.ToString();
             string filterValue = this.filterTextBox.Text;
-        
-            // Get the current data source (list of AttendanceRecord)
-            var attendanceRecords = this.attendanceDataGridView.DataSource as List<AttendanceRecord>;
-            if (attendanceRecords == null) return;
-        
-            // Apply the selected filter
-            List<AttendanceRecord> filteredRecords = new List<AttendanceRecord>();
-            if (selectedFilter == "Missed 3 classes in a row")
+            IEnumerable<AttendanceRecord> filteredRecords = allAttendanceRecords;
+
+            switch (selectedFilter)
             {
-                // Simulate filtering logic (replace with actual logic)
-                filteredRecords = attendanceRecords.FindAll(record => record.TotalAbsences >= 3);
-            }
-            else if (selectedFilter == "More than X absences")
-            {
-                if (int.TryParse(filterValue, out int absencesThreshold))
-                {
-                    filteredRecords = attendanceRecords.FindAll(record => record.TotalAbsences > absencesThreshold);
-                }
-                else
-                {
-                    MessageBox.Show("Please enter a valid number for absences.");
+                case "IP Address":
+                    filteredRecords = allAttendanceRecords
+                        .Where(r => r.IPAddress == filterValue);
+                    break;
+
+                case "Missing 3 Classes in a Row":
+                    filteredRecords = FilterMissingThreeInARow(allAttendanceRecords);
+                    break;
+
+                case "Absences >= N":
+                    if (int.TryParse(filterValue, out int threshold))
+                    {
+                        filteredRecords = allAttendanceRecords
+                            .GroupBy(r => r.StudentId)
+                            .Where(g => g.Count(r => r.Status == "Absent") >= threshold)
+                            .SelectMany(g => g);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid number for absences.");
+                        return;
+                    }
+                    break;
+
+                default:
+                    MessageBox.Show("Unknown filter type.");
                     return;
+            }
+
+            attendanceDataGridView.DataSource = filteredRecords.ToList();
+        }
+
+        private IEnumerable<AttendanceRecord> FilterMissingThreeInARow(List<AttendanceRecord> records)
+        {
+            var result = new List<AttendanceRecord>();
+
+            var groupedByStudent = records
+                .GroupBy(r => r.StudentId);
+
+            foreach (var group in groupedByStudent)
+            {
+                var ordered = group.OrderBy(r => r.SessionDate).ToList();
+                int consecutiveAbsences = 0;
+
+                for (int i = 0; i < ordered.Count; i++)
+                {
+                    if (ordered[i].Status == "Absent")
+                    {
+                        consecutiveAbsences++;
+                        if (consecutiveAbsences == 3)
+                        {
+                            result.AddRange(ordered.Skip(i - 2).Take(3));
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        consecutiveAbsences = 0;
+                    }
                 }
             }
-        
-            // Update the DataGridView with the filtered records
-            this.attendanceDataGridView.DataSource = filteredRecords;
+
+            return result;
         }
+
+
 
         /* 
             Eduardo Zamora
@@ -472,7 +526,11 @@ namespace AttendanceDesktop
             public string StudentId { get; set; }
             public string Name { get; set; }
             public string Status { get; set; }
-            public int TotalAbsences { get; set; }
+            public string IPAddress { get; set; }
+
+            public DateTime SessionDate { get; set; }
+
+            public int TotalAbsences { get; set; } // New property to track total absences
         }
     }
 }

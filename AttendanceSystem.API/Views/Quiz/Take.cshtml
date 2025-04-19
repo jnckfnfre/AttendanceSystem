@@ -6,7 +6,8 @@
 @model AttendanceSystem.API.Models.Quiz // This view expects a Quiz object, which includes properties like QuizId, Title, and a collection of Questions
 
 @* printing quiz date  *@
-<h2> Quiz: @DateTime.Now.ToString("MMMM dd, yyyy")</h2>
+<h2>Quiz for @ViewData["CourseId"]</h2>
+<h3>@DateTime.Now.ToString("MMMM dd, yyyy")</h3>
 
 @if (Model.Questions == null || !Model.Questions.Any()) //ensures that if there are no questions, display a message.
 {

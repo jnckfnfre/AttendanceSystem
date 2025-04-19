@@ -44,6 +44,7 @@ namespace AttendanceSystem.API.Controllers
         - Finds a Quiz tied to that course
         - Returns the quiz to the view
         */
+        /*
         [HttpGet("/Quiz/TakeByCourse/{utdId}")]
         public async Task<IActionResult> TakeByCourse(String utdId){
             // first step is to find the student using the UTD ID
@@ -72,6 +73,7 @@ namespace AttendanceSystem.API.Controllers
             //finally we can send the quiz to the view
             return View("Take", quiz); // "Take.cshtml" is your quiz view
         }
+        */
 
 
 
@@ -79,13 +81,21 @@ namespace AttendanceSystem.API.Controllers
 
         [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
         public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
-            var quiz = await _context.Quizzes // fetch the quiz, including its related questions and question pool 
-                .Include(q => q.Questions) //
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions) // fetch the quiz, including its related questions and question pool 
                 .Include(q => q.QuestionPool)
+                .Include(q => q.Sessions.Where(s => s.SessionDate.Date == DateTime.Today))
                 .FirstOrDefaultAsync(q => q.QuizId == id);
 
             if (quiz == null) // if no quiz is found, return a 404, no result found
                 return NotFound();
+
+            var todaySession = quiz.Sessions.FirstOrDefault();
+            if (todaySession != null)
+            {
+                ViewData["CourseId"] = todaySession.Course_Id;
+            }
+
             return View(quiz);
         }
         // GET: api/Quiz/5

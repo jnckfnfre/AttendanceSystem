@@ -39,28 +39,36 @@ namespace AttendanceSystem.API.Controllers
                 return View("Index");
             }
 
-            //check if utdId is in the database
-           var student = await _context.Students
-           .FirstOrDefaultAsync(u => u.UtdId == utdId); //basically, we are checking if the utdId is in the database
+            // check if utdId is in the database
+            var student = await _context.Students
+                .FirstOrDefaultAsync(u => u.UtdId == utdId);
             if (student == null)
             {
                 ViewBag.ErrorMessage = "Invalid UTD ID.";
                 return View("Index");
             }   
 
-            // For demo purposes, using a simple password check
-            if (password == "csdemo123")
+            // Find active class session with matching password for today
+            var classSession = await _context.ClassSessions
+                .Include(cs => cs.Quiz) // Include the quiz relationship
+                .FirstOrDefaultAsync(cs => 
+                    cs.Password == password && 
+                    cs.SessionDate.Date == DateTime.Today);
+            
+            if (classSession == null)
             {
-                // store their name for next view
-                TempData["StudentName"] = $"{student.LastName}, {student.FirstName}";
-
-                // Hamza Khawaja 4/17/2025 - Redirect to quiz view based on their utd id which has course linked to them
-                return RedirectToAction("TakeByCourse", "Quiz", new { utdId = student.UtdId });
-
+                ViewBag.ErrorMessage = "Invalid or expired session password.";
+                return View("Index");
             }
 
-            ViewBag.ErrorMessage = "Invalid UTD ID or password.";
-            return View("Index");
+            // Store info for the quiz view
+            TempData["StudentName"] = $"{student.LastName}, {student.FirstName}";
+            ViewData["UtdId"] = student.UtdId;
+
+            // Redirect to take the quiz associated with this session
+            return RedirectToAction("Take", "Quiz", new { 
+                id = classSession.QuizId
+            });
         }
     }
 } 

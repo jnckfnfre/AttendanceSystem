@@ -78,7 +78,10 @@ namespace AttendanceSystem.API.Controllers
 
 
         
-
+        /*
+        Created by Hamza Khawaja, altered by Nahyan Munawar 4/19/2025
+        Retrieve a quiz by its ID and render the quiz view
+        */
         [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
         public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
             var quiz = await _context.Quizzes

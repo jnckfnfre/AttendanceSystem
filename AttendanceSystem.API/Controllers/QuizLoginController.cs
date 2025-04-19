@@ -30,6 +30,11 @@ namespace AttendanceSystem.API.Controllers
             return View();
         }
 
+        /*
+        Created by Hamza Khawaja, altered by Nahyan Munawar 4/19/2025
+        Purpose: Authenticate the student and redirect to the quiz using the Student ID
+        and the password for the class session
+        */
         [HttpPost]
         public async Task<IActionResult> Authenticate(string utdId, string password)
         {

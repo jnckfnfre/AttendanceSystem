@@ -16,7 +16,6 @@ public class AttendedBy
     [Column("SESSION_DATE")]
     public DateTime SessionDate { get; set; } // Date of the session
 
-
     [Column("COURSE_ID")]
     public string Course_Id { get; set; } // Course attended
 

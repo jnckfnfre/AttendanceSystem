@@ -34,13 +34,13 @@ public class Submission
     public DateTime Submission_Time { get; set; }
 
     [Column("ANSWER1")]
-    public string Answer_1 { get; set; }
+    public string? Answer_1 { get; set; }
 
     [Column("ANSWER2")]
-    public string Answer_2 { get; set; }
+    public string? Answer_2 { get; set; }
 
     [Column("ANSWER3")]
-    public string Answer_3 { get; set; }
+    public string? Answer_3 { get; set; }
 
     [Column("STATUS")]
     public string Status { get; set; }

@@ -149,7 +149,9 @@ namespace AttendanceDesktop
             this.attendanceDataGridView.ContextMenuStrip = this.attendanceContextMenu;
 
             filterComboBox.Items.AddRange(new string[] {
-                "IP Address",
+                "Status: Present",
+                "Status: Absent",
+                "Same IP Address",
                 "Missing 3 Classes in a Row",
                 "Absences >= N"
             });
@@ -250,89 +252,83 @@ namespace AttendanceDesktop
             }
         }
 
-
-        private List<AttendanceRecord> allAttendanceRecords = new List<AttendanceRecord>(); // populate from your API
+        // Store original data source for filtering
+        private List<Submission> originalDataSource = new List<Submission>(); 
 
         private void ApplyFilterButton_Click(object sender, EventArgs e)
         {
-            if (this.filterComboBox.SelectedItem == null)
+            // Check if there's any data in the DataGridView
+            if (attendanceDataGridView.DataSource == null)
             {
-                MessageBox.Show("Please select a filter criteria.");
+                MessageBox.Show("No attendance data loaded. Please view attendance first.");
                 return;
             }
 
-            string selectedFilter = this.filterComboBox.SelectedItem.ToString();
-            string filterValue = this.filterTextBox.Text;
-            IEnumerable<AttendanceRecord> filteredRecords = allAttendanceRecords;
+            // Get the current filter selection
+            if (filterComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a filter option.");
+                return;
+            }
+
+            string selectedFilter = filterComboBox.SelectedItem.ToString();
+
+            // Apply filter based on selection
+            List<Submission> filteredData = new List<Submission>();
 
             switch (selectedFilter)
             {
-                case "IP Address":
-                    filteredRecords = allAttendanceRecords
-                        .Where(r => r.IPAddress == filterValue);
+                case "Status: Present":
+                    filteredData = originalDataSource.Where(s => 
+                        s.status != null && s.status.Equals("present", StringComparison.OrdinalIgnoreCase)).ToList();
                     break;
-
-                case "Missing 3 Classes in a Row":
-                    filteredRecords = FilterMissingThreeInARow(allAttendanceRecords);
+                case "Status: Absent":
+                    filteredData = originalDataSource.Where(s => 
+                        s.status != null && s.status.Equals("absent", StringComparison.OrdinalIgnoreCase)).ToList();
                     break;
-
-                case "Absences >= N":
-                    if (int.TryParse(filterValue, out int threshold))
+                case "Same IP Address":
+                    filteredData = FindStudentsWithSameIP(originalDataSource);
+                    if (filteredData.Count == 0)
                     {
-                        filteredRecords = allAttendanceRecords
-                            .GroupBy(r => r.StudentId)
-                            .Where(g => g.Count(r => r.Status == "Absent") >= threshold)
-                            .SelectMany(g => g);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please enter a valid number for absences.");
-                        return;
+                        MessageBox.Show("All IP addresses are unique - no students share the same IP address.");
+                        return; // Exit without changing the DataGridView
                     }
                     break;
-
                 default:
-                    MessageBox.Show("Unknown filter type.");
-                    return;
+                    // If no specific filter matches, show all data
+                    filteredData = originalDataSource.ToList();
+                    break;
             }
 
-            attendanceDataGridView.DataSource = filteredRecords.ToList();
-        }
+            // Update the DataGridView with filtered data
+            attendanceDataGridView.DataSource = filteredData;
 
-        private IEnumerable<AttendanceRecord> FilterMissingThreeInARow(List<AttendanceRecord> records)
-        {
-            var result = new List<AttendanceRecord>();
-
-            var groupedByStudent = records
-                .GroupBy(r => r.StudentId);
-
-            foreach (var group in groupedByStudent)
+            // Show message if no records found for the filter
+            if (filteredData.Count == 0)
             {
-                var ordered = group.OrderBy(r => r.SessionDate).ToList();
-                int consecutiveAbsences = 0;
-
-                for (int i = 0; i < ordered.Count; i++)
-                {
-                    if (ordered[i].Status == "Absent")
-                    {
-                        consecutiveAbsences++;
-                        if (consecutiveAbsences == 3)
-                        {
-                            result.AddRange(ordered.Skip(i - 2).Take(3));
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        consecutiveAbsences = 0;
-                    }
-                }
+                MessageBox.Show($"No {selectedFilter.ToLower()} students found for this session.");
             }
-
-            return result;
         }
 
+        private List<Submission> FindStudentsWithSameIP(List<Submission> submissions)
+        {
+            // Group submissions by IP address and only keep groups with more than one student
+            var ipGroups = submissions
+                .Where(s => !string.IsNullOrEmpty(s.ip_Address))
+                .GroupBy(s => s.ip_Address)
+                .Where(g => g.Count() > 1)
+                .ToList();
 
+            // Flatten the groups into a single list
+            var result = new List<Submission>();
+            foreach (var group in ipGroups)
+            {
+                result.AddRange(group);
+            }
+
+            // Sort by IP address for better readability
+            return result.OrderBy(s => s.ip_Address).ToList();
+        }
 
         /* 
             Eduardo Zamora
@@ -392,6 +388,8 @@ namespace AttendanceDesktop
                     return;
                 }
 
+                // Store the original data for filtering
+                originalDataSource = filteredSubmissions;
                  // Set full data first
                 this.attendanceDataGridView.DataSource = filteredSubmissions;
 

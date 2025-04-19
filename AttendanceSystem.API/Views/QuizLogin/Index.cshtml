@@ -2,10 +2,15 @@
     ViewData["Title"] = "UTD Attendance System - Login";
 }
 @if (TempData["StudentName"] != null)
+
 {
     <div class="alert alert-success text-center">
         You may now take the quiz, <strong>@TempData["StudentName"]</strong>.            
-    </div>            
+    </div>  
+
+    <div class="text-center mt-3">
+        <a class="btn btn-success" href="/Quiz/TakeByCourse/@ViewData["UtdId"]">Start Quiz</a>
+    </div>          
 }
 
 <!DOCTYPE html>
@@ -92,6 +97,7 @@
                     @ViewBag.ErrorMessage
                 </div>
             }
+
             
 
         </form>

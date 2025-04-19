@@ -37,6 +37,44 @@ namespace AttendanceSystem.API.Controllers
 
             return Ok(quizzes);
         }
+        /*
+        Hamza Khawaja 4/17/2025 
+        - Uses the student's UTD ID (from session/tempdata or a form)
+        - Fetches their Course_Id 
+        - Finds a Quiz tied to that course
+        - Returns the quiz to the view
+        */
+        [HttpGet("/Quiz/TakeByCourse/{utdId}")]
+        public async Task<IActionResult> TakeByCourse(String utdId){
+            // first step is to find the student using the UTD ID
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.UtdId == utdId);
+            
+            if (student == null){
+                return NotFound("Student not enrolled in this course.");
+            }
+
+            // next we find a quiz that matches the student's Course_Id
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                .Include(q => q.QuestionPool)
+                .FirstOrDefaultAsync(q => q.Course_Id == student.Course_Id);
+
+            if (quiz == null){
+                return NotFound("No Quiz Found! :)");
+            }
+
+            // passing stundetns name to view
+            TempData["StudentName"] = student.FirstName;
+            ViewData["UtdId"] = student.UtdId;
+
+
+            //finally we can send the quiz to the view
+            return View("Take", quiz); // "Take.cshtml" is your quiz view
+        }
+
+
+
         
 
         [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
@@ -75,7 +113,7 @@ namespace AttendanceSystem.API.Controllers
                 return BadRequest("Invalid Pool ID");
 
             var quiz = new Quiz
-            {
+            { // e.g., April 16, 2025
                 DueDate = dto.DueDate,
                 PoolId = dto.PoolId,
                 Questions = new List<Question>(),

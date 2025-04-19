@@ -12,6 +12,12 @@ namespace AttendanceSystem.API.Models
     [Column("QUIZ_ID")]
     public int QuizId { get; set; }  // Primary key for each quiz
 
+    // Hamza Khawaja 4/17/2025
+    // add courseId column, want to dynamically asign quiz
+    // student based on the course they are taking
+    [Column("COURSE_ID")]
+    public string Course_Id { get; set; }
+
     [Column("TITLE")]
     public string Title {get; set;} // to display title of quiz in view
 
@@ -24,6 +30,10 @@ namespace AttendanceSystem.API.Models
     [JsonIgnore]
     [ForeignKey("PoolId")]
     public QuestionPool QuestionPool { get; set; }
+
+    [ForeignKey("Course_Id")]
+    [JsonIgnore]
+    public Course Course { get; set; }  
 
     [JsonIgnore]
     public ICollection<Question> Questions { get; set; }

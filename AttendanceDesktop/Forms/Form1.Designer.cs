@@ -8,6 +8,7 @@ partial class Form1
     private System.ComponentModel.IContainer components = null;
     private Button uploadButton;
     private Button viewAttendanceButton;
+    private Button configButton;
 
     /// <summary>
     ///  Clean up any resources being used.
@@ -58,7 +59,7 @@ partial class Form1
         this.uploadButton = new Button();
         this.uploadButton.Text = "Upload CSV";
         this.uploadButton.Size = new Size(300, 90);
-        this.uploadButton.BackColor = Color.FromArgb(199, 91, 18);
+        this.uploadButton.BackColor = Color.FromArgb(0, 133, 66);
         this.uploadButton.ForeColor = Color.White;
         this.uploadButton.FlatStyle = FlatStyle.Flat;
         this.uploadButton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
@@ -72,12 +73,27 @@ partial class Form1
         this.viewAttendanceButton = new Button();
         this.viewAttendanceButton.Text = "View Attendance";
         this.viewAttendanceButton.Size = new Size(300, 90);
-        this.viewAttendanceButton.BackColor = Color.FromArgb(0, 133, 66);
-        this.viewAttendanceButton.ForeColor = Color.White;
+        this.viewAttendanceButton.BackColor = Color.White;
+        this.viewAttendanceButton.ForeColor = Color.FromArgb(199, 91, 18);
         this.viewAttendanceButton.FlatStyle = FlatStyle.Flat;
         this.viewAttendanceButton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        this.viewAttendanceButton.FlatAppearance.BorderSize = 0;
+        this.viewAttendanceButton.FlatAppearance.BorderSize = 1;
         this.viewAttendanceButton.Click += new EventHandler(this.viewAttendanceButton_Click);
+
+        /* 
+            David Sajdak 4/21/2025
+            Configuration button for database info and actions,
+            classes, and more misc info
+        */
+        this.configButton = new Button();
+        this.configButton.Text = "Configuration";
+        this.configButton.Size = new Size(300, 90);
+        this.configButton.BackColor = Color.FromArgb(199, 91, 18);
+        this.configButton.ForeColor = Color.White;
+        this.configButton.FlatStyle = FlatStyle.Flat;
+        this.configButton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+        this.configButton.FlatAppearance.BorderSize = 0;
+        this.configButton.Click += new EventHandler(this.configButton_Click);
 
         /*
             David Sajdak 4/16/2025
@@ -90,6 +106,7 @@ partial class Form1
         buttonPanel.Anchor = AnchorStyles.None;
         buttonPanel.Controls.Add(uploadButton);
         buttonPanel.Controls.Add(viewAttendanceButton);
+        buttonPanel.Controls.Add(configButton);
 
         /* 
             David Sajdak 4/16/2025

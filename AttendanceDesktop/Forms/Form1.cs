@@ -39,6 +39,17 @@ public partial class Form1 : Form
     }
 
     /*
+        David Sajdak 4/21/2025
+        Hanles click of congifuration button,
+        Directs to configuration form
+    */
+    private void configButton_Click(object sender, EventArgs args) {
+        // Open configuration form
+        ConfigurationForm configForm = new ConfigurationForm();
+        configForm.Show();
+    }
+
+    /*
         David Sajdak Started: 04/09/2025
         Takes file path, reads file and sends batch upload
         request to api which interacts with database to insert

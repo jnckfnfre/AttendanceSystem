@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text.Json;
+using System.Net.Http;
+using System.Text;
 
 namespace AttendanceDesktop
 {
@@ -786,70 +788,286 @@ namespace AttendanceDesktop
                         .ToList();
         }
 
-        // method to chanhge status of attendance record
-        private void ChangeStatus_Click(object sender, EventArgs e)
+        // Eduardo Zamora 4/20/2025
+        // method to chnage status of attendance record
+        private async void ChangeStatus_Click(object sender, EventArgs e)
         {
+            string password = PromptForPassword("Authentication Required", "Enter professor password:");
+    
+            // Check if password is correct (you should use a more secure method in production)
+            if (password != "professor123") // Replace with your desired password
+            {
+                MessageBox.Show("Incorrect password. Status change not authorized.", "Authentication Failed", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (this.attendanceDataGridView.SelectedRows.Count > 0)
             {
                 var selectedRow = this.attendanceDataGridView.SelectedRows[0];
-                var record = selectedRow.DataBoundItem as AttendanceRecord;
-        
-                if (record != null)
+                var submission = selectedRow.DataBoundItem as Submission;
+                
+                if (submission != null)
                 {
-                    // Open a dialog to change the status
-                    string[] statuses = { "Present", "Absent"};
+                    string[] statuses = { "Present", "Absent" };
                     string newStatus = PromptForSelection("Change Status", "Select a new status:", statuses);
-        
+                    
                     if (!string.IsNullOrEmpty(newStatus))
                     {
-                        // Update TotalAbsences if the status is changed to "Absent"
-                        if (newStatus == "Absent" && record.Status != "Absent")
+                        try
                         {
-                            record.TotalAbsences++; // Increment TotalAbsences
+                            // Get the current submission data to preserve answers
+                            var currentSubmission = await GetSubmissionById(submission.submission_Id);
+                            if (currentSubmission == null)
+                            {
+                                MessageBox.Show("Could not retrieve current submission data.");
+                                return;
+                            }
+
+                            // Update only the status while preserving existing answers
+                            bool success = await UpdateStatusInDatabase(
+                                submission.submission_Id,
+                                currentSubmission.answer_1,  // original answer 1
+                                currentSubmission.answer_2,  // original answer 2
+                                currentSubmission.answer_3,  // original answer 3
+                                newStatus.ToLower());
+                            
+                            if (success)
+                            {
+                                submission.status = newStatus.ToLower();
+                                this.attendanceDataGridView.Refresh();
+                                MessageBox.Show($"Status updated to {newStatus} for {submission.student_Name}");
+                            }
                         }
-                        else if (newStatus == "Present" && record.Status == "Absent")
+                        catch (Exception ex)
                         {
-                            record.TotalAbsences--; // Decrement TotalAbsences if switching back to Present
+                            MessageBox.Show($"Error updating status: {ex.Message}");
                         }
-
-                        // Update the status
-                        record.Status = newStatus;
-
-                        // Refresh the DataGridView to reflect changes
-                        this.attendanceDataGridView.Refresh();
-
-                        MessageBox.Show($"Changed {record.Name}'s status to {newStatus}.");
                     }
                 }
             }
         }
 
-        // method to prompt user for selection from a list of options
-        // This method creates a simple form with a ComboBox and an OK button.
+        // Eduardo Zamora 4/20/2025
+        // Function to update the status in the database
+        private async Task<bool> UpdateStatusInDatabase(int submissionId, string answer1, string answer2, string answer3, string newStatus)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    // If changing to "present" but answers are null, provide default answers
+                    if (newStatus.ToLower() == "present")
+                    {
+                        answer1 = answer1 ?? "x";
+                        answer2 = answer2 ?? "x";
+                        answer3 = answer3 ?? "x";
+                    }
+                    var updateData = new
+                    {
+                        Answer_1 = answer1 ?? string.Empty,
+                        Answer_2 = answer2 ?? string.Empty,
+                        Answer_3 = answer3 ?? string.Empty,
+                        Status = newStatus
+                    };
+                    
+                    string json = JsonSerializer.Serialize(updateData);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    
+                    HttpResponseMessage response = await client.PutAsync(
+                        $"http://localhost:5257/api/Submissions/{submissionId}", 
+                        content);
+                    
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"API Error: {errorContent}");
+                        return false;
+                    }
+                    
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating status: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Eduardo Zamora 4/20/2025
+        // Function to get a submission by ID
+        private async Task<Submission> GetSubmissionById(int submissionId)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(
+                        $"http://localhost:5257/api/Submissions/{submissionId}");
+                    
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        return JsonSerializer.Deserialize<Submission>(json);
+                    }
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error fetching submission: {ex.Message}");
+                return null;
+            }
+        }
+
+        // Eduardo Zamora 4/20/2025
+        // for changing the status of attendance record
+        // The user can select an option from the ComboBox and click OK to return the selected value.
         private string PromptForSelection(string title, string prompt, string[] options)
         {
             using (Form promptForm = new Form())
             {
+                // Colors from the main form
+                Color primaryColor = Color.FromArgb(199, 91, 18);
+                Color secondaryColor = Color.FromArgb(0, 133, 66);
+
+                // Configure form
                 promptForm.Text = title;
-                promptForm.Size = new System.Drawing.Size(300, 200);
-        
-                Label textLabel = new Label() { Left = 20, Top = 20, Text = prompt, AutoSize = true };
-                ComboBox comboBox = new ComboBox() { Left = 20, Top = 50, Width = 240 };
+                promptForm.Size = new System.Drawing.Size(350, 220);
+                promptForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                promptForm.StartPosition = FormStartPosition.CenterParent;
+                promptForm.MaximizeBox = false;
+                promptForm.MinimizeBox = false;
+                promptForm.BackColor = Color.White;
+                
+                // Create controls
+                Label textLabel = new Label
+                {
+                    Text = prompt,
+                    Left = 20,
+                    Top = 20,
+                    Width = 300,
+                    Font = new System.Drawing.Font("Segoe UI", 10F),
+                    ForeColor = primaryColor,
+                    AutoSize = true
+                };
+                
+                ComboBox comboBox = new ComboBox
+                {
+                    Left = 20,
+                    Top = 50,
+                    Width = 300,
+                    Font = new System.Drawing.Font("Segoe UI", 10F),
+                    DropDownStyle = ComboBoxStyle.DropDownList // Force selection from list
+                };
                 comboBox.Items.AddRange(options);
-                Button confirmation = new Button() { Text = "OK", Left = 20, Width = 100, Top = 100, DialogResult = DialogResult.OK };
-        
+                
+                Button confirmButton = new Button
+                {
+                    Text = "Confirm",
+                    Left = 110,
+                    Top = 100,
+                    Width = 120,
+                    Height = 40,
+                    BackColor = secondaryColor,
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new System.Drawing.Font("Segoe UI", 9F, FontStyle.Bold),
+                    DialogResult = DialogResult.OK
+                };
+                
+                // Remove border from button
+                confirmButton.FlatAppearance.BorderSize = 0;
+                
+                // Add controls to form
                 promptForm.Controls.Add(textLabel);
                 promptForm.Controls.Add(comboBox);
-                promptForm.Controls.Add(confirmation);
-                promptForm.AcceptButton = confirmation;
-        
+                promptForm.Controls.Add(confirmButton);
+                promptForm.AcceptButton = confirmButton; // Allow Enter key to submit
+                
+                // Show the form as dialog and return selection if OK is clicked
                 if (promptForm.ShowDialog() == DialogResult.OK && comboBox.SelectedItem != null)
                 {
                     return comboBox.SelectedItem.ToString();
                 }
+                
+                return string.Empty;
             }
-        
-            return null;
+        }
+
+        // Eduardo Zamora 4/20/2025
+        // Function to prompt for a password when changing status
+        // The user can enter a password in a TextBox and click OK to return the entered value.
+        private string PromptForPassword(string title, string prompt)
+        {
+            using (Form passwordForm = new Form())
+            {
+                // Colors from the main form
+                Color primaryColor = Color.FromArgb(199, 91, 18);
+                Color secondaryColor = Color.FromArgb(0, 133, 66);
+
+                // Configure form
+                passwordForm.Text = title;
+                passwordForm.Size = new System.Drawing.Size(350, 200);
+                passwordForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                passwordForm.StartPosition = FormStartPosition.CenterParent;
+                passwordForm.MaximizeBox = false;
+                passwordForm.MinimizeBox = false;
+                passwordForm.BackColor = Color.White;
+
+                // Create controls
+                Label promptLabel = new Label
+                {
+                    Text = prompt,
+                    Left = 20,
+                    Top = 20,
+                    Width = 300,
+                    Font = new System.Drawing.Font("Segoe UI", 10F),
+                    ForeColor = primaryColor,
+                    AutoSize = true
+                };
+
+                TextBox passwordTextBox = new TextBox
+                {
+                    Left = 20,
+                    Top = 50,
+                    Width = 300,
+                    PasswordChar = '•', // Use bullet character for password
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Font = new System.Drawing.Font("Segoe UI", 10F)
+                };
+
+                Button confirmButton = new Button
+                {
+                    Text = "Confirm",
+                    Left = 110,
+                    Top = 100,
+                    Width = 120,
+                    Height = 40,
+                    BackColor = secondaryColor,
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new System.Drawing.Font("Segoe UI", 9F, FontStyle.Bold),
+                    DialogResult = DialogResult.OK
+                };
+
+                // Remove border from button
+                confirmButton.FlatAppearance.BorderSize = 0;
+
+                // Add controls to form
+                passwordForm.Controls.Add(promptLabel);
+                passwordForm.Controls.Add(passwordTextBox);
+                passwordForm.Controls.Add(confirmButton);
+                passwordForm.AcceptButton = confirmButton; // Allow Enter key to submit
+
+                // Show the form as a dialog and return the password if OK is clicked
+                if (passwordForm.ShowDialog() == DialogResult.OK)
+                {
+                    return passwordTextBox.Text;
+                }
+
+                return string.Empty;
+            }
         }
 
         public class Course

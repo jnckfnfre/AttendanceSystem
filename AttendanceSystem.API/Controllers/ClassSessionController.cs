@@ -83,6 +83,7 @@ namespace AttendanceSystem.API.Controllers
             return classSession;
         }
 
+        // David Sajdak 4/21/2025
         // GET /api/ClassSession/WithConfigData
         // gets class session info along with other data needed for configuration table
         [HttpGet("WithConfigData")]

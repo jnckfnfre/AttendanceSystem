@@ -22,65 +22,7 @@ namespace AttendanceSystem.API.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("AttendanceSystem.API.Models.Student", b =>
-                {
-                    b.Property<string>("UtdId")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("UTD_ID");
-
-                    b.Property<string>("First_Name")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("FIRST_NAME");
-
-                    b.Property<string>("Last_Name")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("LAST_NAME");
-
-                    b.Property<string>("Net_Id")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("NET_ID");
-
-                    b.HasKey("UtdId");
-
-                    b.ToTable("Student");
-                });
-
-            modelBuilder.Entity("AttendedBy", b =>
-                {
-                    b.Property<int>("AttendanceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ATTENDANCE_ID");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AttendanceId"));
-
-                    b.Property<string>("Course_Id")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("COURSE_ID");
-
-                    b.Property<DateTime>("SessionDate")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("SESSION_DATE");
-
-                    b.Property<string>("UtdId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("UTD_ID");
-
-                    b.HasKey("AttendanceId");
-
-                    b.HasIndex("UtdId");
-
-                    b.HasIndex("SessionDate", "Course_Id");
-
-                    b.ToTable("Attended_By");
-                });
-
-            modelBuilder.Entity("ClassSession", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.ClassSession", b =>
                 {
                     b.Property<DateTime>("SessionDate")
                         .HasColumnType("datetime(6)")
@@ -108,31 +50,7 @@ namespace AttendanceSystem.API.Migrations
                     b.ToTable("class_session");
                 });
 
-            modelBuilder.Entity("Course", b =>
-                {
-                    b.Property<string>("Course_Id")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("COURSE_ID");
-
-                    b.Property<string>("Course_Name")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("COURSE_NAME");
-
-                    b.Property<TimeSpan>("End_Time")
-                        .HasColumnType("time(6)")
-                        .HasColumnName("END_TIME");
-
-                    b.Property<TimeSpan>("Start_Time")
-                        .HasColumnType("time(6)")
-                        .HasColumnName("START_TIME");
-
-                    b.HasKey("Course_Id");
-
-                    b.ToTable("Course");
-                });
-
-            modelBuilder.Entity("Question", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.Question", b =>
                 {
                     b.Property<int>("QuestionId")
                         .ValueGeneratedOnAdd()
@@ -174,6 +92,11 @@ namespace AttendanceSystem.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("QUIZ_ID");
 
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("TEXT");
+
                     b.HasKey("QuestionId");
 
                     b.HasIndex("PoolId");
@@ -183,7 +106,7 @@ namespace AttendanceSystem.API.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("QuestionPool", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.QuestionPool", b =>
                 {
                     b.Property<int>("PoolId")
                         .ValueGeneratedOnAdd()
@@ -202,7 +125,7 @@ namespace AttendanceSystem.API.Migrations
                     b.ToTable("Question_Pool");
                 });
 
-            modelBuilder.Entity("Quiz", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.Quiz", b =>
                 {
                     b.Property<int>("QuizId")
                         .ValueGeneratedOnAdd()
@@ -210,6 +133,11 @@ namespace AttendanceSystem.API.Migrations
                         .HasColumnName("QUIZ_ID");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("QuizId"));
+
+                    b.Property<string>("Course_Id")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("COURSE_ID");
 
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime(6)")
@@ -219,11 +147,106 @@ namespace AttendanceSystem.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("POOL_ID");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("TITLE");
+
                     b.HasKey("QuizId");
+
+                    b.HasIndex("Course_Id");
 
                     b.HasIndex("PoolId");
 
                     b.ToTable("Quiz");
+                });
+
+            modelBuilder.Entity("AttendanceSystem.API.Models.Student", b =>
+                {
+                    b.Property<string>("UtdId")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("UTD_ID");
+
+                    b.Property<string>("Course_Id")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("COURSE_ID");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("FIRST_NAME");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("LAST_NAME");
+
+                    b.Property<string>("Net_Id")
+                        .HasColumnType("longtext")
+                        .HasColumnName("NET_ID");
+
+                    b.HasKey("UtdId");
+
+                    b.HasIndex("Course_Id");
+
+                    b.ToTable("Student", (string)null);
+                });
+
+            modelBuilder.Entity("AttendedBy", b =>
+                {
+                    b.Property<int>("AttendanceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ATTENDANCE_ID");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AttendanceId"));
+
+                    b.Property<string>("Course_Id")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("COURSE_ID");
+
+                    b.Property<DateTime>("SessionDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("SESSION_DATE");
+
+                    b.Property<string>("UtdId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("UTD_ID");
+
+                    b.HasKey("AttendanceId");
+
+                    b.HasIndex("UtdId");
+
+                    b.HasIndex("SessionDate", "Course_Id");
+
+                    b.ToTable("Attended_By");
+                });
+
+            modelBuilder.Entity("Course", b =>
+                {
+                    b.Property<string>("Course_Id")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("COURSE_ID");
+
+                    b.Property<string>("Course_Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("COURSE_NAME");
+
+                    b.Property<TimeSpan>("End_Time")
+                        .HasColumnType("time(6)")
+                        .HasColumnName("END_TIME");
+
+                    b.Property<TimeSpan>("Start_Time")
+                        .HasColumnType("time(6)")
+                        .HasColumnName("START_TIME");
+
+                    b.HasKey("Course_Id");
+
+                    b.ToTable("Course");
                 });
 
             modelBuilder.Entity("Submission", b =>
@@ -273,8 +296,8 @@ namespace AttendanceSystem.API.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("STATUS");
 
-                    b.Property<TimeSpan>("Submission_Time")
-                        .HasColumnType("time(6)")
+                    b.Property<DateTime>("Submission_Time")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("SUBMISSION_TIME");
 
                     b.Property<string>("Utd_Id")
@@ -293,26 +316,7 @@ namespace AttendanceSystem.API.Migrations
                     b.ToTable("Submissions");
                 });
 
-            modelBuilder.Entity("AttendedBy", b =>
-                {
-                    b.HasOne("AttendanceSystem.API.Models.Student", "Student")
-                        .WithMany("AttendanceRecords")
-                        .HasForeignKey("UtdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ClassSession", "ClassSession")
-                        .WithMany("AttendanceRecords")
-                        .HasForeignKey("SessionDate", "Course_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClassSession");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("ClassSession", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.ClassSession", b =>
                 {
                     b.HasOne("Course", "Course")
                         .WithMany()
@@ -320,7 +324,7 @@ namespace AttendanceSystem.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Quiz", "Quiz")
+                    b.HasOne("AttendanceSystem.API.Models.Quiz", "Quiz")
                         .WithMany("Sessions")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -331,15 +335,15 @@ namespace AttendanceSystem.API.Migrations
                     b.Navigation("Quiz");
                 });
 
-            modelBuilder.Entity("Question", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.Question", b =>
                 {
-                    b.HasOne("QuestionPool", "QuestionPool")
+                    b.HasOne("AttendanceSystem.API.Models.QuestionPool", "QuestionPool")
                         .WithMany("Questions")
                         .HasForeignKey("PoolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Quiz", "Quiz")
+                    b.HasOne("AttendanceSystem.API.Models.Quiz", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -350,20 +354,58 @@ namespace AttendanceSystem.API.Migrations
                     b.Navigation("Quiz");
                 });
 
-            modelBuilder.Entity("Quiz", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.Quiz", b =>
                 {
-                    b.HasOne("QuestionPool", "QuestionPool")
+                    b.HasOne("Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("Course_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AttendanceSystem.API.Models.QuestionPool", "QuestionPool")
                         .WithMany("Quizzes")
                         .HasForeignKey("PoolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Course");
+
                     b.Navigation("QuestionPool");
+                });
+
+            modelBuilder.Entity("AttendanceSystem.API.Models.Student", b =>
+                {
+                    b.HasOne("Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("Course_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("AttendedBy", b =>
+                {
+                    b.HasOne("AttendanceSystem.API.Models.Student", "Student")
+                        .WithMany("AttendanceRecords")
+                        .HasForeignKey("UtdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AttendanceSystem.API.Models.ClassSession", "ClassSession")
+                        .WithMany("AttendanceRecords")
+                        .HasForeignKey("SessionDate", "Course_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClassSession");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Submission", b =>
                 {
-                    b.HasOne("Quiz", "Quiz")
+                    b.HasOne("AttendanceSystem.API.Models.Quiz", "Quiz")
                         .WithMany("Submissions")
                         .HasForeignKey("Quiz_Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -375,7 +417,7 @@ namespace AttendanceSystem.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ClassSession", "ClassSession")
+                    b.HasOne("AttendanceSystem.API.Models.ClassSession", "ClassSession")
                         .WithMany("Submissions")
                         .HasForeignKey("SessionDate", "Course_Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -388,32 +430,32 @@ namespace AttendanceSystem.API.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("AttendanceSystem.API.Models.Student", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.ClassSession", b =>
                 {
                     b.Navigation("AttendanceRecords");
 
                     b.Navigation("Submissions");
                 });
 
-            modelBuilder.Entity("ClassSession", b =>
-                {
-                    b.Navigation("AttendanceRecords");
-
-                    b.Navigation("Submissions");
-                });
-
-            modelBuilder.Entity("QuestionPool", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.QuestionPool", b =>
                 {
                     b.Navigation("Questions");
 
                     b.Navigation("Quizzes");
                 });
 
-            modelBuilder.Entity("Quiz", b =>
+            modelBuilder.Entity("AttendanceSystem.API.Models.Quiz", b =>
                 {
                     b.Navigation("Questions");
 
                     b.Navigation("Sessions");
+
+                    b.Navigation("Submissions");
+                });
+
+            modelBuilder.Entity("AttendanceSystem.API.Models.Student", b =>
+                {
+                    b.Navigation("AttendanceRecords");
 
                     b.Navigation("Submissions");
                 });

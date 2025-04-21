@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Nahyan Munawar 3/20/25
-// ✅ Adds controller support to the services container
-builder.Services.AddControllers();
+//  Adds controller support to the services container
 
-// ✅ Registers AttendanceDbContext and configures EF Core to use MySQL
+builder.Services.AddControllers(); // Add services to the container.
+
+builder.Services.AddControllersWithViews(); // Add MVC support
+
+// Registers AttendanceDbContext and configures EF Core to use MySQL
 builder.Services.AddDbContext<AttendanceDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -15,10 +18,10 @@ builder.Services.AddDbContext<AttendanceDbContext>(options =>
     )
 );
 
-// ✅ Enables authorization middleware
+// Enables authorization middleware
 builder.Services.AddAuthorization();
 
-// ✅ Adds Swagger for API testing
+// Adds Swagger for API testing
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -31,10 +34,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); //redirects HTTP requests to HTTPS
+app.UseStaticFiles(); // Add static files support
+app.UseRouting(); // Add routing support
 
-app.UseAuthorization(); // ✅ Ensure authorization is active
+app.UseAuthorization(); // Ensure authorization is active
 
-app.MapControllers(); // ✅ Maps attribute-routed controllers (like /api/students)
+app.MapControllerRoute( // Add default MVC route
+    name: "default",
+    pattern: "{controller=QuizLogin}/{action=Index}/{id?}");
 
 app.Run(); // ✅ Starts the web server

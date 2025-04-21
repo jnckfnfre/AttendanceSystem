@@ -11,6 +11,7 @@ partial class ConfigurationForm
     private Button databaseInfo;
     private Button configTable;
     private Button newQuestionBank;
+    private Button viewQuestionBank;
 
     protected override void Dispose(bool disposing)
     {
@@ -64,9 +65,9 @@ partial class ConfigurationForm
         this.configTable.FlatStyle = FlatStyle.Flat;
         this.configTable.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.configTable.FlatAppearance.BorderSize = 1;
-        // this.configTable.Click += new EventHandler(this.configTable_Click);
+        this.configTable.Click += new EventHandler(this.configTableButton_Click);
 
-        // button for creatinga new question bank (will have 2 options: upload or create)
+        // button for creating a new question bank (will have 2 options: upload or create)
         this.newQuestionBank = new Button();
         this.newQuestionBank.Text = "New Question Bank";
         this.newQuestionBank.Size = new Size(400, 150);
@@ -77,6 +78,16 @@ partial class ConfigurationForm
         this.newQuestionBank.FlatAppearance.BorderSize = 0;
         // this.newQuestionBank.Click += new EventHandler(this.newQuestionBank_Click);
 
+        // button to view existing question banks (can filter for bank upon click)
+        this.viewQuestionBank = new Button();
+        this.viewQuestionBank.Text = "View Question Banks";
+        this.viewQuestionBank.Size = new Size(400, 150);
+        this.viewQuestionBank.BackColor = Color.FromArgb(0, 133, 66);
+        this.viewQuestionBank.ForeColor = Color.White;
+        this.viewQuestionBank.FlatStyle = FlatStyle.Flat;
+        this.viewQuestionBank.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+        this.viewQuestionBank.FlatAppearance.BorderSize = 0;
+
         // helps with alignment of buttons
         FlowLayoutPanel buttonPanel = new FlowLayoutPanel();
         buttonPanel.FlowDirection = FlowDirection.LeftToRight; // want buttons side by side
@@ -86,6 +97,7 @@ partial class ConfigurationForm
         buttonPanel.Controls.Add(databaseInfo);
         buttonPanel.Controls.Add(configTable);
         buttonPanel.Controls.Add(newQuestionBank);
+        buttonPanel.Controls.Add(viewQuestionBank);
 
         // aligns everything
         TableLayoutPanel contentLayout = new TableLayoutPanel();

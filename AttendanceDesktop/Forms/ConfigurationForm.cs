@@ -14,4 +14,15 @@ public partial class ConfigurationForm : Form
     {
         InitializeComponent();
     }
+
+    /*
+        David Sajdak 4/21/2025
+        Hanles click of congifuration table button,
+        Directs to configuration table form
+    */
+    private void configTableButton_Click(object sender, EventArgs args) {
+        // Open configuration form
+        ConfigurationTableForm configTableForm = new ConfigurationTableForm();
+        configTableForm.Show();
+    }
 }

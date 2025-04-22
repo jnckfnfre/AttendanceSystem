@@ -808,7 +808,7 @@ namespace AttendanceDesktop
                 
                 if (submission != null)
                 {
-                    string[] statuses = { "Present", "Absent" };
+                    string[] statuses = { "Present", "Absent", "Excused" };
                     string newStatus = PromptForSelection("Change Status", "Select a new status:", statuses);
                     
                     if (!string.IsNullOrEmpty(newStatus))

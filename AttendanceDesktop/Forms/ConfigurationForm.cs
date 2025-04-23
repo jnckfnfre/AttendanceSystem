@@ -25,4 +25,25 @@ public partial class ConfigurationForm : Form
         ConfigurationTableForm configTableForm = new ConfigurationTableForm();
         configTableForm.Show();
     }
+
+    // Eduardo Zamora 4/22/2025
+    // Handles click of database info button,
+    // Directs to database info form
+    private void databaseInfo_Click(object sender, EventArgs e)
+    {
+        // Create and show the database info form
+        databaseInfoForm infoForm = new databaseInfoForm();
+        infoForm.ShowDialog(); // ShowDialog makes it modal (user must close it before returning to main form)
+    }
+
+    /*
+        David Sajdak 4/23/2025
+        Handles click of new question bank button,
+        Directs to new question bank form
+    */
+    private void newQuestionBankButton_Click(object sender, EventArgs args) {
+        // open new question bank form
+        NewQuestionBankForm newQBForm = new NewQuestionBankForm();
+        newQBForm.Show();
+    }
 }

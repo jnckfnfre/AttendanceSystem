@@ -76,7 +76,7 @@ partial class ConfigurationForm
         this.newQuestionBank.FlatStyle = FlatStyle.Flat;
         this.newQuestionBank.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.newQuestionBank.FlatAppearance.BorderSize = 0;
-        // this.newQuestionBank.Click += new EventHandler(this.newQuestionBank_Click);
+        this.newQuestionBank.Click += new EventHandler(this.newQuestionBankButton_Click);
 
         // button to view existing question banks (can filter for bank upon click)
         this.viewQuestionBank = new Button();
@@ -125,16 +125,6 @@ partial class ConfigurationForm
         outer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
         outer.Controls.Add(contentLayout, 1, 1); // place contentLayout in the center
         this.Controls.Add(outer);
-    }
-
-    // Eduardo Zamora 4/22/2025
-    // Handles click of database info button,
-    // Directs to database info form
-    private void databaseInfo_Click(object sender, EventArgs e)
-    {
-        // Create and show the database info form
-        databaseInfoForm infoForm = new databaseInfoForm();
-        infoForm.ShowDialog(); // ShowDialog makes it modal (user must close it before returning to main form)
     }
 
     #endregion

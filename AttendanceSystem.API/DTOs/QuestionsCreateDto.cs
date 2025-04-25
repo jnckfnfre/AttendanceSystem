@@ -12,6 +12,9 @@ namespace AttendanceSystem.API.DTOs
 {
     public class QuestionsCreateDto
     {
+        [Required]
+        public string Text { get; set; }
+
         // Option A for the multiple choice question
         // This is required as all questions must have at least two options
         [Required]

@@ -46,4 +46,16 @@ public partial class ConfigurationForm : Form
         NewQuestionBankForm newQBForm = new NewQuestionBankForm();
         newQBForm.Show();
     }
+
+    /*
+        Maha Shaikh 4/24/2025
+
+    */
+    private void viewQuestionBankButton_Click(object sender, EventArgs e)
+    {
+    ViewQuestionBankForm viewQBForm = new ViewQuestionBankForm();
+    viewQBForm.Show();
+    }
+
+
 }

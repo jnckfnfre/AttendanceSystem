@@ -10,6 +10,9 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
     
     public int QuestionId { get; set; }
 
+    [Required]
+    public string QuestionText { get; set; } = string.Empty; //Maha Shaikh 4/24/2025 
+
     [Column("TEXT")] // Hamza Khawaja 4/14/2025 - Question model was missing Text field
     public string Text {get; set;} // Hamza Khawaja 4/11/2025 - added this because the actual question prompt was missing from the model
 
@@ -27,6 +30,7 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
 
     [Column("CORRECT_ANSWER")]
     public string CorrectAnswer { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [Column("QUIZ_ID")]
     public int QuizId { get; set; }

@@ -152,5 +152,24 @@ namespace AttendanceSystem.API.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        //Maha Shaikh 4/24/2025
+        [HttpGet("view-question-banks")]
+        public ActionResult<IEnumerable<QuestionBankViewDto>> GetQuestionBankView()
+        {
+            var questionData = _context.Questions
+                .Include(q => q.QuestionPool)
+                .Select(q => new QuestionBankViewDto
+                {
+                    QuestionId = q.QuestionId,
+                    QuestionText = q.QuestionText, 
+                    PoolName = q.QuestionPool.PoolName,
+                    CreatedAt = q.CreatedAt       
+                })
+                .ToList();
+
+            return Ok(questionData);
+        }
+
     }
 }

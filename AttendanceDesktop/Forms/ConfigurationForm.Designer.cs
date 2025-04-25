@@ -88,6 +88,9 @@ partial class ConfigurationForm
         this.viewQuestionBank.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.viewQuestionBank.FlatAppearance.BorderSize = 0;
 
+        //Maha Shaikh 4/23/2025 
+        this.viewQuestionBank.Click += new EventHandler(this.viewQuestionBankButton_Click);
+
         // helps with alignment of buttons
         FlowLayoutPanel buttonPanel = new FlowLayoutPanel();
         buttonPanel.FlowDirection = FlowDirection.LeftToRight; // want buttons side by side

@@ -13,7 +13,7 @@ namespace AttendanceSystem.API.DTOs
         public int QuestionId { get; set; }
 
         // The actual question text
-        public string QuestionText { get; set; }
+        public string Text { get; set; }
 
         // Name of the question pool this question belongs to
         public string PoolName { get; set; }

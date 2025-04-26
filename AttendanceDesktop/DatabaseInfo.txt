@@ -170,3 +170,11 @@ RELATIONSHIP SUMMARY
 8. Quiz (1) → (N) class_session
 9. Quiz (1) → (N) Submissions
 10. Quiz (1) → (N) Questions
+
+DATABASE INFO:
+===========
+Server: localhost
+Port: 3306
+Database Name: attendance_schema
+User ID: root
+Password: : Your Password for Local Connection in Mysql Workbench

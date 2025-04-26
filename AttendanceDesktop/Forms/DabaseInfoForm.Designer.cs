@@ -1,3 +1,6 @@
+// Eduardo Zamora 4/22/2025
+// Designer generated code for the database information form
+// This form displays the database information in a read-only text box and has a close button.
 namespace AttendanceDesktop
 {
     partial class databaseInfoForm

@@ -21,7 +21,7 @@ namespace AttendanceDesktop
             // Setup UI Columns (always show headers)
             questionBankGrid.Columns.Clear();
             questionBankGrid.Columns.Add("QuestionId", "Question ID");
-            questionBankGrid.Columns.Add("QuestionText", "Question Text");
+            questionBankGrid.Columns.Add("Text", "Text");
             questionBankGrid.Columns.Add("PoolName", "Pool Name");
             questionBankGrid.Columns.Add("CreatedAt", "Created At");
 
@@ -48,7 +48,7 @@ namespace AttendanceDesktop
                     // Fill DataGridView
                     foreach (var q in questions)
                     {
-                        questionBankGrid.Rows.Add(q.QuestionId, q.QuestionText, q.PoolName, q.CreatedAt.ToString("g"));
+                        questionBankGrid.Rows.Add(q.QuestionId, q.Text, q.PoolName, q.CreatedAt.ToString("g"));
                     }
                 }
                 catch
@@ -67,7 +67,7 @@ namespace AttendanceDesktop
         private class QuestionBankViewDto
         {
             public int QuestionId { get; set; }
-            public string QuestionText { get; set; }
+            public string Text { get; set; }
             public string PoolName { get; set; }
             public DateTime CreatedAt { get; set; }
         }

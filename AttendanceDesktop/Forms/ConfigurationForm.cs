@@ -57,5 +57,14 @@ public partial class ConfigurationForm : Form
     viewQBForm.Show();
     }
 
+    // Eduardo Zamora 4/26/2025
+    // Handles click of create quiz questions button,
+    // Directs to create quiz questions form
+    private void createQuizQuestionsButton_Click(object sender, EventArgs args) {
+        // open new question bank form
+        createQuizQuestionsForm createQZForm = new createQuizQuestionsForm();
+        createQZForm.Show();
+    }
+
 
 }

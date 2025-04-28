@@ -13,6 +13,8 @@ partial class ConfigurationForm
     private Button newQuestionBank;
     private Button viewQuestionBank;
 
+    private Button createQuizQuestions;
+
     protected override void Dispose(bool disposing)
     {
         if (disposing && (components != null))
@@ -64,7 +66,7 @@ partial class ConfigurationForm
         this.configTable.ForeColor = Color.FromArgb(199, 91, 18);
         this.configTable.FlatStyle = FlatStyle.Flat;
         this.configTable.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        this.configTable.FlatAppearance.BorderSize = 1;
+        this.configTable.FlatAppearance.BorderSize = 2;
         this.configTable.Click += new EventHandler(this.configTableButton_Click);
 
         // button for creating a new question bank (will have 2 options: upload or create)
@@ -88,6 +90,16 @@ partial class ConfigurationForm
         this.viewQuestionBank.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.viewQuestionBank.FlatAppearance.BorderSize = 0;
 
+        this.createQuizQuestions = new Button();
+        this.createQuizQuestions.Text = "Create Quiz Questions";
+        this.createQuizQuestions.Size = new Size(400, 150);
+        this.createQuizQuestions.BackColor = Color.White;
+        this.createQuizQuestions.ForeColor = Color.FromArgb(199, 91, 18);
+        this.createQuizQuestions.FlatStyle = FlatStyle.Flat;
+        this.createQuizQuestions.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+        this.createQuizQuestions.FlatAppearance.BorderSize = 2;
+        this.createQuizQuestions.Click += new EventHandler(this.createQuizQuestionsButton_Click);
+
         //Maha Shaikh 4/23/2025 
         this.viewQuestionBank.Click += new EventHandler(this.viewQuestionBankButton_Click);
 
@@ -101,6 +113,7 @@ partial class ConfigurationForm
         buttonPanel.Controls.Add(configTable);
         buttonPanel.Controls.Add(newQuestionBank);
         buttonPanel.Controls.Add(viewQuestionBank);
+        buttonPanel.Controls.Add(createQuizQuestions);
 
         // aligns everything
         TableLayoutPanel contentLayout = new TableLayoutPanel();

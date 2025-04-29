@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -20,11 +21,46 @@ namespace AttendanceDesktop
             sessionTextBox.GotFocus += SessionTextBox_GotFocus;
             sessionTextBox.LostFocus += SessionTextBox_LostFocus;
             searchQuestionsButton.Click += SearchQuestionsButton_Click;
+            createQuizButton.Click += createQuizButton_Click;
+
+            questionsDataGridView.CurrentCellDirtyStateChanged += QuestionsDataGridView_CurrentCellDirtyStateChanged;
+            questionsDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // Select full rows
+            questionsDataGridView.MultiSelect = true; // Allow multiple row selection
 
             // Set initial placeholder
             sessionTextBox.Text = "Example: 2025-04-15";
             sessionTextBox.ForeColor = System.Drawing.Color.Gray;
         }
+
+        private void ResetForm()
+        {
+            // Reset course selection
+            courseDropdown.SelectedItem = null;
+
+            // Reset session date textbox
+            sessionTextBox.Text = "Example: 2025-04-15";
+            sessionTextBox.ForeColor = System.Drawing.Color.Gray;
+
+            // Reset password textbox
+            passwordTextBox.Text = "";
+
+            // Clear DataGridView
+            questionsDataGridView.DataSource = null;
+            questionsDataGridView.Rows.Clear();
+            questionsDataGridView.Columns.Clear();
+        }
+
+
+        // Event handler for the DataGridView to commit edit when checkbox is checked/unchecked
+        // This ensures that the checkbox state is updated immediately when clicked
+        private void QuestionsDataGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (questionsDataGridView.IsCurrentCellDirty)
+            {
+                questionsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
 
         // Event handler for the session text box to clear placeholder text when focused
         // and restore it when focus is lost if the text box is empty
@@ -49,7 +85,7 @@ namespace AttendanceDesktop
 
         // Event handler for the search questions button click event
         // Validates the input fields and shows a message box if all fields are valid
-        private void SearchQuestionsButton_Click(object sender, EventArgs e)
+        private async void SearchQuestionsButton_Click(object sender, EventArgs e)
         {
             if (courseDropdown.SelectedItem == null || 
                 string.IsNullOrWhiteSpace(sessionTextBox.Text) || 
@@ -60,17 +96,216 @@ namespace AttendanceDesktop
                 return;
             }
 
-            // Check if session matches yyyy-MM-dd format
-            string sessionInput = sessionTextBox.Text.Trim(); // holds the session input
+            // Validate session input format
+            string sessionInput = sessionTextBox.Text.Trim();
             if (!Regex.IsMatch(sessionInput, @"^\d{4}-\d{2}-\d{2}$"))
             {
                 MessageBox.Show("Session must be in the format YYYY-MM-DD.", "Invalid Session Format", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            MessageBox.Show($"All fields are valid!\n\nSession entered: {sessionInput}", "Validation Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                var selectedCourse = courseDropdown.SelectedItem as Course;
+                if (selectedCourse == null)
+                {
+                    MessageBox.Show("Please select a valid course.", "Invalid Course", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                string apiUrl = $"http://localhost:5257/api/questions/GetCoursePoolQuestionsByCourseId?courseId={selectedCourse.CourseId}";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+                    response.EnsureSuccessStatusCode();
+
+                    var json = await response.Content.ReadAsStringAsync();
+                    var questions = JsonSerializer.Deserialize<List<CourseQuestionPoolQuestion>>(json);
+
+                    // Remove duplicates based on QuestionId
+                    // This is done to ensure that we only show unique questions in the DataGridView
+                    questions = questions
+                        .GroupBy(q => q.QuestionId)
+                        .Select(g => g.First())
+                        .ToList();
+
+                    questionsDataGridView.Invoke((MethodInvoker)delegate
+                    {
+                        questionsDataGridView.DataSource = questions;
+
+                        // Add checkbox column
+                        if (!questionsDataGridView.Columns.Contains("Select"))
+                        {
+                            DataGridViewCheckBoxColumn selectColumn = new DataGridViewCheckBoxColumn();
+                            selectColumn.Name = "Select";
+                            selectColumn.HeaderText = "Select";
+                            selectColumn.Width = 50;
+                            questionsDataGridView.Columns.Insert(0, selectColumn); // Insert as first column
+                        }
+
+                        questionsDataGridView.ReadOnly = false; // Allow editing
+                        questionsDataGridView.Columns["Select"].ReadOnly = false; // Allow only "Select" column to be editable
+
+                        // Make all other columns readonly
+                        foreach (DataGridViewColumn column in questionsDataGridView.Columns)
+                        {
+                            if (column.Name != "Select")
+                            {
+                                column.ReadOnly = true;
+                            }
+                        }
+
+
+                        // Hide course-related columns
+                        questionsDataGridView.Columns["CourseId"].Visible = false;
+                        questionsDataGridView.Columns["CourseName"].Visible = false;
+                        questionsDataGridView.Columns["StartTime"].Visible = false;
+                        questionsDataGridView.Columns["EndTime"].Visible = false;
+
+                        // Rename headers to cleaner names
+                        questionsDataGridView.Columns["Text"].HeaderText = "Question Text";
+                        questionsDataGridView.Columns["OptionA"].HeaderText = "Choice A";
+                        questionsDataGridView.Columns["OptionB"].HeaderText = "Choice B";
+                        questionsDataGridView.Columns["OptionC"].HeaderText = "Choice C";
+                        questionsDataGridView.Columns["OptionD"].HeaderText = "Choice D";
+                        questionsDataGridView.Columns["CorrectAnswer"].HeaderText = "Answer";
+
+                        // ✨ Auto-resize columns to fit text
+                        questionsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error fetching questions: {ex.Message}");
+            }
         }
+
+        // Event handler for the create quiz button click event 
+        private async void createQuizButton_Click(object sender, EventArgs e)
+        {
+            List<CourseQuestionPoolQuestion> selectedQuestions = new List<CourseQuestionPoolQuestion>();
+
+            foreach (DataGridViewRow row in questionsDataGridView.Rows)
+            {
+                bool isChecked = Convert.ToBoolean(row.Cells["Select"].Value);
+
+                if (isChecked)
+                {
+                    var question = new CourseQuestionPoolQuestion
+                    {
+                        PoolId = (int)row.Cells["PoolId"].Value,
+                        QuestionId = (int)row.Cells["QuestionId"].Value,
+                        Text = row.Cells["Text"].Value?.ToString(),
+                        OptionA = row.Cells["OptionA"].Value?.ToString(),
+                        OptionB = row.Cells["OptionB"].Value?.ToString(),
+                        OptionC = row.Cells["OptionC"].Value?.ToString(),
+                        OptionD = row.Cells["OptionD"].Value?.ToString(),
+                        CorrectAnswer = row.Cells["CorrectAnswer"].Value?.ToString(),
+                        QuizId = (int)row.Cells["QuizId"].Value
+                    };
+                    selectedQuestions.Add(question);
+                }
+            }
+
+            if (selectedQuestions.Count == 0)
+            {
+                MessageBox.Show("Please select at least one question.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (selectedQuestions.Count > 3)
+            {
+                MessageBox.Show("You can select up to 3 questions only.", "Selection Limit Exceeded", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                int poolId = selectedQuestions.First().PoolId;
+
+                // Get session date
+                string sessionDateInput = sessionTextBox.Text.Trim();
+                if (!DateTime.TryParse(sessionDateInput, out DateTime dueDate))
+                {
+                    MessageBox.Show("Invalid session date format. Please use YYYY-MM-DD.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var quizDto = new
+                {
+                    DueDate = dueDate,
+                    PoolId = poolId
+                };
+
+                string quizApiUrl = "http://localhost:5257/api/quiz";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    var content = new StringContent(JsonSerializer.Serialize(quizDto), System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage quizResponse = await client.PostAsync(quizApiUrl, content);
+                    if (quizResponse.IsSuccessStatusCode)
+                    {
+                        var quizJson = await quizResponse.Content.ReadAsStringAsync();
+                        int createdQuizId;
+
+                        // Parse manually to find the "quizId"
+                        using (JsonDocument doc = JsonDocument.Parse(quizJson))
+                        {
+                            JsonElement root = doc.RootElement;
+                            createdQuizId = root.GetProperty("quizId").GetInt32();
+
+                            // Now proceed to create ClassSession using createdQuizId...
+                        }
+
+                        // Now create the ClassSession
+                        var selectedCourse = courseDropdown.SelectedItem as Course;
+                        if (selectedCourse == null)
+                        {
+                            MessageBox.Show("Please select a valid course.", "Invalid Course", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        var classSessionDto = new
+                        {
+                            Course_Id = selectedCourse.CourseId,
+                            SessionDate = dueDate,
+                            Password = passwordTextBox.Text.Trim(),
+                            QuizId = createdQuizId
+                        };
+
+                        string classSessionApiUrl = "http://localhost:5257/api/classsession";
+
+                        var classSessionContent = new StringContent(JsonSerializer.Serialize(classSessionDto), System.Text.Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage sessionResponse = await client.PostAsync(classSessionApiUrl, classSessionContent);
+                        if (sessionResponse.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show("Quiz and Class Session created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            ResetForm();
+
+                        }
+                        else
+                        {
+                            string error = await sessionResponse.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Quiz created but failed to create Class Session.\nServer Response: {error}", "Partial Success", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+                        string error = await quizResponse.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Failed to create quiz.\nServer Response: {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating quiz or class session: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         // Method to load courses from the API
         private async void LoadCourses()
@@ -132,6 +367,8 @@ namespace AttendanceDesktop
         }
     }
 
+    // Class to represent a course
+    // This class is used to populate the course dropdown in the form
     public class Course
     {
         public string CourseId { get; set; }
@@ -142,4 +379,60 @@ namespace AttendanceDesktop
             return $"{CourseId} - {CourseName}";
         }
     }
+
+    // Class to represent a question in the course question pool
+    // This class is used to deserialize the JSON response from the API
+    public class CourseQuestionPoolQuestion
+    {
+        [JsonPropertyName("course_Id")]
+        public string CourseId { get; set; }
+
+        [JsonPropertyName("course_Name")]
+        public string CourseName { get; set; }
+
+        [JsonPropertyName("start_Time")]
+        public string StartTime { get; set; } // Because it’s coming as "05:00:00" (a time string)
+
+        [JsonPropertyName("end_Time")]
+        public string EndTime { get; set; } // Also a time string
+
+        [JsonPropertyName("poolId")]
+        public int PoolId { get; set; }
+
+        [JsonPropertyName("poolName")]
+        public string PoolName { get; set; }
+
+        [JsonPropertyName("questionId")]
+        public int QuestionId { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
+
+        [JsonPropertyName("optionA")]
+        public string OptionA { get; set; }
+
+        [JsonPropertyName("optionB")]
+        public string OptionB { get; set; }
+
+        [JsonPropertyName("optionC")]
+        public string OptionC { get; set; }
+
+        [JsonPropertyName("optionD")]
+        public string OptionD { get; set; }
+
+        [JsonPropertyName("correctAnswer")]
+        public string CorrectAnswer { get; set; }
+
+        [JsonPropertyName("quizId")]
+        public int QuizId { get; set; }
+    }
+
+    public class QuizResponse
+    {
+        public int QuizId { get; set; }
+        public DateTime? DueDate { get; set; }
+        public int PoolId { get; set; }
+    }
+
+
 }

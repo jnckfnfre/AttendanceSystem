@@ -62,6 +62,7 @@ namespace AttendanceSystem.API.Controllers
             var pool = new QuestionPool
             {
                 PoolName = dto.PoolName,
+                Course_Id = dto.Course_Id,
                 Questions = new List<Question>(),
                 Quizzes = new List<Quiz>()
             };
@@ -82,6 +83,7 @@ namespace AttendanceSystem.API.Controllers
                 return NotFound();
 
             pool.PoolName = dto.PoolName;
+            pool.Course_Id = dto.Course_Id;
 
             try
             {

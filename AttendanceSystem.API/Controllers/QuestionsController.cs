@@ -162,7 +162,7 @@ namespace AttendanceSystem.API.Controllers
                 .Select(q => new QuestionBankViewDto
                 {
                     QuestionId = q.QuestionId,
-                    QuestionText = q.QuestionText, 
+                    Text = q.Text, 
                     PoolName = q.QuestionPool.PoolName,
                     CreatedAt = q.CreatedAt       
                 })
@@ -170,6 +170,68 @@ namespace AttendanceSystem.API.Controllers
 
             return Ok(questionData);
         }
+
+        [HttpGet("GetCoursePoolQuestions")]
+        public async Task<IActionResult> GetCoursePoolQuestions()
+        {
+            var data = await (from course in _context.Courses
+                            join pool in _context.QuestionPools on course.Course_Id equals pool.Course_Id
+                            join question in _context.Questions on pool.PoolId equals question.PoolId
+                            join quiz in _context.Quizzes on pool.PoolId equals quiz.PoolId
+                            select new CourseQuestionPoolQuestionDto
+                            {
+                                Course_Id = course.Course_Id,
+                                Course_Name = course.Course_Name,
+                                Start_Time = course.Start_Time,
+                                End_Time = course.End_Time,
+                                PoolId = pool.PoolId,
+                                PoolName = pool.PoolName,
+                                QuestionId = question.QuestionId,
+                                Text = question.Text,
+                                OptionA = question.OptionA,
+                                OptionB = question.OptionB,
+                                OptionC = question.OptionC,
+                                OptionD = question.OptionD,
+                                CorrectAnswer = question.CorrectAnswer,
+                                QuizId = quiz.QuizId
+                            }).ToListAsync();
+
+            return Ok(data);
+        }
+
+        [HttpGet("GetCoursePoolQuestionsByCourseId")]
+        public async Task<IActionResult> GetCoursePoolQuestionsByCourseId([FromQuery] string courseId)
+        {
+            if (string.IsNullOrWhiteSpace(courseId))
+                return BadRequest("Missing courseId");
+
+            var data = await (from course in _context.Courses
+                            join pool in _context.QuestionPools on course.Course_Id equals pool.Course_Id
+                            join question in _context.Questions on pool.PoolId equals question.PoolId
+                            join quiz in _context.Quizzes on pool.PoolId equals quiz.PoolId
+                            where course.Course_Id == courseId
+                            select new CourseQuestionPoolQuestionDto
+                            {
+                                Course_Id = course.Course_Id,
+                                Course_Name = course.Course_Name,
+                                Start_Time = course.Start_Time,
+                                End_Time = course.End_Time,
+                                PoolId = pool.PoolId,
+                                PoolName = pool.PoolName,
+                                QuestionId = question.QuestionId,
+                                Text = question.Text,
+                                OptionA = question.OptionA,
+                                OptionB = question.OptionB,
+                                OptionC = question.OptionC,
+                                OptionD = question.OptionD,
+                                CorrectAnswer = question.CorrectAnswer,
+                                QuizId = quiz.QuizId
+                            }).ToListAsync();
+
+            return Ok(data);
+        }
+
+
 
     }
 }

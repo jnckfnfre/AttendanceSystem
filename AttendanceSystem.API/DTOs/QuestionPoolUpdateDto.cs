@@ -19,5 +19,8 @@ namespace AttendanceSystem.API.DTOs
         // This is required for updating the pool's identifying name
         [Required]
         public string PoolName { get; set; }
+
+        [Required]
+        public string Course_Id { get; set; } // Foreign key added - Eduardo Zamora 4/28/2025
     }
 }

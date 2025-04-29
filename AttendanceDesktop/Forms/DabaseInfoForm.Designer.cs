@@ -38,9 +38,7 @@ namespace AttendanceDesktop
             this.closeButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             
-            // 
             // infoTextBox
-            // 
             this.infoTextBox.BackColor = System.Drawing.Color.White;
             this.infoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.infoTextBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -53,9 +51,7 @@ namespace AttendanceDesktop
             this.infoTextBox.TabIndex = 0;
             this.infoTextBox.Text = "";
             
-            // 
             // closeButton
-            // 
             this.closeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(91)))), ((int)(((byte)(18)))));
             this.closeButton.FlatAppearance.BorderSize = 0;
             this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -69,9 +65,7 @@ namespace AttendanceDesktop
             this.closeButton.UseVisualStyleBackColor = false;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             
-            // 
             // databaseInfoForm
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;

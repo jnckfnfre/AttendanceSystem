@@ -15,6 +15,13 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
         [Column("POOL_NAME")]
         public string PoolName { get; set; } // Name of the question pool
 
+        [Column("COURSE_ID")]
+        public string Course_Id { get; set; } // Foreign key to the Course - Eduardo Zamora 4/28/2025
+
+        [ForeignKey("CourseId")]
+        [JsonIgnore]
+        public Course Course { get; set; } // Navigation property to Course - Eduardo Zamora 4/28/2025
+
         [JsonIgnore]
         public ICollection<Quiz> Quizzes { get; set; }
 

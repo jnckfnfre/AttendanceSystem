@@ -91,7 +91,7 @@ partial class ConfigurationForm
         this.viewQuestionBank.FlatAppearance.BorderSize = 0;
 
         this.createQuizQuestions = new Button();
-        this.createQuizQuestions.Text = "Create Quiz Questions";
+        this.createQuizQuestions.Text = "Create Quiz";
         this.createQuizQuestions.Size = new Size(400, 150);
         this.createQuizQuestions.BackColor = Color.White;
         this.createQuizQuestions.ForeColor = Color.FromArgb(199, 91, 18);

@@ -163,14 +163,15 @@ namespace AttendanceSystem.API.Controllers
                 {
                     QuestionId = q.QuestionId,
                     Text = q.Text, 
-                    PoolName = q.QuestionPool.PoolName,
-                    CreatedAt = q.CreatedAt       
+                    PoolName = q.QuestionPool.PoolName,      
                 })
                 .ToList();
 
             return Ok(questionData);
         }
 
+        // Eduardo Zamora 4/30/2025
+        // This endpoint retrieves questions from all courses' question pools and their associated quizzes.
         [HttpGet("GetCoursePoolQuestions")]
         public async Task<IActionResult> GetCoursePoolQuestions()
         {
@@ -199,6 +200,9 @@ namespace AttendanceSystem.API.Controllers
             return Ok(data);
         }
 
+        // Eduardo Zamora 4/30/2025
+        // This endpoint retrieves questions from a specific course's question pool that are not associated with any quiz.
+        // It returns a list of questions along with their course and pool information.
         [HttpGet("GetCoursePoolQuestionsByCourseId")]
         public async Task<IActionResult> GetCoursePoolQuestionsByCourseId([FromQuery] string courseId)
         {
@@ -208,8 +212,7 @@ namespace AttendanceSystem.API.Controllers
             var data = await (from course in _context.Courses
                             join pool in _context.QuestionPools on course.Course_Id equals pool.Course_Id
                             join question in _context.Questions on pool.PoolId equals question.PoolId
-                            join quiz in _context.Quizzes on pool.PoolId equals quiz.PoolId
-                            where course.Course_Id == courseId
+                            where course.Course_Id == courseId && question.QuizId == null // Only get questions without a quizId
                             select new CourseQuestionPoolQuestionDto
                             {
                                 Course_Id = course.Course_Id,
@@ -225,11 +228,31 @@ namespace AttendanceSystem.API.Controllers
                                 OptionC = question.OptionC,
                                 OptionD = question.OptionD,
                                 CorrectAnswer = question.CorrectAnswer,
-                                QuizId = quiz.QuizId
+                                QuizId = question.QuizId
                             }).ToListAsync();
 
             return Ok(data);
         }
+
+        // Eduardo Zamora 4/30/2025
+        // This endpoint retrieves questions from a specific course's question pool that are associated with a quiz.
+        // It returns a list of questions along with their course and pool information.
+        [HttpPost("AssignQuizToQuestions")]
+        public IActionResult AssignQuizToQuestions([FromBody] List<QuestionsUpdateDto> updatedQuestions)
+        {
+            foreach (var dto in updatedQuestions)
+            {
+                var question = _context.Questions.FirstOrDefault(q => q.QuestionId == dto.QuestionsId);
+                if (question != null)
+                {
+                    question.QuizId = dto.QuizId;
+                }
+            }
+
+            _context.SaveChanges();
+            return Ok(new { message = "QuizId assigned to selected questions." });
+        }
+
 
 
 

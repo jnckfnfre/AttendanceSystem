@@ -162,6 +162,11 @@ namespace AttendanceDesktop
                         questionsDataGridView.Columns["CourseName"].Visible = false;
                         questionsDataGridView.Columns["StartTime"].Visible = false;
                         questionsDataGridView.Columns["EndTime"].Visible = false;
+                        if (questionsDataGridView.Columns.Contains("QuizId"))
+                        {
+                            questionsDataGridView.Columns["QuizId"].Visible = false;
+                        }
+
 
                         // Rename headers to cleaner names
                         questionsDataGridView.Columns["Text"].HeaderText = "Question Text";
@@ -203,7 +208,7 @@ namespace AttendanceDesktop
                         OptionC = row.Cells["OptionC"].Value?.ToString(),
                         OptionD = row.Cells["OptionD"].Value?.ToString(),
                         CorrectAnswer = row.Cells["CorrectAnswer"].Value?.ToString(),
-                        QuizId = (int)row.Cells["QuizId"].Value
+                        QuizId = row.Cells["QuizId"].Value == DBNull.Value ? null : (int?)row.Cells["QuizId"].Value
                     };
                     selectedQuestions.Add(question);
                 }
@@ -258,6 +263,35 @@ namespace AttendanceDesktop
                             createdQuizId = root.GetProperty("quizId").GetInt32();
 
                             // Now proceed to create ClassSession using createdQuizId...
+                        }
+
+                        // Assign the created QuizId to each selected question
+                        foreach (var question in selectedQuestions)
+                        {
+                            question.QuizId = createdQuizId;
+                        }
+
+                        // Convert selectedQuestions to DTO list
+                        var updateDtos = selectedQuestions.Select(q => new
+                        {
+                            QuestionsId = q.QuestionId,
+                            OptionA = q.OptionA,
+                            OptionB = q.OptionB,
+                            OptionC = q.OptionC,
+                            OptionD = q.OptionD,
+                            CorrectAnswer = q.CorrectAnswer,
+                            QuizId = q.QuizId,
+                            PoolId = q.PoolId
+                        }).ToList();
+
+                        string assignUrl = "http://localhost:5257/api/questions/AssignQuizToQuestions";
+                        var assignContent = new StringContent(JsonSerializer.Serialize(updateDtos), System.Text.Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage assignResponse = await client.PostAsync(assignUrl, assignContent);
+                        if (!assignResponse.IsSuccessStatusCode)
+                        {
+                            string error = await assignResponse.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Failed to update questions with quiz ID.\n{error}", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
 
                         // Now create the ClassSession
@@ -424,9 +458,11 @@ namespace AttendanceDesktop
         public string CorrectAnswer { get; set; }
 
         [JsonPropertyName("quizId")]
-        public int QuizId { get; set; }
+        public int? QuizId { get; set; }
     }
 
+    // Class to represent a quiz response from the API
+    // This class is used to deserialize the JSON response when creating a quiz
     public class QuizResponse
     {
         public int QuizId { get; set; }

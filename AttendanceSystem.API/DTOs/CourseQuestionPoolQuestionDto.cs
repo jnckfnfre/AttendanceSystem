@@ -27,6 +27,6 @@ namespace AttendanceSystem.API.DTOs
         public string CorrectAnswer { get; set; }
 
         // Quiz info
-        public int QuizId { get; set; }
+        public int? QuizId { get; set; } // Nullable to allow for questions not associated with a quiz
     }
 }

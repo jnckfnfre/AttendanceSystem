@@ -66,7 +66,7 @@ namespace AttendanceDesktop
             this.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.Name = "createQuizQuestionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Create Quiz Questions";
+            this.Text = "Create Quiz";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             
             // mainContainer

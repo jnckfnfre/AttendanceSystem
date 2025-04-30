@@ -69,7 +69,7 @@ partial class NewQuestionBankForm
         this.createQB.FlatStyle = FlatStyle.Flat;
         this.createQB.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.createQB.FlatAppearance.BorderSize = 0;
-        // this.createQB.Click += new EventHandler(this.createQBButton_Click);
+        this.createQB.Click += new EventHandler(this.createQuestionBankButton_Click);
 
         // helps with alignment of buttons
         FlowLayoutPanel buttonPanel = new FlowLayoutPanel();

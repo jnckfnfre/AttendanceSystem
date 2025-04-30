@@ -1,6 +1,6 @@
 /*
     David Sajdak 4/23/2025
-    Designer for new 1uestion bank form
+    Designer for new question bank form
  */
 
 namespace AttendanceDesktop;
@@ -11,6 +11,9 @@ partial class NewQuestionBankForm
     private TextBox poolNameTextBox;
     private Button uploadQB;
     private Button createQB;
+    private Label poolNameLabel;
+    private Label courseLabel;
+    private System.Windows.Forms.ComboBox courseDropdown;
 
     protected override void Dispose(bool disposing)
     {
@@ -37,14 +40,42 @@ partial class NewQuestionBankForm
 
         // title message
         Label titleLabel = new Label();
-        titleLabel.Text = "Enter a New Question Pool Name";
+        titleLabel.Text = "New Question Pool";
         titleLabel.Font = new Font("Segoe UI", 25, FontStyle.Bold);
         titleLabel.ForeColor = Color.FromArgb(0, 133, 66);
         titleLabel.TextAlign = ContentAlignment.MiddleCenter;
         titleLabel.AutoSize = true;
         titleLabel.Anchor = AnchorStyles.None;
 
-        // TextBox
+        // Label for pool name
+        poolNameLabel = new Label();
+        poolNameLabel.Text = "Question Pool Name";
+        poolNameLabel.Font = new Font("Segoe UI", 12, FontStyle.Regular);
+        poolNameLabel.AutoSize = true;
+        poolNameLabel.TextAlign = ContentAlignment.MiddleCenter;
+        poolNameLabel.Anchor = AnchorStyles.None;
+
+        // Label for course
+        courseLabel = new Label();
+        courseLabel.Text = "Course";
+        courseLabel.Font = new Font("Segoe UI", 12, FontStyle.Regular);
+        courseLabel.AutoSize = true;
+        courseLabel.TextAlign = ContentAlignment.MiddleCenter;
+        courseLabel.Anchor = AnchorStyles.None;
+
+        // Course Dropwdown
+        this.courseDropdown = new ComboBox();
+        this.courseDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.courseDropdown.Font = new System.Drawing.Font("Segoe UI", 12F);
+        this.courseDropdown.FormattingEnabled = true;
+        this.courseDropdown.Location = new System.Drawing.Point(150, 45);
+        this.courseDropdown.Name = "courseDropdown";
+        this.courseDropdown.Size = new System.Drawing.Size(300, 25);
+        this.courseDropdown.Width = 500;
+        this.courseDropdown.TabIndex = 1;
+        this.courseDropdown.Anchor = AnchorStyles.None;
+
+        // Pool Name TextBox
         this.poolNameTextBox = new TextBox();
         this.poolNameTextBox.Anchor = AnchorStyles.None;
         this.poolNameTextBox.Width = 500;
@@ -87,13 +118,19 @@ partial class NewQuestionBankForm
         contentLayout.Anchor = AnchorStyles.None;
         contentLayout.Dock = DockStyle.None;
         contentLayout.ColumnCount = 1;
-        contentLayout.RowCount = 3;
+        contentLayout.RowCount = 6;
         contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for title
-        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for text box
+        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for question pool label
+        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for question pool entry
+        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for course label
+        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for course entry
         contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for buttons
         contentLayout.Controls.Add(titleLabel, 0, 0);
-        contentLayout.Controls.Add(poolNameTextBox, 0, 1);
-        contentLayout.Controls.Add(buttonPanel, 0, 2);
+        contentLayout.Controls.Add(poolNameLabel, 0, 1);
+        contentLayout.Controls.Add(poolNameTextBox, 0, 2);
+        contentLayout.Controls.Add(courseLabel, 0, 3);
+        contentLayout.Controls.Add(this.courseDropdown, 0, 4);
+        contentLayout.Controls.Add(buttonPanel, 0, 5);
 
         // wrapper
         TableLayoutPanel outer = new TableLayoutPanel();

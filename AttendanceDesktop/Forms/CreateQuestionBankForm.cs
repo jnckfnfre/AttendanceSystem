@@ -9,11 +9,13 @@ namespace AttendanceDesktop;
 public partial class CreateQuestionBankForm : Form
 {
     private string poolName;
+    private string courseID;
 
-    public CreateQuestionBankForm(string poolName)
+    public CreateQuestionBankForm(string poolName, string courseID)
     {
         InitializeComponent();
         this.poolName = poolName; // getting pool name from text box in new question bank form
+        this.courseID = courseID; // getting course id from dropdown in new question bank form
         AddQuestionControl(); // show one question to fill on initalization
     }
 

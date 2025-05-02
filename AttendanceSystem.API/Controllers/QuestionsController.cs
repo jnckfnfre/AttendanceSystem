@@ -101,6 +101,38 @@ namespace AttendanceSystem.API.Controllers
             return CreatedAtAction(nameof(GetQuestion), new { id = question.QuestionId }, question);
         }
 
+        /* 
+            David Sajdak 5/2/2025
+            Batch insert questions, created to help with creating new QB
+            functionality in desktop application
+        */
+        // POST: api/Questions/batch-upload
+        [HttpPost("batch-upload")]
+        public async Task<IActionResult> BatchUploadQuestions([FromBody] List<QuestionsCreateDto> questionDtos)
+        {
+            if (questionDtos == null || questionDtos.Count == 0)
+            {
+                return BadRequest("No questions provided for upload.");
+            }
+
+            var questions = questionDtos.Select(dto => new Question
+            {
+                Text = dto.Text,
+                OptionA = dto.OptionA,
+                OptionB = dto.OptionB,
+                OptionC = dto.OptionC,
+                OptionD = dto.OptionD,
+                CorrectAnswer = dto.CorrectAnswer,
+                QuizId = dto.QuizId,
+                PoolId = dto.PoolId
+            }).ToList();
+
+            await _context.Questions.AddRangeAsync(questions);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { inserted = questions.Count });
+        }
+
         // PUT: api/Questions/{id}
         // Updates a specific question
         [HttpPut("{id}")]

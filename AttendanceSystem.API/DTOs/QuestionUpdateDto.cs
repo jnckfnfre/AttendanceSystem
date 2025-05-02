@@ -15,6 +15,10 @@ namespace AttendanceSystem.API.DTOs
         [Required]
         public int QuestionsId { get; set; }
 
+        // Text for the question
+        [Required]
+        public string Text { get; set; } = string.Empty;
+
         // Option A for the multiple choice question
         [Required]
         public string OptionA { get; set; } = string.Empty;
@@ -34,8 +38,7 @@ namespace AttendanceSystem.API.DTOs
         public string CorrectAnswer { get; set; } = string.Empty;
 
         // The ID of the quiz this question belongs to
-        [Required]
-        public int QuizId { get; set; }
+        public int? QuizId { get; set; }
 
         // The ID of the question pool this question belongs to
         [Required]

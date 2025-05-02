@@ -23,10 +23,10 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
     public string OptionB { get; set; }
 
     [Column("OPTION_C")]
-    public string OptionC { get; set; }
+    public string? OptionC { get; set; }
 
     [Column("OPTION_D")]
-    public string OptionD { get; set; }
+    public string? OptionD { get; set; }
 
     [Column("CORRECT_ANSWER")]
     public string CorrectAnswer { get; set; }

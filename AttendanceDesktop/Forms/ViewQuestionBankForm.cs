@@ -47,12 +47,12 @@ namespace AttendanceDesktop
             questionBankGrid.Columns.Add("QuestionId", "Question ID");
             questionBankGrid.Columns.Add("Text", "Question Text");
             questionBankGrid.Columns.Add("PoolName", "Pool Name");
-            questionBankGrid.Columns.Add("CourseId", "Course ID");
+            questionBankGrid.Columns.Add("course_Id", "Course ID");
 
             questionBankGrid.Columns["QuestionId"].Width = 100;
             questionBankGrid.Columns["Text"].Width = 350;
             questionBankGrid.Columns["PoolName"].Width = 150;
-            questionBankGrid.Columns["CourseId"].Width = 120;
+            questionBankGrid.Columns["course_Id"].Width = 120;
 
             questionBankGrid.EnableHeadersVisualStyles = false;
             questionBankGrid.ColumnHeadersDefaultCellStyle.BackColor = secondaryColor;
@@ -90,12 +90,12 @@ namespace AttendanceDesktop
                     classSections = doc.RootElement.EnumerateArray()
                         .Select(element => new ClassSection
                         {
-                            CourseId = element.GetProperty("COURSE_ID").GetString(),
-                            CourseName = element.GetProperty("COURSE_NAME").GetString()
+                            course_Id = element.GetProperty("course_Id").GetString(),
+                            CourseName = element.GetProperty("course_Name").GetString()
                         })
                         .ToList();
 
-                    classSections.Insert(0, new ClassSection { CourseId = "all", CourseName = "All Sections" });
+                    classSections.Insert(0, new ClassSection { course_Id = "all", CourseName = "All Sections" });
 
                     classFilterComboBox.Items.Clear();
                     foreach (var section in classSections)
@@ -104,7 +104,7 @@ namespace AttendanceDesktop
                     }
 
                     classFilterComboBox.DisplayMember = "CourseName";
-                    classFilterComboBox.ValueMember = "CourseId";
+                    classFilterComboBox.ValueMember = "course_Id";
                     classFilterComboBox.SelectedIndex = 0;
                 }
             }
@@ -148,19 +148,19 @@ namespace AttendanceDesktop
 
         private void ApplyFilters()
         {
-            string selectedCourseId = "all";
+            string selectedcourse_Id = "all";
             if (classFilterComboBox.SelectedItem is ClassSection selectedSection)
             {
-                selectedCourseId = selectedSection.CourseId;
+                selectedcourse_Id = selectedSection.course_Id;
             }
 
             string searchTerm = searchTextBox.Text.Trim().ToLower();
             var filteredQuestions = allQuestions;
 
-            if (selectedCourseId != "all")
+            if (selectedcourse_Id != "all")
             {
                 filteredQuestions = filteredQuestions
-                    .Where(q => q.CourseId == selectedCourseId)
+                    .Where(q => q.course_Id == selectedcourse_Id)
                     .ToList();
             }
 
@@ -176,7 +176,7 @@ namespace AttendanceDesktop
             questionBankGrid.Rows.Clear();
             foreach (var q in filteredQuestions)
             {
-                questionBankGrid.Rows.Add(q.QuestionId, q.Text, q.PoolName, q.CourseId);
+                questionBankGrid.Rows.Add(q.QuestionId, q.Text, q.PoolName, q.course_Id);
             }
 
             UpdateStatus($"Showing {filteredQuestions.Count} of {allQuestions.Count} questions", false);
@@ -217,12 +217,12 @@ namespace AttendanceDesktop
             public int QuestionId { get; set; }
             public string Text { get; set; }
             public string PoolName { get; set; }
-            public string CourseId { get; set; }
+            public string course_Id { get; set; }
         }
 
         private class ClassSection
         {
-            public string CourseId { get; set; }
+            public string course_Id { get; set; }
             public string CourseName { get; set; }
 
             public override string ToString()

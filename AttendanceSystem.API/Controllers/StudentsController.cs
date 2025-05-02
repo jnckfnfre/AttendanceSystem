@@ -25,6 +25,44 @@ public class StudentsController : ControllerBase
         return Ok(students);
     }
 
+    // Eduardo Zamora 5/1/2025
+    // GET: api/Students/StudentsByCourse
+    [HttpGet("by-course")]
+    public IActionResult GetStudentsByCourse([FromQuery] string courseId)
+    {
+        if (string.IsNullOrEmpty(courseId))
+            return BadRequest("Missing courseId");
+
+        var students = _context.AttendedBy
+            .Where(e => e.Course_Id == courseId)
+            .Select(e => new
+            {
+                UTDId = e.Student.UtdId // or e.Utd_Id depending on schema
+            })
+            .ToList();
+
+        return Ok(students);
+    }
+
+    // Eduardo Zamora 5/1/2025
+    // GET: api/Students/students-by-course-session
+    [HttpGet("students-by-course-session")]
+    public IActionResult GetStudentsByCourseSession([FromQuery] string courseId, [FromQuery] DateTime sessionDate)
+    {
+        var students = _context.AttendedBy
+            .Where(a => a.Course_Id == courseId && a.SessionDate == sessionDate)
+            .Select(a => new
+            {
+                UTDId = a.UtdId
+            })
+            .Distinct()
+            .ToList();
+
+        return Ok(students);
+    }
+
+
+
     // POST: api/Students
     [HttpPost]
     public async Task<IActionResult> AddStudent([FromBody] StudentCreateDto studentCreateDto)

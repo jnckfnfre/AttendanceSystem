@@ -17,5 +17,7 @@ namespace AttendanceSystem.API.DTOs
 
         // Name of the question pool this question belongs to
         public string PoolName { get; set; }
+
+        public string course_Id { get; set; } // Foreign key to the Course - Eduardo Zamora 4/28/2025   
     }
 }

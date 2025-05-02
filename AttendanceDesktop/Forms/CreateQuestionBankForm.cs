@@ -70,7 +70,7 @@ public partial class CreateQuestionBankForm : Form
 
                 // Get pool id from response
                 string poolJson = await poolResponse.Content.ReadAsStringAsync();
-                int poolId = JsonSerializer.Deserialize<int>(poolJson);
+                int poolId = JsonDocument.Parse(poolJson).RootElement.GetProperty("poolId").GetInt32();
 
                 // collect questions from input
                 var questions = new List<object>();

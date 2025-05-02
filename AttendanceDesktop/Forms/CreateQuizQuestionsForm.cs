@@ -276,6 +276,7 @@ namespace AttendanceDesktop
                         var updateDtos = selectedQuestions.Select(q => new
                         {
                             QuestionsId = q.QuestionId,
+                            Text = q.Text,
                             OptionA = q.OptionA,
                             OptionB = q.OptionB,
                             OptionC = q.OptionC,

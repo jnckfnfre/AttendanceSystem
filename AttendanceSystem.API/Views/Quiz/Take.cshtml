@@ -1,41 +1,31 @@
-
-    @* Hamza Khawaja 4/13/2025 
-        - Created view for loading Quiz after student is authenticated 
-    *@
-
-@model AttendanceSystem.API.Models.Quiz // This view expects a Quiz object, which includes properties like QuizId, Title, and a collection of Questions
-
-@* printing quiz date  *@
-<h2>Quiz for @ViewData["CourseId"]</h2>
-<h3>@DateTime.Now.ToString("MMMM dd, yyyy")</h3>
-
-@if (Model.Questions == null || !Model.Questions.Any()) //ensures that if there are no questions, display a message.
-{
-    <p>No quiz questions available.</p>
-}
-else
-{
-    @* The form that will gather the student's answers *@
-    <form method="post" asp-action="SubmitAnswers">
-        @* loop through each question, conver the Questions collection to a list to allow indexing *@
-        @for (int i = 0; i < Model.Questions.Count; i++) 
-        {
-            var question = Model.Questions.ToList()[i]; 
-            // convert the ICollection to a List to allow indexing 
-            <div class="mb-4">
-                <p><strong>Question @(@i + 1):</strong> @question.Text</p>
-                <!-- Display each answer option as radio buttons -->
-                <div>
-                    <input type="radio" name="Answers[@i]" value="A" required /> A. @question.OptionA <br />
-                    <input type="radio" name="Answers[@i]" value="B" /> B. @question.OptionB <br />
-                    <input type="radio" name="Answers[@i]" value="C" /> C. @question.OptionC <br />
-                    <input type="radio" name="Answers[@i]" value="D" /> D. @question.OptionD
-                </div>
-            </div>
-        }
-        <!-- Hidden field to send the Quiz ID, this sends the Quiz ID along with the answers so the controller knows which quiz the responses belong to. -->
-        <input type="hidden" name="QuizId" value="@Model.QuizId" /> 
-        <button type="submit" class="btn btn-success">Submit Answers</button>
-    </form>
+@model AttendanceSystem.API.Models.Quiz
+@{
+  var qs          = Model.Questions.ToList();
+  var utdId       = ViewData["UtdId"]       as string ?? "";
+  var courseId    = ViewData["CourseId"]    as string ?? "";
+  var sessionDate = ((DateTime)ViewData["SessionDate"]).ToString("o");
+  var quizId      = Model.QuizId;
 }
 
+<form action="/api/Submissions" method="post">
+  @for (int i = 0; i < qs.Count; i++)
+  {
+      var q = qs[i];
+      <div class="mb-4">
+        <p><strong>Question @(i+1):</strong> @q.Text</p>
+        <label><input type="radio" name="Answers[@i]"       value="A"required /> A. @q.OptionA </label><br />
+        <label><input type="radio" name="Answers[@i]" value="B" /> B. @q.OptionB</label><br />
+        <label><input type="radio" name="Answers[@i]" value="C" /> C. @q.OptionC</label><br />
+        <label><input type="radio" name="Answers[@i]" value="D" /> D. @q.OptionD</label>
+      </div>
+  }
+
+  <!-- Hidden metadata -->
+  <input type="hidden" name="UtdId"       value="20213456"       />
+  <input type="hidden" name="CourseId"    value="@courseId"    />
+  <input type="hidden" name="SessionDate" value="@sessionDate" />
+  <input type="hidden" name="QuizId"      value="@quizId"      />
+  <input type="hidden" name="Status"      value="Present"      />
+
+  <button type="submit" class="btn btn-success">Submit Answers</button>
+</form>

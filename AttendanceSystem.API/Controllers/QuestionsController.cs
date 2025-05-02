@@ -6,6 +6,8 @@
     Questions are associated with both a quiz and a question pool
 */
 
+
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
@@ -87,6 +89,7 @@ namespace AttendanceSystem.API.Controllers
             // Create new question from DTO
             var question = new Question
             {
+                Text = dto.Text, // Hamza Khawaja 4/28/25 - fixed this action, controller was failing to add text property when new question was created
                 OptionA = dto.OptionA,
                 OptionB = dto.OptionB,
                 OptionC = dto.OptionC,

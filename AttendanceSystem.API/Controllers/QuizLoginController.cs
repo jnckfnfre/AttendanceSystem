@@ -66,9 +66,11 @@ namespace AttendanceSystem.API.Controllers
                 return View("Index");
             }
 
+            // Store UtdId in session
+            HttpContext.Session.SetString("UtdId", student.UtdId);    
+
             // Store info for the quiz view
             TempData["StudentName"] = $"{student.LastName}, {student.FirstName}";
-            ViewData["UtdId"] = student.UtdId;
 
             // Redirect to take the quiz associated with this session
             return RedirectToAction("Take", "Quiz", new { 

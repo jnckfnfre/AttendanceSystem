@@ -1,10 +1,3 @@
-// Maha Shaikh 4/1/2025
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AttendanceSystem.API.Data;
-using AttendanceSystem.API.Models;
-using AttendanceSystem.API.DTOs;
 /*
         Hamza Khawaja 4/11/2025 
         - Looks up quiz by id
@@ -12,6 +5,13 @@ using AttendanceSystem.API.DTOs;
         - Sends all that to the razor view
         - handle quiz submission
 */
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using AttendanceSystem.API.Data;
+using AttendanceSystem.API.Models;
+using AttendanceSystem.API.DTOs;
+
 
 namespace AttendanceSystem.API.Controllers
 {
@@ -84,11 +84,16 @@ namespace AttendanceSystem.API.Controllers
         */
         [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
         public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
+
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions) // fetch the quiz, including its related questions and question pool 
                 .Include(q => q.QuestionPool)
                 .Include(q => q.Sessions.Where(s => s.SessionDate.Date == DateTime.Today))
                 .FirstOrDefaultAsync(q => q.QuizId == id);
+
+            // Hamza khawaja 4/28/25 - Grab the UTD ID from TempData and persist it into ViewData
+            ViewData["UtdIs"] = TempData["UtdId"] as string;
+            ViewData["StudentName"] = TempData["StudentName"] as string;
 
             if (quiz == null) // if no quiz is found, return a 404, no result found
                 return NotFound();
@@ -96,7 +101,9 @@ namespace AttendanceSystem.API.Controllers
             var todaySession = quiz.Sessions.FirstOrDefault();
             if (todaySession != null)
             {
+                
                 ViewData["CourseId"] = todaySession.Course_Id;
+                ViewData["SessionDate"] = todaySession.SessionDate;
             }
 
             return View(quiz);
@@ -114,6 +121,11 @@ namespace AttendanceSystem.API.Controllers
                 return NotFound();
 
             return Ok(quiz);
+        }
+
+        [HttpGet("/Quiz/Confirmation")]
+        public IActionResult Confirmation(){
+            return View();
         }
 
         // POST: api/Quiz

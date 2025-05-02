@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); // Add services to the container.
 
 builder.Services.AddControllersWithViews(); // Add MVC support
+builder.Services.AddSession(); // Add Razor Pages support
 
 // Registers AttendanceDbContext and configures EF Core to use MySQL
 builder.Services.AddDbContext<AttendanceDbContext>(options =>
@@ -37,6 +38,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection(); //redirects HTTP requests to HTTPS
 app.UseStaticFiles(); // Add static files support
 app.UseRouting(); // Add routing support
+app.UseSession(); // Add session support
 
 app.UseAuthorization(); // Ensure authorization is active
 

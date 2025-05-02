@@ -15,6 +15,9 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
         [Column("POOL_NAME")]
         public string PoolName { get; set; } // Name of the question pool
 
+        [Column("COURSE_ID")]
+        public string CourseId { get; set; }
+
         [JsonIgnore]
         public ICollection<Quiz> Quizzes { get; set; }
 

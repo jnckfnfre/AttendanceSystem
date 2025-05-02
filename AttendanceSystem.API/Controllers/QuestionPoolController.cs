@@ -62,6 +62,7 @@ namespace AttendanceSystem.API.Controllers
             var pool = new QuestionPool
             {
                 PoolName = dto.PoolName,
+                CourseId = dto.CourseId,
                 Questions = new List<Question>(),
                 Quizzes = new List<Quiz>()
             };

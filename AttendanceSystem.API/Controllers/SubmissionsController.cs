@@ -108,6 +108,36 @@ public class SubmissionsController : ControllerBase {
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetSubmissions), new { id = submission.Submission_Id }, submission);
     }
+
+    // Eduardo Zamora 5/1/2025
+    // POST: api/Submissions/bulk-create
+    // Creates multiple submissions for all students in a class session
+    [HttpPost("bulk-create")]
+    public IActionResult BulkCreateSubmissions([FromBody] List<SubmissionCreateDto> submissions)
+    {
+        foreach (var dto in submissions)
+        {
+            var submission = new Submission
+            {
+                Course_Id = dto.Course_Id,
+                SessionDate = dto.SessionDate,
+                Utd_Id = dto.Utd_Id,
+                Quiz_Id = dto.Quiz_Id,
+                Ip_Address = dto.Ip_Address,
+                Submission_Time = dto.Submission_Time,
+                Answer_1 = dto.Answer_1,
+                Answer_2 = dto.Answer_2,
+                Answer_3 = dto.Answer_3,
+                Status = dto.Status
+            };
+
+            _context.Submissions.Add(submission);
+        }
+
+        _context.SaveChanges();
+        return Ok(new { message = "Submissions created for all students." });
+    }
+
     
     // PUT: api/Submissions/{id}
     // Updates only modifiable fields of a submission (answers and status)

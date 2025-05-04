@@ -9,7 +9,6 @@ partial class NewQuestionBankForm
 {
     private System.ComponentModel.IContainer components = null;
     private TextBox poolNameTextBox;
-    private Button uploadQB;
     private Button createQB;
     private Label poolNameLabel;
     private Label courseLabel;
@@ -80,17 +79,6 @@ partial class NewQuestionBankForm
         this.poolNameTextBox.Anchor = AnchorStyles.None;
         this.poolNameTextBox.Width = 500;
 
-        // button to upload QB file
-        this.uploadQB = new Button();
-        this.uploadQB.Text = "Upload File";
-        this.uploadQB.Size = new Size(300, 90);
-        this.uploadQB.BackColor = Color.FromArgb(0, 133, 66);
-        this.uploadQB.ForeColor = Color.White;
-        this.uploadQB.FlatStyle = FlatStyle.Flat;
-        this.uploadQB.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        this.uploadQB.FlatAppearance.BorderSize = 0;
-        // this.uploadQB.Click += new EventHandler(this.uploadQBButton_Click);
-
         // button to create QB
         this.createQB = new Button();
         this.createQB.Text = "Create QB";
@@ -108,7 +96,6 @@ partial class NewQuestionBankForm
         buttonPanel.AutoSize = true;
         buttonPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         buttonPanel.Anchor = AnchorStyles.None;
-        buttonPanel.Controls.Add(uploadQB);
         buttonPanel.Controls.Add(createQB);
 
         // aligns everything

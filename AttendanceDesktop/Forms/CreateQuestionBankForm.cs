@@ -4,21 +4,19 @@
 */
 using System.Text;
 using System.Text.Json;
+using System.Net;
 
 namespace AttendanceDesktop;
 
 
 public partial class CreateQuestionBankForm : Form
 {
-    private string poolName;
-    private string courseID;
+    private int poolId;
 
-    public CreateQuestionBankForm(string poolName, string courseID)
+    public CreateQuestionBankForm(int poolId)
     {
         InitializeComponent();
-        this.poolName = poolName; // getting pool name from text box in new question bank form
-        this.courseID = courseID?.Split(' ')[0]; // getting course id from dropdown in new question bank form, only want id part of string passed not name
-        MessageBox.Show(this.courseID);
+        this.poolId = poolId; // getting pool id after post response from create qb button
         AddQuestionControl(); // show one question to fill on initalization
     }
 
@@ -45,32 +43,6 @@ public partial class CreateQuestionBankForm : Form
 
             using (HttpClient client = new HttpClient())
             {
-                // Create Question Pool
-                var poolPayload = new
-                {
-                    PoolName = this.poolName,
-                    Course_Id = this.courseID
-                };
-
-                // serialize question pool
-                var poolContent = new StringContent(
-                    JsonSerializer.Serialize(poolPayload),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
-                // post question pool
-                HttpResponseMessage poolResponse = await client.PostAsync($"{apiBase}/questionpool", poolContent);
-
-                if (!poolResponse.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Failed to create question pool.");
-                    return;
-                }
-
-                // Get pool id from response
-                string poolJson = await poolResponse.Content.ReadAsStringAsync();
-                int poolId = JsonDocument.Parse(poolJson).RootElement.GetProperty("poolId").GetInt32();
 
                 // collect questions from input
                 var questions = new List<object>();
@@ -102,7 +74,7 @@ public partial class CreateQuestionBankForm : Form
                             OptionC = string.IsNullOrWhiteSpace(c) ? null : c,
                             OptionD = string.IsNullOrWhiteSpace(d) ? null : d,
                             CorrectAnswer = correct,
-                            PoolId = poolId
+                            PoolId = this.poolId
                         });
                     }
                 }
@@ -125,11 +97,14 @@ public partial class CreateQuestionBankForm : Form
 
                 // verify
                 MessageBox.Show("Question pool and all questions saved successfully.");
+
+                // close form
+                this.Close();
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error saving question pool: {ex.Message}");
+            MessageBox.Show($"Error saving questions: {ex.Message}");
         }
     }
 

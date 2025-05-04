@@ -85,6 +85,11 @@ namespace AttendanceSystem.API.Controllers
         [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
         public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
 
+            var utdId = HttpContext.Session.GetString("UtdId"); // retrieve the UTD ID from session
+            if (string.IsNullOrEmpty(utdId))
+            {
+                return RedirectToAction("Index", "QuizLogin"); // redirect to the login page if UtdId is not found in session
+            }
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions) // fetch the quiz, including its related questions and question pool 
                 .Include(q => q.QuestionPool)
@@ -101,7 +106,7 @@ namespace AttendanceSystem.API.Controllers
             var todaySession = quiz.Sessions.FirstOrDefault();
             if (todaySession != null)
             {
-                
+                ViewData["UtdId"] = utdId;
                 ViewData["CourseId"] = todaySession.Course_Id;
                 ViewData["SessionDate"] = todaySession.SessionDate;
             }

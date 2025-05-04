@@ -79,7 +79,7 @@ partial class ConfigurationForm
         this.addCourses.FlatStyle = FlatStyle.Flat;
         this.addCourses.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.addCourses.FlatAppearance.BorderSize = 0;
-        // this.addCourses.Click += new EventHandler(this.addCoursesButton_Click);
+        this.addCourses.Click += new EventHandler(this.addCoursesButton_Click);
 
         // button for creating a new question bank
         this.newQuestionBank = new Button();

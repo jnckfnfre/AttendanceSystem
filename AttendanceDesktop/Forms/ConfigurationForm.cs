@@ -66,5 +66,12 @@ public partial class ConfigurationForm : Form
         createQZForm.Show();
     }
 
-
+    // David Sajdak 5/4/2025
+    // Handles click of add courses button,
+    // Directs to form for professor to add courses to database
+    private void addCoursesButton_Click(object sender, EventArgs args) {
+        // Open configuration form
+        AddCoursesForm addCoursesForm = new AddCoursesForm();
+        addCoursesForm.Show();
+    }
 }

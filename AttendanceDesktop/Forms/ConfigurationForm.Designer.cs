@@ -10,6 +10,7 @@ partial class ConfigurationForm
     private System.ComponentModel.IContainer components = null;
     private Button databaseInfo;
     private Button configTable;
+    private Button uploadButton;
     private Button addCourses;
     private Button newQuestionBank;
     private Button viewQuestionBank;
@@ -52,7 +53,7 @@ partial class ConfigurationForm
         this.databaseInfo = new Button();
         this.databaseInfo.Text = "Database Info";
         this.databaseInfo.Size = new Size(400, 150);
-        this.databaseInfo.BackColor = Color.FromArgb(0, 133, 66);
+        this.databaseInfo.BackColor = Color.FromArgb(0, 133, 66); // green
         this.databaseInfo.ForeColor = Color.White;
         this.databaseInfo.FlatStyle = FlatStyle.Flat;
         this.databaseInfo.Font = new Font("Segoe UI", 12, FontStyle.Bold);
@@ -64,17 +65,28 @@ partial class ConfigurationForm
         this.configTable.Text = "Configuration Table";
         this.configTable.Size = new Size(400, 150);
         this.configTable.BackColor = Color.White;
-        this.configTable.ForeColor = Color.FromArgb(199, 91, 18);
+        this.configTable.ForeColor = Color.FromArgb(199, 91, 18); // orange
         this.configTable.FlatStyle = FlatStyle.Flat;
         this.configTable.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         this.configTable.FlatAppearance.BorderSize = 2;
         this.configTable.Click += new EventHandler(this.configTableButton_Click);
 
+        // button for professor to add students
+        this.uploadButton = new Button();
+        this.uploadButton.Text = "Add Students";
+        this.uploadButton.Size = new Size(400, 150);
+        this.uploadButton.BackColor = Color.FromArgb(199, 91, 18); // orange
+        this.uploadButton.ForeColor = Color.White;
+        this.uploadButton.FlatStyle = FlatStyle.Flat;
+        this.uploadButton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+        this.uploadButton.FlatAppearance.BorderSize = 0;
+        this.uploadButton.Click += new EventHandler(this.uploadButton_Click);
+
         // button to add courses
         this.addCourses = new Button();
         this.addCourses.Text = "Add Courses";
         this.addCourses.Size = new Size(400, 150);
-        this.addCourses.BackColor = Color.FromArgb(199, 91, 18);
+        this.addCourses.BackColor = Color.FromArgb(0, 133, 66); // green
         this.addCourses.ForeColor = Color.White;
         this.addCourses.FlatStyle = FlatStyle.Flat;
         this.addCourses.Font = new Font("Segoe UI", 12, FontStyle.Bold);
@@ -85,27 +97,27 @@ partial class ConfigurationForm
         this.newQuestionBank = new Button();
         this.newQuestionBank.Text = "New Question Bank";
         this.newQuestionBank.Size = new Size(400, 150);
-        this.newQuestionBank.BackColor = Color.FromArgb(0, 133, 66);
-        this.newQuestionBank.ForeColor = Color.White;
+        this.newQuestionBank.BackColor = Color.White;
+        this.newQuestionBank.ForeColor = Color.FromArgb(199, 91, 18); // orange
         this.newQuestionBank.FlatStyle = FlatStyle.Flat;
         this.newQuestionBank.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        this.newQuestionBank.FlatAppearance.BorderSize = 0;
+        this.newQuestionBank.FlatAppearance.BorderSize = 2;
         this.newQuestionBank.Click += new EventHandler(this.newQuestionBankButton_Click);
 
         // button to view existing question banks (can filter for bank upon click)
         this.viewQuestionBank = new Button();
         this.viewQuestionBank.Text = "View Question Banks";
         this.viewQuestionBank.Size = new Size(400, 150);
-        this.viewQuestionBank.BackColor = Color.White;
-        this.viewQuestionBank.ForeColor = Color.FromArgb(199, 91, 18);
+        this.viewQuestionBank.BackColor = Color.FromArgb(199, 91, 18); // orange
+        this.viewQuestionBank.ForeColor = Color.White;
         this.viewQuestionBank.FlatStyle = FlatStyle.Flat;
         this.viewQuestionBank.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        this.viewQuestionBank.FlatAppearance.BorderSize = 2;
+        this.viewQuestionBank.FlatAppearance.BorderSize = 0;
 
         this.createQuizQuestions = new Button();
         this.createQuizQuestions.Text = "Create Quiz";
         this.createQuizQuestions.Size = new Size(400, 150);
-        this.createQuizQuestions.BackColor = Color.FromArgb(199, 91, 18);
+        this.createQuizQuestions.BackColor = Color.FromArgb(0, 133, 66); // green
         this.createQuizQuestions.ForeColor = Color.White;
         this.createQuizQuestions.FlatStyle = FlatStyle.Flat;
         this.createQuizQuestions.Font = new Font("Segoe UI", 12, FontStyle.Bold);
@@ -123,6 +135,7 @@ partial class ConfigurationForm
         buttonPanel.Anchor = AnchorStyles.None;
         buttonPanel.Controls.Add(databaseInfo);
         buttonPanel.Controls.Add(configTable);
+        buttonPanel.Controls.Add(uploadButton);
         buttonPanel.Controls.Add(addCourses);
         buttonPanel.Controls.Add(newQuestionBank);
         buttonPanel.Controls.Add(viewQuestionBank);

@@ -59,16 +59,6 @@ namespace AttendanceSystem.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateQuestionPool([FromBody] QuestionPoolCreateDto dto)
         {
-            // Revised by David Sajdak 5/4/2025
-            // Check if course already has a question pool
-            var existingPool = await _context.QuestionPools
-                .FirstOrDefaultAsync(p => p.Course_Id == dto.Course_Id);
-
-            if (existingPool != null)
-            {
-                return Conflict("A question pool already exists for this course.");
-            }
-
             var pool = new QuestionPool
             {
                 PoolName = dto.PoolName,

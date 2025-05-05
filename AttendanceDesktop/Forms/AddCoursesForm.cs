@@ -31,15 +31,16 @@ public partial class AddCoursesForm : Form
     }
 
     // saves course to database
-    // NOT DONE
     private async void SaveAllButton_Click(object sender, EventArgs e)
     {
         try
         {
-            string apiBase = "http://localhost:5257/api";
+            // endpoint url
+            string apiUrl = "http://localhost:5257/api/Courses/batch-upload";
 
             var courses = new List<object>();
 
+            // gather course info from input
             foreach (var control in coursePanel.Controls)
             {
                 if (control is CourseEntryControl c)
@@ -49,22 +50,25 @@ public partial class AddCoursesForm : Form
                     string startTime = c.StartTimePicker.Value.ToString("HH:mm:ss");
                     string endTime = c.EndTimePicker.Value.ToString("HH:mm:ss");
 
+                    // validate
                     if (string.IsNullOrEmpty(courseId) || string.IsNullOrEmpty(courseName))
                     {
-                        MessageBox.Show("Each course must have an ID and name.");
+                        MessageBox.Show("Each course must have an ID, name, and times set.");
                         continue;
                     }
 
+                    // add course to list
                     courses.Add(new
                     {
-                        CourseId = courseId,
-                        CourseName = courseName,
-                        StartTime = startTime,
-                        EndTime = endTime
+                        Course_Id = courseId,
+                        Course_Name = courseName,
+                        Start_Time = startTime,
+                        End_Time = endTime
                     });
                 }
             }
 
+            // serialize list of courses
             var content = new StringContent(
                 JsonSerializer.Serialize(courses),
                 Encoding.UTF8,
@@ -73,11 +77,12 @@ public partial class AddCoursesForm : Form
 
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.PostAsync($"{apiBase}/courses/batch", content);
+                // post to database
+                HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Some or all courses failed to save.");
+                    MessageBox.Show($"Some or all courses failed to save. Status code: {response}");
                     return;
                 }
 

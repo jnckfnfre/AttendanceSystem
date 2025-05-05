@@ -48,10 +48,6 @@ public class CoursesController : ControllerBase {
     // Adds a course
     [HttpPost]
     public async Task<IActionResult> AddCourse([FromBody] CourseCreateDto courseDto) {
-        // _context.Courses.Add(course);
-        // await _context.SaveChangesAsync();
-        // return CreatedAtAction(nameof(GetCourses), new { id = course.Course_Id }, course);
-
         // convert DTO to Course object
         var course = new Course {
             Course_Id = courseDto.Course_Id,
@@ -63,6 +59,30 @@ public class CoursesController : ControllerBase {
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCourses), new { id = course.Course_Id }, course);
+    }
+
+    // POST: api/Courses/batch-upload
+    // batch upload courses
+    [HttpPost("batch-upload")]
+    public async Task<IActionResult> BatchUploadCourses([FromBody] List<CourseCreateDto> courseDtos)
+    {
+        if (courseDtos == null || courseDtos.Count == 0)
+        {
+            return BadRequest("No courses provided for upload.");
+        }
+
+        var courses = courseDtos.Select(dto => new Course
+        {
+            Course_Id = dto.Course_Id,
+            Course_Name = dto.Course_Name,
+            Start_Time = dto.Start_Time,
+            End_Time = dto.End_Time
+        }).ToList();
+
+        await _context.Courses.AddRangeAsync(courses);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { inserted = courses.Count });
     }
 
     // PUT: api/Courses/{id}

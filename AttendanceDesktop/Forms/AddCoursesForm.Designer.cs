@@ -72,7 +72,7 @@ partial class AddCoursesForm
         this.saveAllButton.ForeColor = Color.White;
         this.saveAllButton.Width = 200;
         this.saveAllButton.Height = 50;
-        // this.saveAllButton.Click += new EventHandler(this.SaveAllButton_Click);
+        this.saveAllButton.Click += new EventHandler(this.SaveAllButton_Click);
 
         // button row
         FlowLayoutPanel buttonRow = new FlowLayoutPanel();

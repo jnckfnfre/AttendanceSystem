@@ -53,9 +53,10 @@ namespace AttendanceSystem.API.Controllers
                 return View("Index");
             }   
 
-            // Find active class session with matching password for today
+            // Find active class session with matching password for today, include Course for time check
             var classSession = await _context.ClassSessions
                 .Include(cs => cs.Quiz) // Include the quiz relationship
+                .Include(cs => cs.Course)
                 .FirstOrDefaultAsync(cs => 
                     cs.Password == password && 
                     cs.SessionDate.Date == DateTime.Today);
@@ -63,6 +64,16 @@ namespace AttendanceSystem.API.Controllers
             if (classSession == null)
             {
                 ViewBag.ErrorMessage = "Invalid or expired session password.";
+                return View("Index");
+            }
+
+            // Time check
+            var now = DateTime.Now.TimeOfDay;
+            var start = classSession.Course.Start_Time;
+            var end = classSession.Course.End_Time;
+            if (now < start || now > end)
+            {
+                ViewBag.ErrorMessage = "You can only log in during class time.";
                 return View("Index");
             }
 

@@ -58,6 +58,29 @@ namespace AttendanceSystem.API.Controllers
             return Ok(attendance);
         }
 
+        //Eduardo and David 
+        [HttpPost("bulk-create")] 
+        public IActionResult BulkCreateAttendance([FromBody] List<AttendedBy> records)
+        {
+            Console.WriteLine($"Received {records.Count} attendance records."); // Debug line
+            foreach (var record in records)
+            {
+                _context.AttendedBy.Add(new AttendedBy
+                {
+                    UtdId = record.UtdId,
+                    Course_Id = record.Course_Id,
+                    SessionDate = record.SessionDate
+                });
+            }
+
+            _context.SaveChanges();
+            return Ok(new { message = "Attendance records created." });
+
+            //return Ok(new { message = $"Hit route with {records?.Count ?? 0} records" });
+        }
+
+
+
         // Created by Nahyan Munawar 4/2/2025
         // Create a new attendance record
         [HttpPost]

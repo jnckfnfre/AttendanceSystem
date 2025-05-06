@@ -75,6 +75,19 @@ public class SubmissionsController : Controller {
     [HttpPost]
     public async Task<IActionResult> AddSubmission([FromForm] SubmissionCreateDto dto)
     {
+        // Check for duplicate submission
+        bool alreadySubmitted = await _context.Submissions.AnyAsync(s =>
+            s.Course_Id == dto.Course_Id &&
+            s.Session_Date == dto.Session_Date &&
+            s.Utd_Id == dto.Utd_Id &&
+            s.Quiz_Id == dto.Quiz_Id);
+
+        if (alreadySubmitted)
+        {
+            // Return a friendly error (API style)
+            return BadRequest("You have already submitted this quiz.");
+        }
+
         // Retrieve UtdId from session
         var utdId = HttpContext.Session.GetString("Utd_Id");
         if (string.IsNullOrEmpty(utdId))

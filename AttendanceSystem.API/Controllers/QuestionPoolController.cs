@@ -83,7 +83,7 @@ namespace AttendanceSystem.API.Controllers
                 return NotFound();
 
             pool.Pool_Name = dto.Pool_Name;
-
+            pool.Course_Id = dto.Course_Id;
             try
             {
                 await _context.SaveChangesAsync();

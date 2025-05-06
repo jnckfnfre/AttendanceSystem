@@ -75,17 +75,6 @@ partial class AddStudentsForm
         this.uploadButton.FlatAppearance.BorderSize = 0;
         this.uploadButton.Click += new EventHandler(this.uploadButton_Click);
 
-        // // button to create QB
-        // this.createQB = new Button();
-        // this.createQB.Text = "Create QB";
-        // this.createQB.Size = new Size(300, 90);
-        // this.createQB.BackColor = Color.FromArgb(199, 91, 18);
-        // this.createQB.ForeColor = Color.White;
-        // this.createQB.FlatStyle = FlatStyle.Flat;
-        // this.createQB.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        // this.createQB.FlatAppearance.BorderSize = 0;
-        // this.createQB.Click += new EventHandler(this.createQuestionBankButton_Click);
-
         // // helps with alignment of buttons
         FlowLayoutPanel buttonPanel = new FlowLayoutPanel();
         buttonPanel.FlowDirection = FlowDirection.LeftToRight; // want buttons side by side
@@ -101,19 +90,15 @@ partial class AddStudentsForm
         contentLayout.Anchor = AnchorStyles.None;
         contentLayout.Dock = DockStyle.None;
         contentLayout.ColumnCount = 1;
-        contentLayout.RowCount = 6;
+        contentLayout.RowCount = 4;
         contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for title
-        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for question pool label
-        contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for question pool entry
         contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for course label
         contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for course entry
         contentLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // row for buttons
         contentLayout.Controls.Add(titleLabel, 0, 0);
-        // contentLayout.Controls.Add(poolNameLabel, 0, 1);
-        // contentLayout.Controls.Add(poolNameTextBox, 0, 2);
-        contentLayout.Controls.Add(courseLabel, 0, 3);
-        contentLayout.Controls.Add(this.courseDropdown, 0, 4);
-        contentLayout.Controls.Add(buttonPanel, 0, 5);
+        contentLayout.Controls.Add(courseLabel, 0, 1);
+        contentLayout.Controls.Add(this.courseDropdown, 0, 2);
+        contentLayout.Controls.Add(buttonPanel, 0, 3);
 
         // // wrapper
         TableLayoutPanel outer = new TableLayoutPanel();

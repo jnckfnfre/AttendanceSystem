@@ -136,7 +136,6 @@ namespace AttendanceSystem.API.Controllers
             return Ok(new { inserted = questions.Count });
         }
 
-
         // PUT: api/Questions/{id}
         // Updates a specific question
         [HttpPut("{id}")]
@@ -298,7 +297,7 @@ namespace AttendanceSystem.API.Controllers
         {
             foreach (var dto in updatedQuestions)
             {
-                var question = _context.Questions.FirstOrDefault(q => q.Question_Id == dto.Question_Id);
+                var question = _context.Questions.FirstOrDefault(q => q.Question_Id == dto.Questions_Id);
                 if (question != null)
                 {
                     question.Quiz_Id = dto.Quiz_Id;
@@ -308,8 +307,6 @@ namespace AttendanceSystem.API.Controllers
             _context.SaveChanges();
             return Ok(new { message = "QuizId assigned to selected questions." });
         }
-
-
 
     }
 }

@@ -134,6 +134,11 @@ namespace AttendanceSystem.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("QuizId"));
 
+                    b.Property<string>("Course_Id")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("COURSE_ID");
+
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DUE_DATE");
@@ -142,7 +147,14 @@ namespace AttendanceSystem.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("POOL_ID");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("TITLE");
+
                     b.HasKey("QuizId");
+
+                    b.HasIndex("Course_Id");
 
                     b.HasIndex("PoolId");
 
@@ -338,13 +350,32 @@ namespace AttendanceSystem.API.Migrations
 
             modelBuilder.Entity("AttendanceSystem.API.Models.Quiz", b =>
                 {
+                    b.HasOne("Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("Course_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("AttendanceSystem.API.Models.QuestionPool", "QuestionPool")
                         .WithMany("Quizzes")
                         .HasForeignKey("PoolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Course");
+
                     b.Navigation("QuestionPool");
+                });
+
+            modelBuilder.Entity("AttendanceSystem.API.Models.Student", b =>
+                {
+                    b.HasOne("Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("Course_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("AttendedBy", b =>

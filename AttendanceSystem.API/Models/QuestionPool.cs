@@ -25,8 +25,8 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
 
         [JsonIgnore]
         public ICollection<Quiz> Quizzes { get; set; }
-
         [JsonIgnore]
+ 
         public ICollection<Question> Questions { get; set; }
     }
 }

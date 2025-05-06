@@ -17,6 +17,6 @@ namespace AttendanceSystem.API.DTOs
         public string Pool_Name { get; set; }
 
         [Required]
-        public string Course_Id { get; set; }
+        public string Course_Id { get; set; } // Foreign key added - Eduardo Zamora 4/28/2025
     }
 } 

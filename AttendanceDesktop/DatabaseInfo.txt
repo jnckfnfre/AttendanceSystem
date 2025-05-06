@@ -1,0 +1,180 @@
+DATABASE SCHEMA DOCUMENTATION
+=========================
+
+This document describes the structure of the attendance tracking system database.
+
+1. COURSE TABLE
+-------------------
+Stores information about academic courses.
+
+Attributes:
+- COURSE_ID (PK): varchar(25) - Unique identifier for the course (Course#.Section#)
+- COURSE_NAME: varchar(25) - Name of the course
+- START_TIME: Time - When the course begins
+- END_TIME: Time - When the course ends
+
+Constraints:
+- Primary Key: COURSE_ID
+
+Relationships:
+- Referenced by: class_session, Attended_By, Submissions
+
+2. STUDENT TABLE
+--------------------
+Contains student information.
+
+Attributes:
+- UTD_ID (PK): varchar(10) - Student's university ID
+- FIRST_NAME: varchar(25) - Student's first name
+- LAST_NAME: varchar(25) - Student's last name
+- NET_ID: varchar(10) - Student's network ID (optional)
+
+Constraints:
+- Primary Key: UTD_ID
+
+Relationships:
+- Referenced by: Attended_By, Submissions
+
+3. QUIZ TABLE
+---------------
+Tracks quizzes assigned to courses.
+
+Attributes:
+- QUIZ_ID (PK): int AUTO_INCREMENT - Unique quiz identifier
+- due_date: date - When the quiz is due
+- POOL_ID (FK): int - References the question pool used
+
+Constraints:
+- Primary Key: QUIZ_ID
+- Foreign Key: POOL_ID references Question_Pool(POOL_ID)
+  - ON DELETE: Restrict (cannot delete pool if used by quiz)
+  - ON UPDATE: Cascade (updates propagate)
+
+Relationships:
+- Referenced by: class_session, Submissions, Questions
+
+4. CLASS_SESSION TABLE
+----------------------------
+Records individual class meetings.
+
+Attributes:
+- SESSION_DATE (PK): Date - Date of the class session
+- COURSE_ID (PK, FK): varchar(25) - Course this session belongs to
+- PASSWORD: varchar(100) - Access password for the session
+- QUIZ_ID (FK): int - Optional quiz assigned for this session
+
+Constraints:
+- Primary Key: Composite (SESSION_DATE, COURSE_ID)
+- Foreign Key 1: COURSE_ID references Course(COURSE_ID)
+  - ON DELETE: Cascade (deleting course deletes sessions)
+  - ON UPDATE: Cascade (updates propagate)
+- Foreign Key 2: QUIZ_ID references Quiz(QUIZ_ID)
+  - ON DELETE: Set null (quiz deletion keeps session)
+  - ON UPDATE: Cascade (updates propagate)
+
+Relationships:
+- Referenced by: Attended_By, Submissions
+
+5. ATTENDED_BY TABLE
+--------------------------
+Tracks which students attended which sessions.
+
+Attributes:
+- ATTENDANCE_ID (PK): int AUTO_INCREMENT - Unique attendance record
+- SESSION_DATE (FK): Date - Session date
+- COURSE_ID (FK): varchar(25) - Course identifier
+- UTD_ID (FK): varchar(10) - Student identifier
+
+Constraints:
+- Primary Key: ATTENDANCE_ID
+- Unique Constraint: (SESSION_DATE, COURSE_ID, UTD_ID)
+- Foreign Key 1: (SESSION_DATE, COURSE_ID) references class_session
+  - ON DELETE: Cascade (session deletion removes attendance)
+  - ON UPDATE: Cascade (updates propagate)
+- Foreign Key 2: UTD_ID references Student(UTD_ID)
+  - ON DELETE: Cascade (student deletion removes attendance)
+  - ON UPDATE: Cascade (updates propagate)
+
+6. SUBMISSIONS TABLE
+--------------------------
+Records student quiz submissions.
+
+Attributes:
+- SUBMISSION_ID (PK): int AUTO_INCREMENT - Unique submission
+- COURSE_ID (FK): varchar(25) - Course identifier
+- SESSION_DATE (FK): Date - Session date
+- UTD_ID (FK): varchar(10) - Student identifier
+- QUIZ_ID (FK): int - Quiz identifier
+- IP_ADDRESS: varchar(15) - Submission source IP
+- SUBMISSION_TIME: datetime - When submitted
+- ANSWER1/2/3: char(1) - Student answers
+- STATUS: varchar(20) - Submission status
+
+Constraints:
+- Primary Key: SUBMISSION_ID
+- Unique Constraint: (COURSE_ID, SESSION_DATE, UTD_ID, QUIZ_ID)
+- Foreign Key 1: (SESSION_DATE, COURSE_ID) references class_session
+  - ON DELETE: Cascade
+  - ON UPDATE: Cascade
+- Foreign Key 2: UTD_ID references Student(UTD_ID)
+  - ON DELETE: Cascade
+  - ON UPDATE: Cascade
+- Foreign Key 3: QUIZ_ID references Quiz(QUIZ_ID)
+  - ON DELETE: Cascade
+  - ON UPDATE: Cascade
+
+7. QUESTION_POOL TABLE
+-----------------------------
+Contains pools of questions for quizzes.
+
+Attributes:
+- POOL_ID (PK): int AUTO_INCREMENT - Unique pool identifier
+- POOL_NAME: varchar(25) - Name of the question pool
+
+Constraints:
+- Primary Key: POOL_ID
+
+Relationships:
+- Referenced by: Quiz, Questions
+
+8. QUESTIONS TABLE
+-----------------------
+Stores individual quiz questions.
+
+Attributes:
+- QUESTIONS_ID (PK): int AUTO_INCREMENT - Unique question ID
+- TEXT: TEXT - Question text
+- OPTION_A-D: varchar(50) - Possible answers
+- CORRECT_ANSWER: char(1) - Right answer
+- QUIZ_ID (FK): int - Optional direct quiz assignment
+- POOL_ID (FK): int - Question pool this belongs to
+
+Constraints:
+- Primary Key: QUESTIONS_ID
+- Foreign Key 1: QUIZ_ID references Quiz(QUIZ_ID)
+  - ON DELETE: Set null (quiz deletion keeps question)
+  - ON UPDATE: Cascade
+- Foreign Key 2: POOL_ID references Question_Pool(POOL_ID)
+  - ON DELETE: Restrict (cannot delete pool with questions)
+  - ON UPDATE: Cascade
+
+RELATIONSHIP SUMMARY
+-----------------------------
+1. Course (1) → (N) class_session
+2. class_session (1) → (N) Attended_By
+3. class_session (1) → (N) Submissions
+4. Student (1) → (N) Attended_By
+5. Student (1) → (N) Submissions
+6. Question_Pool (1) → (N) Quiz
+7. Question_Pool (1) → (N) Questions
+8. Quiz (1) → (N) class_session
+9. Quiz (1) → (N) Submissions
+10. Quiz (1) → (N) Questions
+
+DATABASE INFO:
+===========
+Server: localhost
+Port: 3306
+Database Name: attendance_schema
+User ID: root
+Password: : Your Password for Local Connection in Mysql Workbench

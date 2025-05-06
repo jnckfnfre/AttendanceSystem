@@ -7,14 +7,18 @@ namespace AttendanceSystem.API.DTOs
     // Author: Hamza Khawaja  4/28/2025
     public class SubmissionCreateDto
     {
-        [Required] public string Course_Id      { get; set; }
-        [Required] public DateTime Session_Date { get; set; }
-        [Required] public string Utd_Id         { get; set; }
-        [Required] public int    Quiz_Id        { get; set; }
+        public string Course_Id { get; set; }
 
-        // bind all checked radios named "Answers"
-        [Required] public List<string> Answers { get; set; }
+        public DateTime Session_Date { get; set; }
+        public string Utd_Id { get; set; }
+        public int? Quiz_Id { get; set; }
+        public string Ip_Address { get; set; } = "0.0.0.0";
+        public DateTime Submission_Time { get; set; } = DateTime.Parse("1900-01-01T00:00:00");
 
-        [Required] public string Status        { get; set; }
+        public string Answer_1 { get; set; } = "x";
+        public string Answer_2 { get; set; } = "x";
+        public string Answer_3 { get; set; } = "x";
+        public string Status { get; set; } = "absent";
     }
+
 }

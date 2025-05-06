@@ -80,7 +80,6 @@ namespace AttendanceSystem.API.Controllers
         }
 
 
-
         // Created by Nahyan Munawar 4/2/2025
         // Create a new attendance record
         [HttpPost]

@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews(); // Add MVC support
 builder.Services.AddSession(); // Add Razor Pages support
 
 // Registers AttendanceDbContext and configures EF Core to use MySQL
+// Registers AttendanceDbContext and configures EF Core to use MySQL
 builder.Services.AddDbContext<AttendanceDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -20,8 +21,10 @@ builder.Services.AddDbContext<AttendanceDbContext>(options =>
 );
 
 // Enables authorization middleware
+// Enables authorization middleware
 builder.Services.AddAuthorization();
 
+// Adds Swagger for API testing
 // Adds Swagger for API testing
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,7 +44,11 @@ app.UseRouting(); // Add routing support
 app.UseSession(); // Add session support
 
 app.UseAuthorization(); // Ensure authorization is active
+app.UseAuthorization(); // Ensure authorization is active
 
+app.MapControllerRoute( // Add default MVC route
+    name: "default",
+    pattern: "{controller=QuizLogin}/{action=Index}/{id?}");
 app.MapControllerRoute( // Add default MVC route
     name: "default",
     pattern: "{controller=QuizLogin}/{action=Index}/{id?}");

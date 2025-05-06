@@ -11,6 +11,13 @@ using Microsoft.EntityFrameworkCore;
 using AttendanceSystem.API.Data;
 using AttendanceSystem.API.Models;
 using AttendanceSystem.API.DTOs;
+/*
+        Hamza Khawaja 4/11/2025 
+        - Looks up quiz by id
+        - includes related Questions 
+        - Sends all that to the razor view
+        - handle quiz submission
+*/
 
 
 namespace AttendanceSystem.API.Controllers

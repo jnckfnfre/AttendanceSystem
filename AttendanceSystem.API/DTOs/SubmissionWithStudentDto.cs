@@ -25,7 +25,7 @@ namespace AttendanceSystem.API.DTOs{
         public string Student_Name { get; set; }
 
         [Required]
-        public int Quiz_Id { get; set; }
+        public int? Quiz_Id { get; set; }
 
         [Required]
         public string Ip_Address { get; set; }

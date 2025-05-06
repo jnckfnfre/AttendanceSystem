@@ -13,21 +13,24 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
         [Key]
         [Column("COURSE_ID")]
         public string Course_Id { get; set; }
+        [Key]
 
         [Column("PASSWORD")]
         public string Password { get; set; }
-
+  
         [Column("QUIZ_ID")]
         public int Quiz_Id { get; set; }
 
         [ForeignKey("Course_Id")]
         public Course Course { get; set; }
 
+
         [ForeignKey("Quiz_Id")]
         public Quiz Quiz { get; set; }
 
         public ICollection<Submission> Submissions { get; set; }
         public ICollection<AttendedBy> AttendanceRecords { get; set; }
+
         
     }
 }

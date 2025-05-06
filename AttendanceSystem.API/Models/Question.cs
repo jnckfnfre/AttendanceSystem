@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 // Model which maps to the Questions table
 namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of the namespace issues. 
     public class Question{
-    [Key]
-    [Column("QUESTIONS_ID")]
-    
+        [Key]
+        [Column("QUESTIONS_ID")]
+        
     public int Question_Id { get; set; }
 
     [Column("TEXT")] // Hamza Khawaja 4/14/2025 - Question model was missing Text field
@@ -20,22 +20,23 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
     public string Option_B { get; set; }
 
     [Column("OPTION_C")]
-    public string Option_C { get; set; }
+    public string? Option_C { get; set; }
 
     [Column("OPTION_D")]
-    public string Option_D { get; set; }
+    public string? Option_D { get; set; }
 
     [Column("CORRECT_ANSWER")]
     public string Correct_Answer { get; set; }
+    //public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Removed becuase we do not have this column in  question table
 
     [Column("QUIZ_ID")]
-    public int Quiz_Id { get; set; }
+    public int? Quiz_Id { get; set; } // Nullable to allow for questions not associated with a quiz
 
     [Column("POOL_ID")]
     public int Pool_Id { get; set; }
 
     [ForeignKey("Quiz_Id")]
-    public Quiz Quiz { get; set; }
+    public Quiz? Quiz { get; set; } // Nullable to allow for questions not associated with a quiz
 
     [ForeignKey("Pool_Id")]
     public QuestionPool QuestionPool { get; set; }  

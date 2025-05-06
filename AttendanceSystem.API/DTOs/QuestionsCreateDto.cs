@@ -12,9 +12,11 @@ namespace AttendanceSystem.API.DTOs
 {
     public class QuestionsCreateDto
     {
+        // Text for the question
+        // required for all questions
         [Required]
-        public string Text { get; set; }
-
+        public string Text { get; set; } = string.Empty;
+        
         // Option A for the multiple choice question
         // This is required as all questions must have at least two options
         [Required]
@@ -39,9 +41,7 @@ namespace AttendanceSystem.API.DTOs
         public string Correct_Answer { get; set; } = string.Empty;
 
         // The ID of the quiz this question belongs to
-        // This is required as every question must be associated with a quiz
-        [Required]
-        public int Quiz_Id { get; set; }
+        public int? Quiz_Id { get; set; }
 
         // The ID of the question pool this question belongs to
         // This is required as every question must be associated with a pool

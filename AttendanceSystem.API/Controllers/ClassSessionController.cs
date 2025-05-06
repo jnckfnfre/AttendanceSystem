@@ -1,6 +1,5 @@
 /*
     Eduardo Zamora 3/26/2025
-        Revised By David Sajdak 4/21/2025, further comments on what changed in code below
     Controller for the ClassSession model
     Routes:
     GET    /api/ClassSession                    - Get all class sessions
@@ -81,31 +80,6 @@ namespace AttendanceSystem.API.Controllers
             }
 
             return classSession;
-        }
-
-        // David Sajdak 4/21/2025
-        // GET /api/ClassSession/WithConfigData
-        // gets class session info along with other data needed for configuration table
-        [HttpGet("WithConfigData")]
-        public async Task<IActionResult> GetClassSessionsWithConfigData()
-        {
-            var classSession = await _context.ClassSessions
-                .Include(cs => cs.Course)   // join with Course Table
-                .Include(cs => cs.Quiz)     // Join with Quiz table
-                .Select(cs => new ClassSessionWithConfigDataDto
-                {
-                    Course_Id = cs.Course_Id,
-                    Course_Name = cs.Course.Course_Name,
-                    Session_Date = cs.Session_Date,
-                    Start_Time = cs.Course.Start_Time,
-                    End_Time = cs.Course.End_Time,
-                    Password = cs.Password,
-                    Due_Date = cs.Quiz.Due_Date,
-                    Pool_Id = cs.Quiz.Pool_Id
-                })
-                .ToListAsync();
-
-            return Ok(classSession);
         }
 
         /// POST /api/ClassSession

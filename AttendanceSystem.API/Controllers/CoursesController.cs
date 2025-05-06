@@ -48,7 +48,6 @@ public class CoursesController : ControllerBase {
     // Adds a course
     [HttpPost]
     public async Task<IActionResult> AddCourse([FromBody] CourseCreateDto courseDto) {
-
         // convert DTO to Course object
         var course = new Course {
             Course_Id = courseDto.Course_Id,

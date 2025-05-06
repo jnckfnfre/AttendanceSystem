@@ -136,9 +136,9 @@ public class SubmissionsController : Controller {
             Quiz_Id = dto.Quiz_Id,
             Ip_Address = ip,
             Submission_Time = now,
-            Answer_1 = dto.Answers.ElementAtOrDefault(0) ?? "",
-            Answer_2 = dto.Answers.ElementAtOrDefault(1) ?? "",
-            Answer_3 = dto.Answers.ElementAtOrDefault(2) ?? "",
+            Answer_1 = dto.Answer_1,
+            Answer_2 = dto.Answer_2,
+            Answer_3 = dto.Answer_3,
             Status = dto.Status
         };
 
@@ -152,6 +152,39 @@ public class SubmissionsController : Controller {
         // Return the created submission
         // return CreatedAtAction(nameof(GetSubmission), new { id = submission.Submission_Id }, submission);
     }
+
+    // Eduardo Zamora 5/1/2025
+    // POST: api/Submissions/bulk-create
+    // Creates multiple submissions for all students in a class session
+    [HttpPost("bulk-create")]
+    public async Task<IActionResult> BulkCreateSubmissions([FromBody] List<SubmissionCreateDto> submissions)
+    {
+        if (submissions == null || !submissions.Any())
+            return BadRequest("No submissions to create.");
+
+        foreach (var dto in submissions)
+        {
+            var submission = new Submission
+            {
+                Course_Id = dto.Course_Id,
+                Session_Date = dto.Session_Date,
+                Utd_Id = dto.Utd_Id,
+                Quiz_Id = dto.Quiz_Id,
+                Ip_Address = dto.Ip_Address,
+                Submission_Time = dto.Submission_Time,
+                Answer_1 = dto.Answer_1,
+                Answer_2 = dto.Answer_2,
+                Answer_3 = dto.Answer_3,
+                Status = dto.Status
+            };
+            _context.Submissions.Add(submission);
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new { created = submissions.Count });
+    }
+
+
     
     // PUT: api/Submissions/{id}
     // Updates only modifiable fields of a submission (answers and status)

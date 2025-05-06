@@ -76,6 +76,14 @@ namespace AttendanceSystem.API.Controllers
                 ViewBag.ErrorMessage = "You can only log in during class time.";
                 return View("Index");
             }
+            bool isEnrolled = await _context.CourseStudents.
+                AnyAsync(cs => cs.Course_Id == classSession.Course_Id && cs.Utd_Id == student.UtdId);
+
+            if (!isEnrolled)
+            {
+                ViewBag.ErrorMessage = "You are not enrolled in this course.";
+                return View("Index");
+            }
 
             // Store UtdId in session
             HttpContext.Session.SetString("UtdId", student.UtdId);    

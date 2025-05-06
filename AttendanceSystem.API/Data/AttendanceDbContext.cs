@@ -30,6 +30,8 @@ namespace AttendanceSystem.API.Data
         public DbSet<QuestionPool> QuestionPools { get; set; }
         public DbSet<Question> Questions { get; set; }
 
+        public DbSet<CourseStudents> CourseStudents { get; set; }
+
         // this method is needed to implement our composite key which exists in ClassSession
         // and foreign keys that map to it in AttendedBy and Submission
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -81,8 +83,10 @@ namespace AttendanceSystem.API.Data
             modelBuilder.Entity<Submission>()
                 .HasIndex(s => new { s.Course_Id, s.SessionDate, s.Utd_Id, s.Quiz_Id })
                 .IsUnique();
+
+            modelBuilder.Entity<CourseStudents>()
+                .HasKey(cs => new { cs.Course_Id, cs.Utd_Id });
         }
     }
 }
-
 

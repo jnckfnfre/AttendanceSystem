@@ -1,7 +1,6 @@
 /*
-    David Sajdak Started: 3/26/2025
-    Controller for the Course model
-    Get, put, post, delete methods for the Course model
+    Eduardo Zamora & David Sajdak 05/05/2025
+    Controller for the CourseStudents model
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +14,10 @@ using AttendanceSystem.API.DTOs;
 
 public class CourseStudentsController : ControllerBase {
     // database context for accessing the database
-    // handles all database operations for courses
+    // handles all database operations for courses & students
     private readonly AttendanceDbContext _context;
 
-    // constructor for the CoursesController
+    // constructor for the CourseStudentsController
     // injects the database context into the controller
     public CourseStudentsController(AttendanceDbContext context) {
         _context = context;
@@ -46,6 +45,22 @@ public class CourseStudentsController : ControllerBase {
 
         return CourseStudents;
     }
+
+    // GET: api/CourseStudents/by-course/{courseId}
+    // Gets all students in a course
+    [HttpGet("by-course/{courseId}")]
+    public async Task<IActionResult> GetStudentsByCourse(string courseId)
+    {
+        var students = await _context.CourseStudents
+            .Where(cs => cs.Course_Id == courseId)
+            .Select(cs => new {
+                cs.Utd_Id
+            })
+            .ToListAsync();
+
+        return Ok(students);
+    }
+
 
     // GET: api/Courses/{id}
     // Gets a course by id

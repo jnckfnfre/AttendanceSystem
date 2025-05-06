@@ -8,37 +8,18 @@ namespace AttendanceSystem.API.DTOs
     // and auto-generated fields like Submission_Id
     public class SubmissionCreateDto
     {
-        [Required]
         public string Course_Id { get; set; }
-
-        [Required]
         public DateTime SessionDate { get; set; }
-
-        [Required]
         public string Utd_Id { get; set; }
-
-        [Required]
         public int Quiz_Id { get; set; }
 
-        [Required]
-        public string Ip_Address { get; set; }
+        public string Ip_Address { get; set; } = "0.0.0.0";
+        public DateTime Submission_Time { get; set; } = DateTime.Parse("1900-01-01T00:00:00");
 
-        // Changed from TimeSpan to DateTime to match the Submission model and database schema
-        // This ensures consistent type handling across the entire application
-        // When making POST requests, this should be a full datetime string (e.g., "2025-04-02T14:30:00")
-        [Required]
-        public DateTime Submission_Time { get; set; }
-
-        [Required]
-        public string Answer_1 { get; set; }
-
-        [Required]
-        public string Answer_2 { get; set; }
-
-        [Required]
-        public string Answer_3 { get; set; }
-
-        [Required]
-        public string Status { get; set; }
+        public string Answer_1 { get; set; } = "x";
+        public string Answer_2 { get; set; } = "x";
+        public string Answer_3 { get; set; } = "x";
+        public string Status { get; set; } = "absent";
     }
+
 } 

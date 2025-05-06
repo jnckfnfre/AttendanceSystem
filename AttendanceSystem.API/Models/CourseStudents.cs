@@ -1,3 +1,6 @@
+// Eduardo Zamora & David Sajdak 05/05/2025
+// Model to link students to courses
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;

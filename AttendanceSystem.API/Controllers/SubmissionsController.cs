@@ -113,8 +113,11 @@ public class SubmissionsController : ControllerBase {
     // POST: api/Submissions/bulk-create
     // Creates multiple submissions for all students in a class session
     [HttpPost("bulk-create")]
-    public IActionResult BulkCreateSubmissions([FromBody] List<SubmissionCreateDto> submissions)
+    public async Task<IActionResult> BulkCreateSubmissions([FromBody] List<SubmissionCreateDto> submissions)
     {
+        if (submissions == null || !submissions.Any())
+            return BadRequest("No submissions to create.");
+
         foreach (var dto in submissions)
         {
             var submission = new Submission
@@ -130,13 +133,13 @@ public class SubmissionsController : ControllerBase {
                 Answer_3 = dto.Answer_3,
                 Status = dto.Status
             };
-
             _context.Submissions.Add(submission);
         }
 
-        _context.SaveChanges();
-        return Ok(new { message = "Submissions created for all students." });
+        await _context.SaveChangesAsync();
+        return Ok(new { created = submissions.Count });
     }
+
 
     
     // PUT: api/Submissions/{id}

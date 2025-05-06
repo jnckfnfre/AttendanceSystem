@@ -331,54 +331,38 @@ namespace AttendanceDesktop
 
                         if (sessionResponse.IsSuccessStatusCode)
                         {
-                            // Step 1: Get ALL students (since we don’t have enrollment tracking yet)
-                            string studentsUrl = "http://localhost:5257/api/students";
+                            // create absences for all students in the course
+                            // Get all students in the course
+                            string studentsUrl = $"http://localhost:5257/api/CourseStudents/by-course/{selectedCourse.CourseId}";
                             var studentsJson = await client.GetStringAsync(studentsUrl);
                             var students = JsonSerializer.Deserialize<List<Student>>(studentsJson);
+                            //MessageBox.Show($"Found {students.Count} enrolled students", "DEBUG");
 
-
-                            // Step 2: Create attended_by rows
-                            var attendanceDtos = students.Select(s => new
-                            {
-                                UtdId = s.UTDId,
-                                Course_Id = selectedCourse.CourseId,
-                                SessionDate = dueDate
-                            }).ToList();
-
-                            var attendanceContent = new StringContent(JsonSerializer.Serialize(attendanceDtos), Encoding.UTF8, "application/json");
-                            var attendanceResponse =  await client.PostAsync("http://localhost:5257/api/attendance/bulk-create", attendanceContent);
-                            string attendanceResult = await attendanceResponse.Content.ReadAsStringAsync();
-
-                            //Show the server response in a popup
-                            //MessageBox.Show($"Attendance API response:\n{attendanceResult}", "Attendance Endpoint", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                            // Step 3: Now call the students-by-course-session endpoint
-                            string sessionStudentsUrl = $"http://localhost:5257/api/students/students-by-course-session?courseId={selectedCourse.CourseId}&sessionDate={dueDate:yyyy-MM-dd}";
-                            var sessionStudentsJson = await client.GetStringAsync(sessionStudentsUrl);
-                            var sessionStudents = JsonSerializer.Deserialize<List<Student>>(sessionStudentsJson);
-
-                            // Step 4: Create Submissions
-                            var submissionDtos = sessionStudents.Select(s => new
+                            // Create a list of submissions for each student
+                            // This is done to ensure that we create a submission for each student
+                            var submissionDtos = students.Select(s => new
                             {
                                 Course_Id = selectedCourse.CourseId,
                                 SessionDate = dueDate,
-                                Utd_Id = s.UTDId,
+                                Utd_Id = s.Utd_Id,
                                 Quiz_Id = createdQuizId,
                                 Ip_Address = "0.0.0.0",
                                 Submission_Time = DateTime.Parse("1900-01-01T00:00:00"),
-                                Answer_1 = "N/A",
-                                Answer_2 = "N/A",
-                                Answer_3 = "N/A",
+                                Answer_1 = "x",
+                                Answer_2 = "x",
+                                Answer_3 = "x",
                                 Status = "absent"
                             }).ToList();
-
+                            
                             var submissionContent = new StringContent(JsonSerializer.Serialize(submissionDtos), Encoding.UTF8, "application/json");
-                            await client.PostAsync("http://localhost:5257/api/submissions/bulk-create", submissionContent);
-
+                            var response = await client.PostAsync("http://localhost:5257/api/submissions/bulk-create", submissionContent);
+                            //string responseText = await response.Content.ReadAsStringAsync();
+                            //MessageBox.Show($"Submissions API Response:\n{response.StatusCode}\n{responseText}", "DEBUG");
 
                             MessageBox.Show("Quiz, Class Session, and Absences created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             ResetForm();
                         }
+
                         else
                         {
                             string error = await sessionResponse.Content.ReadAsStringAsync();
@@ -533,7 +517,8 @@ namespace AttendanceDesktop
     // This class is used to deserialize the JSON response from the API when fetching students by course
     public class Student
     {
-        public string UTDId { get; set; }
+        [JsonPropertyName("utd_Id")]
+        public string Utd_Id { get; set; }
     }
 
 

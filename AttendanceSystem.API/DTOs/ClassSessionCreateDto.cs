@@ -24,7 +24,7 @@ namespace AttendanceSystem.API.DTOs
         public string Password { get; set; }
 
         /// The ID of the quiz associated with this class session.
-        public int? QuizId { get; set; }
+        public int QuizId { get; set; }
     }
 } 
 

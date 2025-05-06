@@ -10,7 +10,7 @@ partial class ConfigurationForm
     private System.ComponentModel.IContainer components = null;
     private Button databaseInfo;
     private Button configTable;
-    private Button uploadButton;
+    private Button addStudents;
     private Button addCourses;
     private Button newQuestionBank;
     private Button viewQuestionBank;
@@ -72,15 +72,15 @@ partial class ConfigurationForm
         this.configTable.Click += new EventHandler(this.configTableButton_Click);
 
         // button for professor to add students
-        this.uploadButton = new Button();
-        this.uploadButton.Text = "Add Students";
-        this.uploadButton.Size = new Size(400, 150);
-        this.uploadButton.BackColor = Color.FromArgb(199, 91, 18); // orange
-        this.uploadButton.ForeColor = Color.White;
-        this.uploadButton.FlatStyle = FlatStyle.Flat;
-        this.uploadButton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        this.uploadButton.FlatAppearance.BorderSize = 0;
-        this.uploadButton.Click += new EventHandler(this.uploadButton_Click);
+        this.addStudents = new Button();
+        this.addStudents.Text = "Add Students";
+        this.addStudents.Size = new Size(400, 150);
+        this.addStudents.BackColor = Color.FromArgb(199, 91, 18); // orange
+        this.addStudents.ForeColor = Color.White;
+        this.addStudents.FlatStyle = FlatStyle.Flat;
+        this.addStudents.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+        this.addStudents.FlatAppearance.BorderSize = 0;
+        this.addStudents.Click += new EventHandler(this.addStudentsButton_Click);
 
         // button to add courses
         this.addCourses = new Button();
@@ -135,7 +135,7 @@ partial class ConfigurationForm
         buttonPanel.Anchor = AnchorStyles.None;
         buttonPanel.Controls.Add(databaseInfo);
         buttonPanel.Controls.Add(configTable);
-        buttonPanel.Controls.Add(uploadButton);
+        buttonPanel.Controls.Add(addStudents);
         buttonPanel.Controls.Add(addCourses);
         buttonPanel.Controls.Add(newQuestionBank);
         buttonPanel.Controls.Add(viewQuestionBank);

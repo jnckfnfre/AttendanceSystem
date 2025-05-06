@@ -25,7 +25,7 @@ namespace AttendanceSystem.API.DTOs
 
         /// The ID of the quiz associated with this class session.
         [Required(ErrorMessage = "QuizId is required")]
-        public int QuizId { get; set; }
+        public int Quiz_Id { get; set; }
     }
 } 
 

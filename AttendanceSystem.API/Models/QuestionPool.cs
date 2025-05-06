@@ -10,14 +10,14 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
     {
         [Key]
         [Column("POOL_ID")]
-        public int PoolId { get; set; }  // Primary key for the pool
+        public int Pool_Id { get; set; }  // Primary key for the pool
 
         [Column("POOL_NAME")]
-        public string PoolName { get; set; } // Name of the question pool
+        public string Pool_Name { get; set; } // Name of the question pool
 
         [Column("COURSE_ID")]
-        public string CourseId { get; set; }
-        
+        public string Course_Id { get; set; }
+
 
         [ForeignKey("Course_Id")]
         [JsonIgnore]

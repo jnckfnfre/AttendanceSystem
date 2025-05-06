@@ -31,15 +31,15 @@ public class StudentsController : ControllerBase
     {
         // convert DTO to Student object
         var student = new Student {
-            UtdId = studentCreateDto.UTDId,
-            FirstName = studentCreateDto.FirstName,
-            LastName = studentCreateDto.LastName,
+            Utd_Id = studentCreateDto.Utd_Id,
+            First_Name = studentCreateDto.First_Name,
+            Last_Name = studentCreateDto.Last_Name,
             Net_Id = studentCreateDto.Net_Id
         };
 
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetStudents), new { id = student.UtdId }, student);
+        return CreatedAtAction(nameof(GetStudents), new { id = student.Utd_Id }, student);
     }
 
     /* 
@@ -58,9 +58,9 @@ public class StudentsController : ControllerBase
 
         var students = studentDtos.Select(dto => new Student
         {
-            UtdId = dto.UTDId,
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
+            Utd_Id = dto.Utd_Id,
+            First_Name = dto.First_Name,
+            Last_Name = dto.Last_Name,
             Net_Id = dto.Net_Id
         }).ToList();
 
@@ -79,8 +79,8 @@ public class StudentsController : ControllerBase
         if (student == null)
             return NotFound();
 
-        student.FirstName = studentUpdateDto.FirstName;
-        student.LastName = studentUpdateDto.LastName;
+        student.First_Name = studentUpdateDto.First_Name;
+        student.Last_Name = studentUpdateDto.Last_Name;
         student.Net_Id = studentUpdateDto.Net_Id;
 
         await _context.SaveChangesAsync();

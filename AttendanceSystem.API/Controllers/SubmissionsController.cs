@@ -54,9 +54,9 @@ public class SubmissionsController : Controller {
             {
                 Submission_Id = s.Submission_Id,
                 Course_Id = s.Course_Id,
-                SessionDate = s.SessionDate,
+                Session_Date = s.Session_Date,
                 Utd_Id = s.Utd_Id,
-                Student_Name = s.Student.FirstName + " " + s.Student.LastName, // get student name from student table
+                Student_Name = s.Student.First_Name + " " + s.Student.Last_Name, // get student name from student table
                 Quiz_Id = s.Quiz_Id,
                 Submission_Time = s.Submission_Time,
                 Ip_Address = s.Ip_Address,
@@ -76,27 +76,27 @@ public class SubmissionsController : Controller {
     public async Task<IActionResult> AddSubmission([FromForm] SubmissionCreateDto dto)
     {
         // Retrieve UtdId from session
-        var utdId = HttpContext.Session.GetString("UtdId");
+        var utdId = HttpContext.Session.GetString("Utd_Id");
         if (string.IsNullOrEmpty(utdId))
         {
-            return BadRequest("UtdId is missing. Please log in again.");
+            return BadRequest("Utd_Id is missing. Please log in again.");
         }
 
         // Validate dto fields
-        if (dto == null || string.IsNullOrEmpty(dto.CourseId) || dto.SessionDate == default || dto.QuizId <= 0)
+        if (dto == null || string.IsNullOrEmpty(dto.Course_Id) || dto.Session_Date == default || dto.Quiz_Id <= 0)
         {
             return BadRequest("Invalid submission data.");
         }
 
         // Validate that the student exists
-        var studentExists = await _context.Students.AnyAsync(s => s.UtdId == utdId);
+        var studentExists = await _context.Students.AnyAsync(s => s.Utd_Id == utdId);
         if (!studentExists)
         {
             return BadRequest("Invalid Student ID.");
         }
 
         // Validate that the quiz exists
-        var quizExists = await _context.Quizzes.AnyAsync(q => q.QuizId == dto.QuizId);
+        var quizExists = await _context.Quizzes.AnyAsync(q => q.Quiz_Id == dto.Quiz_Id);
         if (!quizExists)
         {
             return BadRequest("Invalid Quiz ID.");
@@ -104,7 +104,7 @@ public class SubmissionsController : Controller {
 
         // Validate that the class session exists
         var sessionExists = await _context.ClassSessions.AnyAsync(cs =>
-            cs.Course_Id == dto.CourseId && cs.SessionDate == dto.SessionDate);
+            cs.Course_Id == dto.Course_Id && cs.Session_Date == dto.Session_Date);
         if (!sessionExists)
         {
             return BadRequest("Invalid Class Session.");
@@ -117,10 +117,10 @@ public class SubmissionsController : Controller {
         // Create a new Submission object
         var submission = new Submission
         {
-            Course_Id = dto.CourseId,
-            SessionDate = dto.SessionDate,
+            Course_Id = dto.Course_Id,
+            Session_Date = dto.Session_Date,
             Utd_Id = utdId, // Use the UtdId from session
-            Quiz_Id = dto.QuizId,
+            Quiz_Id = dto.Quiz_Id,
             Ip_Address = ip,
             Submission_Time = now,
             Answer_1 = dto.Answers.ElementAtOrDefault(0) ?? "",

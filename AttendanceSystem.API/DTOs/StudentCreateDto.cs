@@ -11,15 +11,15 @@ namespace AttendanceSystem.API.DTOs {
     public class StudentCreateDto {
         // UTD id of the student to be created, can't be null
         [Required(ErrorMessage = "UTD ID is required")]
-        public string UTDId { get; set; }
+        public string Utd_Id { get; set; }
 
         // First name of the student to be created, can't be null
         [Required(ErrorMessage = "First Name is required")]
-        public string FirstName { get; set; }
+        public string First_Name { get; set; }
 
         // Last name of the student to be created, can't be null
         [Required(ErrorMessage = "Last Name is required")]
-        public string LastName { get; set; }
+        public string Last_Name { get; set; }
 
         // UTD NetID of the student to be created, optional
         public string? Net_Id { get; set; }

@@ -46,7 +46,7 @@ namespace AttendanceSystem.API.Controllers
         {
             var pool = await _context.QuestionPools
                 .Include(p => p.Questions)
-                .FirstOrDefaultAsync(p => p.PoolId == id);
+                .FirstOrDefaultAsync(p => p.Pool_Id == id);
 
             if (pool == null)
                 return NotFound();
@@ -61,8 +61,8 @@ namespace AttendanceSystem.API.Controllers
         {
             var pool = new QuestionPool
             {
-                PoolName = dto.PoolName,
-                CourseId = dto.CourseId,
+                Pool_Name = dto.Pool_Name,
+                Course_Id = dto.Course_Id,
                 Questions = new List<Question>(),
                 Quizzes = new List<Quiz>()
             };
@@ -70,7 +70,7 @@ namespace AttendanceSystem.API.Controllers
             _context.QuestionPools.Add(pool);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetQuestionPool), new { id = pool.PoolId }, pool);
+            return CreatedAtAction(nameof(GetQuestionPool), new { id = pool.Pool_Id }, pool);
         }
 
         // PUT: api/QuestionPool/5
@@ -82,7 +82,7 @@ namespace AttendanceSystem.API.Controllers
             if (pool == null)
                 return NotFound();
 
-            pool.PoolName = dto.PoolName;
+            pool.Pool_Name = dto.Pool_Name;
 
             try
             {
@@ -116,7 +116,7 @@ namespace AttendanceSystem.API.Controllers
 
         private bool QuestionPoolExists(int id)
         {
-            return _context.QuestionPools.Any(e => e.PoolId == id);
+            return _context.QuestionPools.Any(e => e.Pool_Id == id);
         }
     }
 } 

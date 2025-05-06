@@ -46,7 +46,7 @@ namespace AttendanceSystem.API.Controllers
         public async Task<IActionResult> GetQuestionsByQuizId(int quizId)
         {
             var questions = await _context.Questions
-                .Where(q => q.QuizId == quizId)
+                .Where(q => q.Quiz_Id == quizId)
                 .ToListAsync();
 
             return Ok(questions);
@@ -71,17 +71,17 @@ namespace AttendanceSystem.API.Controllers
         public async Task<IActionResult> AddQuestion([FromBody] QuestionsCreateDto dto)
         {
             // Validate that the quiz exists
-            var quizExists = await _context.Quizzes.AnyAsync(q => q.QuizId == dto.QuizId);
+            var quizExists = await _context.Quizzes.AnyAsync(q => q.Quiz_Id == dto.Quiz_Id);
             if (!quizExists)
                 return BadRequest("Invalid Quiz ID");
 
             // Validate that the question pool exists
-            var poolExists = await _context.QuestionPools.AnyAsync(p => p.PoolId == dto.PoolId);
+            var poolExists = await _context.QuestionPools.AnyAsync(p => p.Pool_Id == dto.Pool_Id);
             if (!poolExists)
                 return BadRequest("Invalid Pool ID");
 
             // Validate that the correct answer matches one of the options
-            var correctAnswer = dto.CorrectAnswer.ToUpper();
+            var correctAnswer = dto.Correct_Answer.ToUpper();
             if (correctAnswer != "A" && correctAnswer != "B" && 
                 correctAnswer != "C" && correctAnswer != "D")
                 return BadRequest("Correct answer must be A, B, C, or D");
@@ -90,18 +90,18 @@ namespace AttendanceSystem.API.Controllers
             var question = new Question
             {
                 Text = dto.Text, // Hamza Khawaja 4/28/25 - fixed this action, controller was failing to add text property when new question was created
-                OptionA = dto.OptionA,
-                OptionB = dto.OptionB,
-                OptionC = dto.OptionC,
-                OptionD = dto.OptionD,
-                CorrectAnswer = correctAnswer,
-                QuizId = dto.QuizId,
-                PoolId = dto.PoolId
+                Option_A = dto.Option_A,
+                Option_B = dto.Option_B,
+                Option_C = dto.Option_C,
+                Option_D = dto.Option_D,
+                Correct_Answer = correctAnswer,
+                Quiz_Id = dto.Quiz_Id,
+                Pool_Id = dto.Pool_Id
             };
 
             _context.Questions.Add(question);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetQuestion), new { id = question.QuestionId }, question);
+            return CreatedAtAction(nameof(GetQuestion), new { id = question.Question_Id }, question);
         }
 
         // PUT: api/Questions/{id}
@@ -114,29 +114,29 @@ namespace AttendanceSystem.API.Controllers
                 return NotFound();
 
             // Validate that the quiz exists
-            var quizExists = await _context.Quizzes.AnyAsync(q => q.QuizId == dto.QuizId);
+            var quizExists = await _context.Quizzes.AnyAsync(q => q.Quiz_Id == dto.Quiz_Id);
             if (!quizExists)
                 return BadRequest("Invalid Quiz ID");
 
             // Validate that the question pool exists
-            var poolExists = await _context.QuestionPools.AnyAsync(p => p.PoolId == dto.PoolId);
+            var poolExists = await _context.QuestionPools.AnyAsync(p => p.Pool_Id == dto.Pool_Id);
             if (!poolExists)
                 return BadRequest("Invalid Pool ID");
 
             // Validate that the correct answer matches one of the options
-            var correctAnswer = dto.CorrectAnswer.ToUpper();
+            var correctAnswer = dto.Correct_Answer.ToUpper();
             if (correctAnswer != "A" && correctAnswer != "B" && 
                 correctAnswer != "C" && correctAnswer != "D")
                 return BadRequest("Correct answer must be A, B, C, or D");
 
             // Update question from DTO
-            question.OptionA = dto.OptionA;
-            question.OptionB = dto.OptionB;
-            question.OptionC = dto.OptionC;
-            question.OptionD = dto.OptionD;
-            question.CorrectAnswer = correctAnswer;
-            question.QuizId = dto.QuizId;
-            question.PoolId = dto.PoolId;
+            question.Option_A = dto.Option_A;
+            question.Option_B = dto.Option_B;
+            question.Option_C = dto.Option_C;
+            question.Option_D = dto.Option_D;
+            question.Correct_Answer = correctAnswer;
+            question.Quiz_Id = dto.Quiz_Id;
+            question.Pool_Id = dto.Pool_Id;
 
             await _context.SaveChangesAsync();
             return NoContent();

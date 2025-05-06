@@ -10,16 +10,16 @@ namespace AttendanceSystem.API.Models
   public class Quiz{
     [Key]
     [Column("QUIZ_ID")]
-    public int QuizId { get; set; }  // Primary key for each quiz
+    public int Quiz_Id { get; set; }  // Primary key for each quiz
 
     [Column("DUE_DATE")]
-    public DateTime? DueDate { get; set; } // Optional due date for the quiz
+    public DateTime? Due_Date { get; set; } // Optional due date for the quiz
 
     [Column("POOL_ID")]
-    public int PoolId { get; set; } // Foreign key linking to Question_Pool
+    public int Pool_Id { get; set; } // Foreign key linking to Question_Pool
 
     [JsonIgnore]
-    [ForeignKey("PoolId")]
+    [ForeignKey("Pool_Id")]
     public QuestionPool QuestionPool { get; set; }
 
     [JsonIgnore]

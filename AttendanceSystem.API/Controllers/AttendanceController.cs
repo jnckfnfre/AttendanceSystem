@@ -40,7 +40,7 @@ namespace AttendanceSystem.API.Controllers
         {
             var attendance = await _context.AttendedBy
                 .Include(a => a.Student)
-                .Where(a => a.Course_Id == courseId && a.SessionDate == sessionDate)
+                .Where(a => a.Course_Id == courseId && a.Session_Date == sessionDate)
                 .ToListAsync();
 
             return Ok(attendance);
@@ -52,7 +52,7 @@ namespace AttendanceSystem.API.Controllers
         {
             var attendance = await _context.AttendedBy
                 .Include(a => a.ClassSession)
-                .Where(a => a.UtdId == utdId)
+                .Where(a => a.Utd_Id == utdId)
                 .ToListAsync();
 
             return Ok(attendance);
@@ -67,9 +67,9 @@ namespace AttendanceSystem.API.Controllers
             {
                 _context.AttendedBy.Add(new AttendedBy
                 {
-                    UtdId = record.UtdId,
+                    Utd_Id = record.Utd_Id,
                     Course_Id = record.Course_Id,
-                    SessionDate = record.SessionDate
+                    Session_Date = record.Session_Date
                 });
             }
 
@@ -88,15 +88,15 @@ namespace AttendanceSystem.API.Controllers
         {
             var attendance = new AttendedBy
             {
-                UtdId = attendanceDto.UtdId,
+                Utd_Id = attendanceDto.Utd_Id,
                 Course_Id = attendanceDto.Course_Id,
-                SessionDate = attendanceDto.SessionDate
+                Session_Date = attendanceDto.Session_Date
             };
 
             _context.AttendedBy.Add(attendance);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetAllAttendance), new { id = attendance.AttendanceId }, attendance);
+            return CreatedAtAction(nameof(GetAllAttendance), new { id = attendance.Attendance_Id }, attendance);
         }
 
         // Created by Nahyan Munawar 4/2/2025
@@ -127,9 +127,9 @@ namespace AttendanceSystem.API.Controllers
                 return NotFound();
             }
 
-            attendance.UtdId = attendanceDto.UtdId;
+            attendance.Utd_Id = attendanceDto.Utd_Id;
             attendance.Course_Id = attendanceDto.Course_Id;
-            attendance.SessionDate = attendanceDto.SessionDate;
+            attendance.Session_Date = attendanceDto.Session_Date;
 
             try
             {
@@ -152,7 +152,7 @@ namespace AttendanceSystem.API.Controllers
 
         private bool AttendanceExists(int id)
         {
-            return _context.AttendedBy.Any(e => e.AttendanceId == id);
+            return _context.AttendedBy.Any(e => e.Attendance_Id == id);
         }
     }
 }

@@ -13,29 +13,29 @@ namespace AttendanceSystem.API.DTOs
     {
         // The unique identifier of the question to be updated
         [Required]
-        public int QuestionsId { get; set; }
+        public int Questions_Id { get; set; }
 
         // Option A for the multiple choice question
         [Required]
-        public string OptionA { get; set; } = string.Empty;
+        public string Option_A { get; set; } = string.Empty;
 
         // Option B for the multiple choice question
         [Required]
-        public string OptionB { get; set; } = string.Empty;
+        public string Option_B { get; set; } = string.Empty;
 
         // Option C for the multiple choice question
-        public string? OptionC { get; set; }
+        public string? Option_C { get; set; }
 
         // Option D for the multiple choice question
-        public string? OptionD { get; set; }
+        public string? Option_D { get; set; }
 
         // The correct answer for the question (A, B, C, or D)
         [Required]
-        public string CorrectAnswer { get; set; } = string.Empty;
+        public string Correct_Answer { get; set; } = string.Empty;
 
         // The ID of the quiz this question belongs to
         [Required]
-        public int QuizId { get; set; }
+        public int Quiz_Id { get; set; }
 
         // The ID of the question pool this question belongs to
         [Required]

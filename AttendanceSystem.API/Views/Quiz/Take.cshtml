@@ -4,10 +4,10 @@
     Layout = null;
 
     var qs          = Model.Questions.ToList();
-    var utdId       = ViewData["UtdId"]       as string ?? "";
-    var courseId    = ViewData["CourseId"]    as string ?? "";
-    var sessionDate = ((DateTime)ViewData["SessionDate"]).ToString("o");
-    var quizId      = Model.QuizId;
+    var utdId       = ViewData["Utd_Id"]       as string ?? ""; 
+    var courseId    = ViewData["Course_Id"]    as string ?? "";
+    var sessionDate = ((DateTime)ViewData["Session_Date"]).ToString("o");
+    var quizId      = Model.Quiz_Id;
 }
 
 <!DOCTYPE html>
@@ -42,28 +42,28 @@
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Answers[@i]" value="A" id="q@i-a" required>
-                                        <label class="form-check-label" for="q@i-a">A. @q.OptionA</label>
+                                        <label class="form-check-label" for="q@i-a">A. @q.Option_A</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Answers[@i]" value="B" id="q@i-b">
-                                        <label class="form-check-label" for="q@i-b">B. @q.OptionB</label>
+                                        <label class="form-check-label" for="q@i-b">B. @q.Option_B</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Answers[@i]" value="C" id="q@i-c">
-                                        <label class="form-check-label" for="q@i-c">C. @q.OptionC</label>
+                                        <label class="form-check-label" for="q@i-c">C. @q.Option_C</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Answers[@i]" value="D" id="q@i-d">
-                                        <label class="form-check-label" for="q@i-d">D. @q.OptionD</label>
+                                        <label class="form-check-label" for="q@i-d">D. @q.Option_D</label>
                                     </div>
                                 </div>
                             }
 
                             <!-- Hidden metadata -->
-                            <input type="hidden" name="UtdId"       value="@utdId" />
-                            <input type="hidden" name="CourseId"    value="@courseId" />
-                            <input type="hidden" name="SessionDate" value="@sessionDate" />
-                            <input type="hidden" name="QuizId"      value="@quizId" />
+                            <input type="hidden" name="Utd_Id"       value="@utdId" />
+                            <input type="hidden" name="Course_Id"    value="@courseId" />
+                            <input type="hidden" name="Session_Date" value="@sessionDate" />
+                            <input type="hidden" name="Quiz_Id"      value="@quizId" />
                             <input type="hidden" name="Status"      value="Present" />
 
                             <div class="text-center mt-4">

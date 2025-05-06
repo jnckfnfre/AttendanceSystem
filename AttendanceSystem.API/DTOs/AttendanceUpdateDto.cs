@@ -4,6 +4,6 @@ namespace AttendanceSystem.API.DTOs
 {
     public class AttendanceUpdateDto
     {
-        public DateTime TimeIn { get; set; }
+        public DateTime Time_In { get; set; }
     }
 } 

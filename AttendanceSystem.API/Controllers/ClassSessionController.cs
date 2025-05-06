@@ -51,7 +51,7 @@ namespace AttendanceSystem.API.Controllers
         public async Task<ActionResult<ClassSession>> GetClassSession(string courseId, DateTime sessionDate)
         {
             var classSession = await _context.ClassSessions
-                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.SessionDate == sessionDate);
+                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.Session_Date == sessionDate);
 
             if (classSession == null)
             {
@@ -73,7 +73,7 @@ namespace AttendanceSystem.API.Controllers
                     .ThenInclude(a => a.Student)
                 .Include(cs => cs.Submissions)
                     .ThenInclude(s => s.Student)
-                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.SessionDate == sessionDate);
+                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.Session_Date == sessionDate);
 
             if (classSession == null)
             {
@@ -96,19 +96,18 @@ namespace AttendanceSystem.API.Controllers
                 {
                     Course_Id = cs.Course_Id,
                     Course_Name = cs.Course.Course_Name,
-                    SessionDate = cs.SessionDate,
+                    Session_Date = cs.Session_Date,
                     Start_Time = cs.Course.Start_Time,
                     End_Time = cs.Course.End_Time,
                     Password = cs.Password,
-                    DueDate = cs.Quiz.DueDate,
-                    PoolId = cs.Quiz.PoolId
+                    Due_Date = cs.Quiz.Due_Date,
+                    Pool_Id = cs.Quiz.Pool_Id
                 })
                 .ToListAsync();
 
             return Ok(classSession);
         }
 
-// gay
         /// POST /api/ClassSession
         /// Creates a new class session.
         /// Validates course and quiz existence, and checks for duplicate sessions.
@@ -123,7 +122,7 @@ namespace AttendanceSystem.API.Controllers
             }
 
             // Validate that the quiz exists
-            var quizExists = await _context.Quizzes.AnyAsync(q => q.QuizId == classSessionDto.QuizId);
+            var quizExists = await _context.Quizzes.AnyAsync(q => q.Quiz_Id == classSessionDto.Quiz_Id);
             if (!quizExists)
             {
                 return BadRequest("Invalid QuizId");
@@ -131,7 +130,7 @@ namespace AttendanceSystem.API.Controllers
 
             // Check for duplicate sessions
             var sessionExists = await _context.ClassSessions
-                .AnyAsync(cs => cs.Course_Id == classSessionDto.Course_Id && cs.SessionDate == classSessionDto.SessionDate);
+                .AnyAsync(cs => cs.Course_Id == classSessionDto.Course_Id && cs.Session_Date == classSessionDto.SessionDate);
             if (sessionExists)
             {
                 return BadRequest("A session already exists for this course on this date");
@@ -140,17 +139,17 @@ namespace AttendanceSystem.API.Controllers
             // Create new class session
             var classSession = new ClassSession
             {
-                SessionDate = classSessionDto.SessionDate,
+                Session_Date = classSessionDto.SessionDate,
                 Course_Id = classSessionDto.Course_Id,
                 Password = classSessionDto.Password,
-                QuizId = classSessionDto.QuizId
+                Quiz_Id = classSessionDto.Quiz_Id
             };
 
             _context.ClassSessions.Add(classSession);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetClassSession), 
-                new { courseId = classSession.Course_Id, sessionDate = classSession.SessionDate }, 
+                new { courseId = classSession.Course_Id, sessionDate = classSession.Session_Date }, 
                 classSession);
         }
 
@@ -161,7 +160,7 @@ namespace AttendanceSystem.API.Controllers
         {
             var classSession = await _context.ClassSessions
                 .FirstOrDefaultAsync(cs => cs.Course_Id == verificationDto.Course_Id && 
-                                         cs.SessionDate == verificationDto.SessionDate);
+                                         cs.Session_Date == verificationDto.Session_Date);
 
             if (classSession == null)
             {
@@ -178,7 +177,7 @@ namespace AttendanceSystem.API.Controllers
         public async Task<IActionResult> UpdateClassSession(string courseId, DateTime sessionDate, ClassSessionUpdateDto classSessionDto)
         {
             var classSession = await _context.ClassSessions
-                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.SessionDate == sessionDate);
+                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.Session_Date == sessionDate);
 
             if (classSession == null)
             {
@@ -186,7 +185,7 @@ namespace AttendanceSystem.API.Controllers
             }
 
             // Validate that the quiz exists
-            var quizExists = await _context.Quizzes.AnyAsync(q => q.QuizId == classSessionDto.QuizId);
+            var quizExists = await _context.Quizzes.AnyAsync(q => q.Quiz_Id == classSessionDto.Quiz_Id);
             if (!quizExists)
             {
                 return BadRequest("Invalid QuizId");
@@ -194,7 +193,7 @@ namespace AttendanceSystem.API.Controllers
 
             // Update class session properties
             classSession.Password = classSessionDto.Password;
-            classSession.QuizId = classSessionDto.QuizId;
+            classSession.Quiz_Id = classSessionDto.Quiz_Id; 
 
             try
             {
@@ -221,7 +220,7 @@ namespace AttendanceSystem.API.Controllers
         public async Task<IActionResult> DeleteClassSession(string courseId, DateTime sessionDate)
         {
             var classSession = await _context.ClassSessions
-                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.SessionDate == sessionDate);
+                .FirstOrDefaultAsync(cs => cs.Course_Id == courseId && cs.Session_Date == sessionDate);
 
             if (classSession == null)
             {
@@ -238,7 +237,7 @@ namespace AttendanceSystem.API.Controllers
         /// Checks if a class session exists in the database.
         private bool ClassSessionExists(string courseId, DateTime sessionDate)
         {
-            return _context.ClassSessions.Any(e => e.Course_Id == courseId && e.SessionDate == sessionDate);
+            return _context.ClassSessions.Any(e => e.Course_Id == courseId && e.Session_Date == sessionDate);
         }
 
         /// Generates a random password for class sessions.

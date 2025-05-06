@@ -41,18 +41,18 @@ namespace AttendanceSystem.API.Data
             // Configure Student entity
             modelBuilder.Entity<Student>()
                 .ToTable("Student")
-                .HasKey(s => s.UtdId);
+                .HasKey(s => s.Utd_Id);
 
             modelBuilder.Entity<Student>()
-                .Property(s => s.UtdId)
+                .Property(s => s.Utd_Id)
                 .HasColumnName("UTD_ID");
 
             modelBuilder.Entity<Student>()
-                .Property(s => s.FirstName)
+                .Property(s => s.First_Name)
                 .HasColumnName("FIRST_NAME");
 
             modelBuilder.Entity<Student>()
-                .Property(s => s.LastName)
+                .Property(s => s.Last_Name)
                 .HasColumnName("LAST_NAME");
 
             modelBuilder.Entity<Student>()
@@ -61,27 +61,27 @@ namespace AttendanceSystem.API.Data
 
             // Composite Primary Key for class_session
             modelBuilder.Entity<ClassSession>()
-                .HasKey(cs => new { cs.SessionDate, cs.Course_Id });
+                .HasKey(cs => new { cs.Session_Date, cs.Course_Id });
 
             // Composite Foreign Key for Attended_By -> class_session
             modelBuilder.Entity<AttendedBy>()
                 .HasOne(a => a.ClassSession)
                 .WithMany(cs => cs.AttendanceRecords)
-                .HasForeignKey(a => new { a.SessionDate, a.Course_Id });
+                .HasForeignKey(a => new { a.Session_Date, a.Course_Id });
 
             // Composite Foreign Key for Submissions -> class_session
             modelBuilder.Entity<Submission>()
                 .HasOne(s => s.ClassSession)
                 .WithMany(cs => cs.Submissions)
-                .HasForeignKey(s => new { s.SessionDate, s.Course_Id });
+                .HasForeignKey(s => new { s.Session_Date, s.Course_Id });
 
             // Configure unique constraints
             modelBuilder.Entity<AttendedBy>()
-                .HasIndex(a => new { a.SessionDate, a.Course_Id, a.UtdId })
+                .HasIndex(a => new { a.Session_Date, a.Course_Id, a.Utd_Id })
                 .IsUnique();
 
             modelBuilder.Entity<Submission>()
-                .HasIndex(s => new { s.Course_Id, s.SessionDate, s.Utd_Id, s.Quiz_Id })
+                .HasIndex(s => new { s.Course_Id, s.Session_Date, s.Utd_Id, s.Quiz_Id })
                 .IsUnique();
 
             modelBuilder.Entity<CourseStudents>()

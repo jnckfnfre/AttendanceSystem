@@ -11,22 +11,22 @@ public class AttendedBy
 {
     [Key]
     [Column("ATTENDANCE_ID")]
-    public int AttendanceId { get; set; } // Unique attendance record ID
+    public int Attendance_Id { get; set; } // Unique attendance record ID
 
     [Column("SESSION_DATE")]
-    public DateTime SessionDate { get; set; } // Date of the session
+    public DateTime Session_Date { get; set; } // Date of the session
 
     [Column("COURSE_ID")]
     public string Course_Id { get; set; } // Course attended
 
     [Column("UTD_ID")]
-    public string UtdId { get; set; } // Student who attended
+    public string Utd_Id { get; set; } // Student who attended
 
     [JsonIgnore]
-    [ForeignKey("UtdId")]
+    [ForeignKey("Utd_Id")]
     public Student Student { get; set; }
 
     [JsonIgnore]
-    [ForeignKey("Course_Id, SessionDate")]
+    [ForeignKey("Course_Id, Session_Date")]
     public ClassSession ClassSession { get; set; }
 }

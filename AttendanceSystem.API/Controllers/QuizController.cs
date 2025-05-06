@@ -85,7 +85,7 @@ namespace AttendanceSystem.API.Controllers
         [HttpGet("/Quiz/Take/{id}")] // this will handle GET requests to /Quiz/Take/{id}, {id} is the quiz ID
         public async Task<IActionResult> Take(int id){ // to retrieve a quiz by its id, including its questions and then render the quiz view
 
-            var utdId = HttpContext.Session.GetString("UtdId"); // retrieve the UTD ID from session
+            var utdId = HttpContext.Session.GetString("Utd_Id"); // retrieve the UTD ID from session
             if (string.IsNullOrEmpty(utdId))
             {
                 return RedirectToAction("Index", "QuizLogin"); // redirect to the login page if UtdId is not found in session
@@ -93,12 +93,12 @@ namespace AttendanceSystem.API.Controllers
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions) // fetch the quiz, including its related questions and question pool 
                 .Include(q => q.QuestionPool)
-                .Include(q => q.Sessions.Where(s => s.SessionDate.Date == DateTime.Today))
-                .FirstOrDefaultAsync(q => q.QuizId == id);
+                .Include(q => q.Sessions.Where(s => s.Session_Date.Date == DateTime.Today))
+                .FirstOrDefaultAsync(q => q.Quiz_Id == id);
 
             // Hamza khawaja 4/28/25 - Grab the UTD ID from TempData and persist it into ViewData
-            ViewData["UtdIs"] = TempData["UtdId"] as string;
-            ViewData["StudentName"] = TempData["StudentName"] as string;
+            ViewData["Utd_Id"] = TempData["Utd_Id"] as string;
+            ViewData["Student_Name"] = TempData["Student_Name"] as string;
 
             if (quiz == null) // if no quiz is found, return a 404, no result found
                 return NotFound();
@@ -106,9 +106,9 @@ namespace AttendanceSystem.API.Controllers
             var todaySession = quiz.Sessions.FirstOrDefault();
             if (todaySession != null)
             {
-                ViewData["UtdId"] = utdId;
-                ViewData["CourseId"] = todaySession.Course_Id;
-                ViewData["SessionDate"] = todaySession.SessionDate;
+                ViewData["Utd_Id"] = utdId;
+                ViewData["Course_Id"] = todaySession.Course_Id;
+                ViewData["Session_Date"] = todaySession.Session_Date;
             }
 
             return View(quiz);
@@ -120,7 +120,7 @@ namespace AttendanceSystem.API.Controllers
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions)
                 .Include(q => q.QuestionPool)
-                .FirstOrDefaultAsync(q => q.QuizId == id);
+                .FirstOrDefaultAsync(q => q.Quiz_Id == id);
 
             if (quiz == null)
                 return NotFound();
@@ -138,14 +138,14 @@ namespace AttendanceSystem.API.Controllers
         public async Task<IActionResult> CreateQuiz([FromBody] QuizCreateDto dto)
         {
             // Validate that the question pool exists
-            var poolExists = await _context.QuestionPools.AnyAsync(p => p.PoolId == dto.PoolId);
+            var poolExists = await _context.QuestionPools.AnyAsync(p => p.Pool_Id == dto.Pool_Id);
             if (!poolExists)
                 return BadRequest("Invalid Pool ID");
 
             var quiz = new Quiz
             { // e.g., April 16, 2025
-                DueDate = dto.DueDate,
-                PoolId = dto.PoolId,
+                Due_Date = dto.Due_Date,
+                Pool_Id = dto.Pool_Id,
                 Questions = new List<Question>(),
                 Sessions = new List<ClassSession>(),
                 Submissions = new List<Submission>()
@@ -153,7 +153,7 @@ namespace AttendanceSystem.API.Controllers
 
             _context.Quizzes.Add(quiz);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetQuizById), new { id = quiz.QuizId }, quiz);
+            return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Quiz_Id }, quiz);
         }
 
         // PUT: api/Quiz/5
@@ -165,12 +165,12 @@ namespace AttendanceSystem.API.Controllers
                 return NotFound();
 
             // Validate that the question pool exists
-            var poolExists = await _context.QuestionPools.AnyAsync(p => p.PoolId == dto.PoolId);
+            var poolExists = await _context.QuestionPools.AnyAsync(p => p.Pool_Id == dto.Pool_Id);
             if (!poolExists)
                 return BadRequest("Invalid Pool ID");
 
-            quiz.DueDate = dto.DueDate;
-            quiz.PoolId = dto.PoolId;
+            quiz.Due_Date = dto.Due_Date;
+            quiz.Pool_Id = dto.Pool_Id;
 
             try
             {
@@ -178,7 +178,7 @@ namespace AttendanceSystem.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Quizzes.Any(q => q.QuizId == id))
+                if (!_context.Quizzes.Any(q => q.Quiz_Id == id))
                     return NotFound();
                 throw;
             }

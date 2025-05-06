@@ -13,11 +13,11 @@ namespace AttendanceSystem.API.DTOs
     {
         // The unique identifier of the question pool to be updated
         [Required]
-        public int PoolId { get; set; }
+        public int Pool_Id { get; set; }
 
         // The updated name of the question pool
         // This is required for updating the pool's identifying name
         [Required]
-        public string PoolName { get; set; }
+        public string Pool_Name { get; set; }
     }
 }

@@ -13,11 +13,11 @@ namespace AttendanceSystem.API.DTOs {
 
         // First name of the student to be updated, can't be null
         [Required(ErrorMessage = "First Name is required")]
-        public string FirstName { get; set; }
+        public string First_Name { get; set; }
 
         // Last name of the student to be updated, can't be null
         [Required(ErrorMessage = "Last Name is required")]
-        public string LastName { get; set; }
+        public string Last_Name { get; set; }
 
         // UTD NetID of the student to be updated, optional
         public string? Net_Id { get; set; }

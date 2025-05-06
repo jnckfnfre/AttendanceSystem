@@ -8,7 +8,7 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
     public class ClassSession{
         [Key]
         [Column("SESSION_DATE")]
-        public DateTime SessionDate { get; set; }
+        public DateTime Session_Date { get; set; }
 
         [Key]
         [Column("COURSE_ID")]
@@ -18,12 +18,12 @@ namespace AttendanceSystem.API.Models{ //Hamza Khawaja 4/11/2025 - Fixed some of
         public string Password { get; set; }
 
         [Column("QUIZ_ID")]
-        public int QuizId { get; set; }
+        public int Quiz_Id { get; set; }
 
         [ForeignKey("Course_Id")]
         public Course Course { get; set; }
 
-        [ForeignKey("QuizId")]
+        [ForeignKey("Quiz_Id")]
         public Quiz Quiz { get; set; }
 
         public ICollection<Submission> Submissions { get; set; }

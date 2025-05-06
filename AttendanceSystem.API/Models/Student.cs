@@ -14,7 +14,7 @@ namespace AttendanceSystem.API.Models
         // It maps to the "UTD_ID" column in the Database
         [Key]
         [Column("UTD_ID")]
-        public string UtdId { get; set; }
+        public string Utd_Id { get; set; }
 
         // EF Core automatically matches property names to column names if they are the same,
         // otherwise we can use [Column()] as below
@@ -27,10 +27,10 @@ namespace AttendanceSystem.API.Models
         
 
         [Column("FIRST_NAME")]
-        public string FirstName { get; set; }  // Student's first name
+        public string First_Name { get; set; }  // Student's first name
 
         [Column("LAST_NAME")]
-        public string LastName { get; set; }   // Student's last name
+        public string Last_Name { get; set; }   // Student's last name
 
         [Column("NET_ID")]
         public string? Net_Id { get; set; }      // Student's UTD NetID used for login

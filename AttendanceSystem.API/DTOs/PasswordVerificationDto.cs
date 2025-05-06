@@ -15,7 +15,7 @@ namespace AttendanceSystem.API.DTOs
 
         /// The date of the class session for which the password is being verified.
         [Required(ErrorMessage = "SessionDate is required")]
-        public DateTime SessionDate { get; set; }
+        public DateTime Session_Date { get; set; }
 
    
         /// The password to verify against the class session's stored password.

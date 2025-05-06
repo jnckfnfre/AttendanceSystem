@@ -15,7 +15,7 @@ namespace AttendanceSystem.API.DTOs{
         public string Course_Id { get; set; }
 
         [Required]
-        public DateTime SessionDate { get; set; }
+        public DateTime Session_Date { get; set; }
 
         [Required]
         public string Utd_Id { get; set; }

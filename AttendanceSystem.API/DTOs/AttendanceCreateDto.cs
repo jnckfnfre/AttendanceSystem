@@ -7,8 +7,8 @@ namespace AttendanceSystem.API.DTOs
 {
     public class AttendanceCreateDto
     {
-        public string UtdId { get; set; }
+        public string Utd_Id { get; set; }
         public string Course_Id { get; set; }
-        public DateTime SessionDate { get; set; }
+        public DateTime Session_Date { get; set; }
     }
 } 

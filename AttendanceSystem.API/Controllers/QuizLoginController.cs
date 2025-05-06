@@ -36,20 +36,25 @@ namespace AttendanceSystem.API.Controllers
         and the password for the class session
         */
         [HttpPost]
-        public async Task<IActionResult> Authenticate(string utdId, string password)
+        public async Task<IActionResult> Authenticate(string Utd_Id, string Password)
         {
-            if (string.IsNullOrEmpty(utdId) || string.IsNullOrEmpty(password))
+            // Debug: Print received values
+            Console.WriteLine($"[DEBUG] Utd_Id: '{Utd_Id}', Password: '{Password}'");
+
+            if (string.IsNullOrEmpty(Utd_Id) || string.IsNullOrEmpty(Password))
             {
                 ViewBag.ErrorMessage = "Please enter both UTD ID and password.";
+                Console.WriteLine("[DEBUG] Returning Index with error: " + ViewBag.ErrorMessage);
                 return View("Index");
             }
 
             // check if utdId is in the database
             var student = await _context.Students
-                .FirstOrDefaultAsync(u => u.UtdId == utdId);
+                .FirstOrDefaultAsync(u => u.Utd_Id == Utd_Id);
             if (student == null)
             {
                 ViewBag.ErrorMessage = "Invalid UTD ID.";
+                Console.WriteLine("[DEBUG] Returning Index with error: " + ViewBag.ErrorMessage);
                 return View("Index");
             }   
 
@@ -58,12 +63,13 @@ namespace AttendanceSystem.API.Controllers
                 .Include(cs => cs.Quiz) // Include the quiz relationship
                 .Include(cs => cs.Course)
                 .FirstOrDefaultAsync(cs => 
-                    cs.Password == password && 
-                    cs.SessionDate.Date == DateTime.Today);
+                    cs.Password == Password && 
+                    cs.Session_Date.Date == DateTime.Today); // Hamza Khawaja 4/20/2025 - Changed SessionDate to Session_Date
             
             if (classSession == null)
             {
                 ViewBag.ErrorMessage = "Invalid or expired session password.";
+                Console.WriteLine("[DEBUG] Returning Index with error: " + ViewBag.ErrorMessage);
                 return View("Index");
             }
 
@@ -74,26 +80,31 @@ namespace AttendanceSystem.API.Controllers
             if (now < start || now > end)
             {
                 ViewBag.ErrorMessage = "You can only log in during class time.";
+                Console.WriteLine("[DEBUG] Returning Index with error: " + ViewBag.ErrorMessage);
                 return View("Index");
             }
             bool isEnrolled = await _context.CourseStudents.
-                AnyAsync(cs => cs.Course_Id == classSession.Course_Id && cs.Utd_Id == student.UtdId);
+                AnyAsync(cs => cs.Course_Id == classSession.Course_Id && cs.Utd_Id == student.Utd_Id);
 
             if (!isEnrolled)
             {
                 ViewBag.ErrorMessage = "You are not enrolled in this course.";
+                Console.WriteLine("[DEBUG] Returning Index with error: " + ViewBag.ErrorMessage);
                 return View("Index");
             }
 
             // Store UtdId in session
-            HttpContext.Session.SetString("UtdId", student.UtdId);    
+            HttpContext.Session.SetString("Utd_Id", student.Utd_Id);    
 
             // Store info for the quiz view
-            TempData["StudentName"] = $"{student.LastName}, {student.FirstName}";
+            TempData["StudentName"] = $"{student.Last_Name}, {student.First_Name}";
+
+            // Debug: Successful login
+            Console.WriteLine("[DEBUG] Login successful, redirecting to quiz.");
 
             // Redirect to take the quiz associated with this session
             return RedirectToAction("Take", "Quiz", new { 
-                id = classSession.QuizId
+                id = classSession.Quiz_Id
             });
         }
     }

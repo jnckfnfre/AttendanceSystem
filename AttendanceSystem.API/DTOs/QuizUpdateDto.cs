@@ -12,15 +12,15 @@ namespace AttendanceSystem.API.DTOs
     {
         // The unique identifier of the quiz to be updated
         [Required]
-        public int QuizId { get; set; }
+        public int Quiz_Id { get; set; }
 
         // The updated due date for the quiz
         // This is optional and can be null if the quiz has no due date
-        public DateTime? DueDate { get; set; }
+        public DateTime? Due_Date { get; set; }
 
         // The ID of the question pool associated with this quiz
         // This is required to maintain the quiz-pool relationship
         [Required]
-        public int PoolId { get; set; }
+        public int Pool_Id { get; set; }
     }
 }

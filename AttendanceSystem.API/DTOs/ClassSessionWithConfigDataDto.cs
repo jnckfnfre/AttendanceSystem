@@ -19,7 +19,7 @@ namespace AttendanceSystem.API.DTOs
 
         /// The date when the class session will take place.
         [Required(ErrorMessage = "SessionDate is required")]
-        public DateTime SessionDate { get; set; }
+        public DateTime Session_Date { get; set; }
 
         // start time for session
         [Required(ErrorMessage = "Start time is required")]
@@ -35,10 +35,10 @@ namespace AttendanceSystem.API.DTOs
         public string Password { get; set; }
 
         // due date for session quiz
-        public DateTime? DueDate { get; set; }
+        public DateTime? Due_Date { get; set; }
 
         // question pool id for quiz
          [Required(ErrorMessage = "Pool Id is required")]
-        public int PoolId { get; set; }
+        public int Pool_Id { get; set; }
     }
 } 

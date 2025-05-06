@@ -14,9 +14,9 @@ namespace AttendanceSystem.API.DTOs
         // The name of the question pool
         // This is required as every pool must have a name to identify it
         [Required]
-        public string PoolName { get; set; }
+        public string Pool_Name { get; set; }
 
         [Required]
-        public string CourseId { get; set; }
+        public string Course_Id { get; set; }
     }
 } 

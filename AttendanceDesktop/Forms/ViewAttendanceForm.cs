@@ -1087,7 +1087,7 @@ namespace AttendanceDesktop
             public DateTime sessionDate { get; set; }
             public string utd_Id { get; set; }
             public string student_Name { get; set; }
-            public int quiz_Id { get; set; }
+            public int? quiz_Id { get; set; }
             public string ip_Address { get; set; }
             public DateTime submission_Time { get; set; }
             public string answer_1 { get; set; }

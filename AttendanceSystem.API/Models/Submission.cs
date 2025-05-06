@@ -22,7 +22,7 @@ public class Submission
     public string Utd_Id { get; set; }
 
     [Column("QUIZ_ID")]
-    public int Quiz_Id { get; set; }
+    public int? Quiz_Id { get; set; }
 
     [Column("IP_ADDRESS")]
     public string Ip_Address { get; set; }

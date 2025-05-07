@@ -220,7 +220,7 @@ public class SubmissionsController : Controller {
 
         // Get the client IP
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
 
         // Update the submission fields
         submission.Ip_Address = ip ?? "0.0.0.0";

@@ -63,9 +63,9 @@ public partial class AddStudentsForm : Form
         // fields don't match headers from sample file so need to map
         var headerToFieldMap = new Dictionary<string, string>
         {
-            { "Student ID", "utdId" },
-            { "First Name", "firstName" },
-            { "Last Name", "lastName" },
+            { "Student ID", "Utd_Id" },
+            { "First Name", "First_Name" },
+            { "Last Name", "Last_Name" },
             { "Username", "Net_Id" }
         };
 
@@ -108,12 +108,12 @@ public partial class AddStudentsForm : Form
                 }
 
                 // add course links to list
-                if (student.ContainsKey("utdId") && !string.IsNullOrEmpty(courseId))
+                if (student.ContainsKey("Utd_Id") && !string.IsNullOrEmpty(courseId))
                 {
                     courseLinks.Add(new Dictionary<string, string>
                     {
-                        { "utd_Id", student["utdId"] },
-                        { "course_Id", courseId }
+                        { "Utd_Id", student["Utd_Id"] },
+                        { "Course_Id", courseId }
                     });
                 }
 

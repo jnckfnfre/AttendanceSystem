@@ -69,12 +69,12 @@ public partial class CreateQuestionBankForm : Form
                         questions.Add(new
                         {
                             Text = text,
-                            OptionA = a,
-                            OptionB = b,
-                            OptionC = string.IsNullOrWhiteSpace(c) ? null : c,
-                            OptionD = string.IsNullOrWhiteSpace(d) ? null : d,
-                            CorrectAnswer = correct,
-                            PoolId = this.poolId
+                            Option_A = a,
+                            Option_B = b,
+                            Option_C = string.IsNullOrWhiteSpace(c) ? null : c,
+                            Option_D = string.IsNullOrWhiteSpace(d) ? null : d,
+                            Correct_Answer = correct,
+                            Pool_Id = this.poolId
                         });
                     }
                 }

@@ -44,7 +44,7 @@ public partial class NewQuestionBankForm : Form
                 // Create Question Pool
                 var poolPayload = new
                 {
-                    PoolName = poolName,
+                    Pool_Name = poolName,
                     Course_Id = courseID
                 };
 
@@ -73,7 +73,7 @@ public partial class NewQuestionBankForm : Form
 
                 // Get pool id from response
                 string poolJson = await poolResponse.Content.ReadAsStringAsync();
-                int poolId = JsonDocument.Parse(poolJson).RootElement.GetProperty("poolId").GetInt32();
+                int poolId = JsonDocument.Parse(poolJson).RootElement.GetProperty("pool_Id").GetInt32();
 
                 CreateQuestionBankForm createQBForm = new CreateQuestionBankForm(poolId);
                 createQBForm.Show();

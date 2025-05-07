@@ -202,7 +202,7 @@ namespace AttendanceDesktop
                 {
                     var question = new CourseQuestionPoolQuestion
                     {
-                        PoolId = (int)row.Cells["PoolId"].Value,
+                        PoolId = (int)row.Cells["Pool_Id"].Value,
                         QuestionId = (int)row.Cells["QuestionId"].Value,
                         Text = row.Cells["Text"].Value?.ToString(),
                         OptionA = row.Cells["OptionA"].Value?.ToString(),
@@ -251,8 +251,8 @@ namespace AttendanceDesktop
                     // Create quiz
                     var quizDto = new
                     {
-                        DueDate = dueDate,
-                        PoolId = poolId
+                        Due_Date = dueDate,
+                        Pool_Id = poolId
                     };
 
                     // This API endpoint is responsible for creating a new quiz
@@ -271,7 +271,7 @@ namespace AttendanceDesktop
                     
                     // Deserialize the response to get the quiz ID
                     var quizJson = await quizResponse.Content.ReadAsStringAsync();
-                    int createdQuizId = JsonSerializer.Deserialize<JsonElement>(quizJson).GetProperty("quizId").GetInt32();
+                    int createdQuizId = JsonSerializer.Deserialize<JsonElement>(quizJson).GetProperty("quiz_Id").GetInt32();
 
                     // Prepare for rollback if needed
                     bool rollbackNeeded = true;
@@ -287,15 +287,15 @@ namespace AttendanceDesktop
                         // This is necessary because the API expects a specific structure for the request body
                         var updateDtos = selectedQuestions.Select(q => new
                         {
-                            QuestionsId = q.QuestionId,
+                            Questions_Id = q.QuestionId,
                             Text = q.Text,
-                            OptionA = q.OptionA,
-                            OptionB = q.OptionB,
-                            OptionC = q.OptionC,
-                            OptionD = q.OptionD,
-                            CorrectAnswer = q.CorrectAnswer,
-                            QuizId = q.QuizId,
-                            PoolId = q.PoolId
+                            Option_A = q.OptionA,
+                            Option_B = q.OptionB,
+                            Option_C = q.OptionC,
+                            Option_D = q.OptionD,
+                            Correct_Answer = q.CorrectAnswer,
+                            Quiz_Id = q.QuizId,
+                            Pool_Id = q.PoolId
                         }).ToList();
 
                         // Send POST request to assign quiz to questions
@@ -316,9 +316,9 @@ namespace AttendanceDesktop
                         var classSessionDto = new
                         {
                             Course_Id = selectedCourse.CourseId,
-                            SessionDate = dueDate,
+                            Session_Date = dueDate,
                             Password = passwordTextBox.Text.Trim(),
-                            QuizId = createdQuizId
+                            Quiz_Id = createdQuizId
                         };
 
                         // Send POST request to create class session
@@ -343,7 +343,7 @@ namespace AttendanceDesktop
                         var submissionDtos = students.Select(s => new
                         {
                             Course_Id = selectedCourse.CourseId,
-                            SessionDate = dueDate,
+                            Session_Date = dueDate,
                             Utd_Id = s.Utd_Id,
                             Quiz_Id = createdQuizId,
                             Ip_Address = "0.0.0.0",

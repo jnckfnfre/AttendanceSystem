@@ -89,29 +89,27 @@ public class CourseStudentsController : ControllerBase {
         return CreatedAtAction(nameof(GetCourseStudents), new { id = courseStudent.Course_Id, Utd_Id = courseStudent.Utd_Id }, courseStudent);
     }
 
-    // POST: api/Courses/batch-upload
-    // batch upload courses
-    // [HttpPost("batch-upload")]
-    // public async Task<IActionResult> BatchUploadCourses([FromBody] List<CourseCreateDto> courseDtos)
-    // {
-    //     if (courseDtos == null || courseDtos.Count == 0)
-    //     {
-    //         return BadRequest("No courses provided for upload.");
-    //     }
+    // POST: api/CourseStudents/batch-upload
+    // batch upload students with their associated course
+    [HttpPost("batch-upload")]
+    public async Task<IActionResult> BatchUploadCourseStudents([FromBody] List<CourseStudentsCreateDto> dtoList)
+    {
+        if (dtoList == null || dtoList.Count == 0)
+        {
+            return BadRequest("No student-course links provided.");
+        }
 
-    //     var courses = courseDtos.Select(dto => new Course
-    //     {
-    //         Course_Id = dto.Course_Id,
-    //         Course_Name = dto.Course_Name,
-    //         Start_Time = dto.Start_Time,
-    //         End_Time = dto.End_Time
-    //     }).ToList();
+        var courseStudents = dtoList.Select(dto => new CourseStudents
+        {
+            Utd_Id = dto.Utd_Id,
+            Course_Id = dto.Course_Id
+        }).ToList();
 
-    //     await _context.Courses.AddRangeAsync(courses);
-    //     await _context.SaveChangesAsync();
+        await _context.CourseStudents.AddRangeAsync(courseStudents);
+        await _context.SaveChangesAsync();
 
-    //     return Ok(new { inserted = courses.Count });
-    // }
+        return Ok(new { inserted = courseStudents.Count });
+    }
 
     // PUT: api/Courses/{id}
     // Updates a course

@@ -63,10 +63,11 @@ partial class AddStudentsForm
         this.courseDropdown.Width = 500;
         this.courseDropdown.TabIndex = 1;
         this.courseDropdown.Anchor = AnchorStyles.None;
+        this.courseDropdown.SelectedIndexChanged += new EventHandler(this.courseDropdown_SelectedIndexChanged);
 
         // button for professor to add students
         this.uploadButton = new Button();
-        this.uploadButton.Text = "Add Students";
+        this.uploadButton.Text = "Upload CSV";
         this.uploadButton.Size = new Size(300, 100);
         this.uploadButton.BackColor = Color.FromArgb(199, 91, 18); // orange
         this.uploadButton.ForeColor = Color.White;

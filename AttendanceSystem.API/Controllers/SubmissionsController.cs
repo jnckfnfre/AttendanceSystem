@@ -186,6 +186,7 @@ public class SubmissionsController : Controller {
 
 
     
+    // David Sajdak 5/7/2025
     // PUT: api/Submissions/{id}
     // Updates only modifiable fields of a submission (answers and status)
     [HttpPut]
@@ -230,7 +231,7 @@ public class SubmissionsController : Controller {
         submission.Status = dto.Status;
 
         await _context.SaveChangesAsync();
-        return NoContent();
+        return RedirectToAction("Confirmation", "Quiz");
     }
 
     // DELETE: api/Submissions/{id}

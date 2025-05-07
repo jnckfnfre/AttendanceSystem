@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Text.Json;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace AttendanceDesktop
 {
@@ -234,10 +235,10 @@ namespace AttendanceDesktop
                             .Where(element =>
                                 element.TryGetProperty("course_Id", out var cidProp) &&
                                 cidProp.GetString() == courseId &&
-                                element.TryGetProperty("sessionDate", out _)) //&&
+                                element.TryGetProperty("session_Date", out _)) //&&
                                 //element.TryGetProperty("quizId", out _))
                             .Select(element =>
-                                $"{element.GetProperty("sessionDate").GetString()}")
+                                $"{element.GetProperty("session_Date").GetString()}")
                             .ToList();
 
 
@@ -655,7 +656,7 @@ namespace AttendanceDesktop
                     response.EnsureSuccessStatusCode();
 
                     var json = await response.Content.ReadAsStringAsync();
-                    //MessageBox.Show(json);
+                    // MessageBox.Show(json);
 
                     var options = new JsonSerializerOptions
                     {
@@ -665,7 +666,7 @@ namespace AttendanceDesktop
                     allSubmissions = JsonSerializer.Deserialize<List<Submission>>(json, options);
                 }
 
-                //MessageBox.Show($"Selected Course ID: {selectedCourse.CourseId}, Selected Session: {selectedSession}");
+                // MessageBox.Show($"Selected Course ID: {selectedCourse.CourseId}, Selected Session: {selectedSession}");
 
                 // Filter for selected course and session
                 var filteredSubmissions = allSubmissions
@@ -1084,6 +1085,8 @@ namespace AttendanceDesktop
         {
             public int submission_Id { get; set; }
             public string course_Id { get; set; }
+
+            [JsonPropertyName("session_Date")]
             public DateTime sessionDate { get; set; }
             public string utd_Id { get; set; }
             public string student_Name { get; set; }

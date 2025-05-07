@@ -48,12 +48,12 @@ public partial class ConfigurationTableForm : Form
                     {
                         Course_Id = e.GetProperty("course_Id").GetString(),
                         Course_Name = e.GetProperty("course_Name").GetString(),
-                        SessionDate = e.GetProperty("sessionDate").GetDateTime(),
+                        SessionDate = e.GetProperty("session_Date").GetDateTime(),
                         Start_Time = TimeSpan.Parse(e.GetProperty("start_Time").GetString()),
                         End_Time = TimeSpan.Parse(e.GetProperty("end_Time").GetString()),
                         Password = e.GetProperty("password").GetString(),
-                        DueDate = e.TryGetProperty("dueDate", out var due) ? due.GetDateTime() : (DateTime?)null,
-                        PoolId = e.GetProperty("poolId").GetInt32()
+                        DueDate = e.TryGetProperty("due_Date", out var due) ? due.GetDateTime() : (DateTime?)null,
+                        PoolId = e.GetProperty("pool_Id").GetInt32()
                     })
                     .ToList();
 

@@ -202,7 +202,7 @@ namespace AttendanceDesktop
                 {
                     var question = new CourseQuestionPoolQuestion
                     {
-                        PoolId = (int)row.Cells["Pool_Id"].Value,
+                        PoolId = (int)row.Cells["PoolId"].Value,
                         QuestionId = (int)row.Cells["QuestionId"].Value,
                         Text = row.Cells["Text"].Value?.ToString(),
                         OptionA = row.Cells["OptionA"].Value?.ToString(),
@@ -259,6 +259,8 @@ namespace AttendanceDesktop
                     // It expects a JSON object with the due date and pool ID
                     string quizApiUrl = "http://localhost:5257/api/quiz";
                     var quizContent = new StringContent(JsonSerializer.Serialize(quizDto), Encoding.UTF8, "application/json");
+                    // string json = quizContent.ReadAsStringAsync().Result;
+                    // MessageBox.Show(json, "Serialized Quiz Content");
                     
                     // Send POST request to create quiz
                     HttpResponseMessage quizResponse = await client.PostAsync(quizApiUrl, quizContent);
@@ -316,7 +318,7 @@ namespace AttendanceDesktop
                         var classSessionDto = new
                         {
                             Course_Id = selectedCourse.CourseId,
-                            Session_Date = dueDate,
+                            SessionDate = dueDate,
                             Password = passwordTextBox.Text.Trim(),
                             Quiz_Id = createdQuizId
                         };
@@ -487,34 +489,34 @@ namespace AttendanceDesktop
         [JsonPropertyName("end_Time")]
         public string EndTime { get; set; } // Also a time string
 
-        [JsonPropertyName("poolId")]
+        [JsonPropertyName("pool_Id")]
         public int PoolId { get; set; }
 
-        [JsonPropertyName("poolName")]
+        [JsonPropertyName("pool_Name")]
         public string PoolName { get; set; }
 
-        [JsonPropertyName("questionId")]
+        [JsonPropertyName("question_Id")]
         public int QuestionId { get; set; }
 
         [JsonPropertyName("text")]
         public string Text { get; set; }
 
-        [JsonPropertyName("optionA")]
+        [JsonPropertyName("option_A")]
         public string OptionA { get; set; }
 
-        [JsonPropertyName("optionB")]
+        [JsonPropertyName("option_B")]
         public string OptionB { get; set; }
 
-        [JsonPropertyName("optionC")]
+        [JsonPropertyName("option_C")]
         public string OptionC { get; set; }
 
-        [JsonPropertyName("optionD")]
+        [JsonPropertyName("option_D")]
         public string OptionD { get; set; }
 
-        [JsonPropertyName("correctAnswer")]
+        [JsonPropertyName("correct_Answer")]
         public string CorrectAnswer { get; set; }
 
-        [JsonPropertyName("quizId")]
+        [JsonPropertyName("quiz_Id")]
         public int? QuizId { get; set; }
     }
 

@@ -158,6 +158,8 @@ namespace AttendanceSystem.API.Controllers
                 Submissions = new List<Submission>()
             };
 
+            // return BadRequest($"Pool_id: {quiz.Pool_Id}, Due_Date: {quiz.Due_Date}");
+
             _context.Quizzes.Add(quiz);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Quiz_Id }, quiz);

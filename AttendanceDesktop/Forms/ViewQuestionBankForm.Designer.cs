@@ -92,8 +92,8 @@ namespace AttendanceDesktop
             this.classFilterLabel.AutoSize = true;
             this.classFilterLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.classFilterLabel.ForeColor = primaryColor;
-            this.classFilterLabel.Location = new System.Drawing.Point(15, 15);
-            this.classFilterLabel.Text = "Class Section:";
+            this.classFilterLabel.Location = new System.Drawing.Point(1, 15);
+            this.classFilterLabel.Text = "Courses:";
             this.classFilterLabel.Name = "classFilterLabel";
            
             //

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.Json.Serialization;
 
 namespace AttendanceDesktop
 {
@@ -46,11 +47,21 @@ namespace AttendanceDesktop
             questionBankGrid.Columns.Clear();
             questionBankGrid.Columns.Add("QuestionId", "Question ID");
             questionBankGrid.Columns.Add("Text", "Question Text");
+            questionBankGrid.Columns.Add("Option_A", "Option A");
+            questionBankGrid.Columns.Add("Option_B", "Option B");
+            questionBankGrid.Columns.Add("Option_C", "Option C");
+            questionBankGrid.Columns.Add("Option_D", "Option D");
+            questionBankGrid.Columns.Add("Correct_Answer", "Correct Answer");
             questionBankGrid.Columns.Add("PoolName", "Pool Name");
             questionBankGrid.Columns.Add("course_Id", "Course ID");
 
             questionBankGrid.Columns["QuestionId"].Width = 100;
             questionBankGrid.Columns["Text"].Width = 350;
+            questionBankGrid.Columns["Option_A"].Width = 350;
+            questionBankGrid.Columns["Option_B"].Width = 350;
+            questionBankGrid.Columns["Option_C"].Width = 350;
+            questionBankGrid.Columns["Option_D"].Width = 350;
+            questionBankGrid.Columns["Correct_Answer"].Width = 100;
             questionBankGrid.Columns["PoolName"].Width = 150;
             questionBankGrid.Columns["course_Id"].Width = 120;
 
@@ -176,7 +187,7 @@ namespace AttendanceDesktop
             questionBankGrid.Rows.Clear();
             foreach (var q in filteredQuestions)
             {
-                questionBankGrid.Rows.Add(q.QuestionId, q.Text, q.PoolName, q.course_Id);
+                questionBankGrid.Rows.Add(q.QuestionId, q.Text, q.Option_A, q.Option_B, q.Option_C, q.Option_D, q.Correct_Answer, q.PoolName, q.course_Id);
             }
 
             UpdateStatus($"Showing {filteredQuestions.Count} of {allQuestions.Count} questions", false);
@@ -214,8 +225,21 @@ namespace AttendanceDesktop
 
         private class QuestionBankViewDto
         {
+            [JsonPropertyName("question_Id")]
             public int QuestionId { get; set; }
             public string Text { get; set; }
+
+            public string Option_A { get; set; } = string.Empty;
+
+            public string Option_B { get; set; } = string.Empty;
+
+            public string? Option_C { get; set; }
+
+            public string? Option_D { get; set; }
+
+            public string Correct_Answer { get; set; } = string.Empty;
+
+            [JsonPropertyName("pool_Name")]
             public string PoolName { get; set; }
             public string course_Id { get; set; }
         }

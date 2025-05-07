@@ -189,24 +189,6 @@ namespace AttendanceSystem.API.Controllers
         }
 
         //Maha Shaikh 4/24/2025
-        // [HttpGet("view-question-banks")]
-        // public ActionResult<IEnumerable<QuestionBankViewDto>> GetQuestionBankView()
-        // {
-        //     var questionData = _context.Questions
-        //         .Include(q => q.QuestionPool)
-        //         .Include(q => q.Course)
-        //         .Select(q => new QuestionBankViewDto
-        //         {
-        //             QuestionId = q.QuestionId,
-        //             Text = q.Text, 
-        //             PoolName = q.QuestionPool.PoolName, 
-        //             Course_Id = q.Course.Course_Id,     
-        //         })
-        //         .ToList();
-
-        //     return Ok(questionData);
-        // }
-
         [HttpGet("view-question-banks")]
         public ActionResult<IEnumerable<QuestionBankViewDto>> GetQuestionBankView()
         {
@@ -217,6 +199,11 @@ namespace AttendanceSystem.API.Controllers
                 {
                     Question_Id = q.Question_Id,
                     Text = q.Text,
+                    Option_A = q.Option_A,
+                    Option_B = q.Option_B,
+                    Option_C = q.Option_C,
+                    Option_D = q.Option_D,
+                    Correct_Answer = q.Correct_Answer,
                     Pool_Name = q.QuestionPool.Pool_Name,
                     Course_Id = q.QuestionPool.Course.Course_Id // Access Course via QuestionPool
                 })

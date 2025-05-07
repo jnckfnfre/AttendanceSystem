@@ -11,10 +11,24 @@ namespace AttendanceDesktop;
 
 public partial class AddStudentsForm : Form
 {
+    private string courseId;
+
     public AddStudentsForm()
     {
         InitializeComponent();
         LoadCourses();
+    }
+
+    /*
+        David Sajdak 5/6/205
+        saves selected course id for later use
+    */
+    private void courseDropdown_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (courseDropdown.SelectedItem is Course selectedCourse)
+        {
+            this.courseId = selectedCourse.CourseId;
+        }
     }
 
     /*
@@ -36,13 +50,15 @@ public partial class AddStudentsForm : Form
 
     /*
         David Sajdak Started: 04/09/2025 Moved to this form from Form.cs 5/5/2025
+        Revised 5/6/2025 to include upload to CourseStudents table
         Takes file path, reads file and sends batch upload
         request to api which interacts with database to insert
         new rows to students table
     */
     private async void CSVToMySQL(string path) {
         // api endpoint
-        string apiUrl = "http://localhost:5257/api/students/batch-upload";
+        string studentUrl = "http://localhost:5257/api/students/batch-upload"; // for posting to students table
+        string courseStudentUrl = "http://localhost:5257/api/CourseStudents/batch-upload"; // for posting to CourseStudents table
 
         // fields don't match headers from sample file so need to map
         var headerToFieldMap = new Dictionary<string, string>
@@ -55,6 +71,7 @@ public partial class AddStudentsForm : Form
 
         // define list of students to uplaod
         var students = new List<Dictionary<string, string>>();
+        var courseLinks = new List<Dictionary<string, string>>(); // list for course student links 
         
         using (var reader = new StreamReader(path))
         {
@@ -90,6 +107,16 @@ public partial class AddStudentsForm : Form
                     }
                 }
 
+                // add course links to list
+                if (student.ContainsKey("utdId") && !string.IsNullOrEmpty(courseId))
+                {
+                    courseLinks.Add(new Dictionary<string, string>
+                    {
+                        { "utd_Id", student["utdId"] },
+                        { "course_Id", courseId }
+                    });
+                }
+
                 students.Add(student);
             }
         }
@@ -101,7 +128,7 @@ public partial class AddStudentsForm : Form
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // send request to client
-            var response = await client.PostAsync(apiUrl, content);
+            var response = await client.PostAsync(studentUrl, content);
 
             // check for successful response and send message
             if (response.IsSuccessStatusCode)
@@ -112,6 +139,25 @@ public partial class AddStudentsForm : Form
             {
                 string errorMsg = await response.Content.ReadAsStringAsync();
                 MessageBox.Show("Upload failed: " + errorMsg);
+            }
+
+            // serialize list of course-student links
+            var linkJson = JsonSerializer.Serialize(courseLinks);
+            var linkContent = new StringContent(linkJson, Encoding.UTF8, "application/json");
+
+            // post to database
+            var linkResponse = await client.PostAsync(courseStudentUrl, linkContent);
+
+            // validate success
+            if (linkResponse.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Students and course associations uploaded successfully.");
+                this.Close();
+            }
+            else
+            {
+                string err = await linkResponse.Content.ReadAsStringAsync();
+                MessageBox.Show("Students uploaded, but course-student upload failed: " + err);
             }
         }
     }

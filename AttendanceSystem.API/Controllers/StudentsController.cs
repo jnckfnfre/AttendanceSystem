@@ -90,24 +90,38 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> BatchUploadStudents([FromBody] List<StudentCreateDto> studentDtos)
     {
         if (studentDtos == null || studentDtos.Count == 0)
-        {
-            return BadRequest("No students provided for upload.");
-        }
+            return BadRequest("No students provided.");
 
-        var students = studentDtos.Select(dto => new Student
-        {
-            Utd_Id = dto.Utd_Id,
-            First_Name = dto.First_Name,
-            Last_Name = dto.Last_Name,
-            Net_Id = dto.Net_Id
-        }).ToList();
+        // get Utd_Ids from incoming request
+        var incomingIds = studentDtos.Select(s => s.Utd_Id).ToList();
 
-        await _context.Students.AddRangeAsync(students);
+        // find which ones already exist
+        var existingIds = await _context.Students
+            .Where(s => incomingIds.Contains(s.Utd_Id))
+            .Select(s => s.Utd_Id)
+            .ToListAsync();
+
+        // filter out exitsing students
+        var newStudents = studentDtos
+            .Where(s => !existingIds.Contains(s.Utd_Id))
+            .Select(dto => new Student
+            {
+                Utd_Id = dto.Utd_Id,
+                First_Name = dto.First_Name,
+                Last_Name = dto.Last_Name,
+                Net_Id = dto.Net_Id
+            })
+            .ToList();
+
+        await _context.Students.AddRangeAsync(newStudents);
         await _context.SaveChangesAsync();
 
-        return Ok(new { inserted = students.Count });
+        return Ok(new
+        {
+            inserted = newStudents.Count,
+            skipped = existingIds.Count
+        });
     }
-
 
     // PUT: api/Students/{id}
     [HttpPut("{id}")]

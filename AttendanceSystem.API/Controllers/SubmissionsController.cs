@@ -188,17 +188,45 @@ public class SubmissionsController : Controller {
     
     // PUT: api/Submissions/{id}
     // Updates only modifiable fields of a submission (answers and status)
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSubmission(int id, [FromBody] SubmissionUpdateDto dto) {
-        var submission = await _context.Submissions.FindAsync(id);
+    [HttpPut]
+    public async Task<IActionResult> UpdateSubmission([FromForm] SubmissionCreateDto dto) {
+        // Retrieve UtdId, course id, session date, and quiz id from session
+        var utdId = HttpContext.Session.GetString("Utd_Id");
+        if (string.IsNullOrEmpty(utdId))
+        {
+            return BadRequest("Utd_Id is missing. Please log in again.");
+        }
+
+        var courseId = HttpContext.Session.GetString("Course_Id");
+        var sessionDate = HttpContext.Session.GetString("Session_Date");
+        var quizId = HttpContext.Session.GetInt32("Quiz_Id");
+
+        // parse and validate session date
+        if (!DateTime.TryParse(sessionDate, out var parsedSessionDate))
+            return BadRequest("Invalid session date");
+        
+        // grab appropiate submission
+        var submission = await _context.Submissions
+            .FirstOrDefaultAsync(s =>
+                s.Utd_Id == utdId &&
+                s.Course_Id == courseId &&
+                s.Session_Date.Date == parsedSessionDate.Date &&
+                s.Quiz_Id == quizId);
+
         if (submission == null) {
             return NotFound();
         }
 
-        // Only update modifiable fields
-        submission.Answer_1 = dto.Answer_1;
-        submission.Answer_2 = dto.Answer_2;
-        submission.Answer_3 = dto.Answer_3;
+        // Get the client IP
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var now = DateTime.UtcNow;
+
+        // Update the submission fields
+        submission.Ip_Address = ip ?? "0.0.0.0";
+        submission.Submission_Time = now;
+        submission.Answer_1 = dto.Answers.ElementAtOrDefault(0) ?? "x";
+        submission.Answer_2 = dto.Answers.ElementAtOrDefault(1) ?? "x";
+        submission.Answer_3 = dto.Answers.ElementAtOrDefault(2) ?? "x";
         submission.Status = dto.Status;
 
         await _context.SaveChangesAsync();

@@ -93,8 +93,11 @@ namespace AttendanceSystem.API.Controllers
                 return View("Index");
             }
 
-            // Store UtdId in session
-            HttpContext.Session.SetString("Utd_Id", student.Utd_Id);    
+            // Store UtdId, course id, session dat, and quiz id in session
+            HttpContext.Session.SetString("Utd_Id", student.Utd_Id);
+            HttpContext.Session.SetString("Course_Id", classSession.Course_Id);
+            HttpContext.Session.SetString("Session_Date", classSession.Session_Date.ToString("yyyy-MM-dd"));
+            HttpContext.Session.SetInt32("Quiz_Id", classSession.Quiz_Id); 
 
             // Store info for the quiz view
             TempData["StudentName"] = $"{student.Last_Name}, {student.First_Name}";

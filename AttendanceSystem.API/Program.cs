@@ -38,6 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpMethodOverride(new HttpMethodOverrideOptions
+{
+    FormFieldName = "_method" // explicitly allow form field
+});  // Allows HTTP method override
 app.UseHttpsRedirection(); //redirects HTTP requests to HTTPS
 app.UseStaticFiles(); // Add static files support
 app.UseRouting(); // Add routing support

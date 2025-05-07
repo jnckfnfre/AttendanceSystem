@@ -33,6 +33,7 @@
                     </div>
                     <div class="card-body px-4 py-5">
                         <form action="/api/Submissions" method="post">
+                            <input type="hidden" name="_method" value="PUT"/>
                             @for (int i = 0; i < qs.Count; i++)
                             {
                                 var q = qs[i];

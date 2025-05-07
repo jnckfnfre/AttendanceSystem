@@ -15,9 +15,8 @@ namespace AttendanceSystem.API.DTOs
         public string Ip_Address { get; set; } = "0.0.0.0";
         public DateTime Submission_Time { get; set; } = DateTime.Parse("1900-01-01T00:00:00");
 
-        public string Answer_1 { get; set; } = "x";
-        public string Answer_2 { get; set; } = "x";
-        public string Answer_3 { get; set; } = "x";
+        [Required(ErrorMessage = "Answers are required")]
+        public string[] Answers { get; set; } = new string[3] { "x", "x", "x" };
         public string Status { get; set; } = "absent";
     }
 

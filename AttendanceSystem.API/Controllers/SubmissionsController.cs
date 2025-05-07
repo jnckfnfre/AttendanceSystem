@@ -134,11 +134,11 @@ public class SubmissionsController : Controller {
             Session_Date = dto.Session_Date,
             Utd_Id = utdId, // Use the UtdId from session
             Quiz_Id = dto.Quiz_Id,
-            Ip_Address = ip,
+            Ip_Address = ip ?? "0.0.0.0",
             Submission_Time = now,
-            Answer_1 = dto.Answer_1,
-            Answer_2 = dto.Answer_2,
-            Answer_3 = dto.Answer_3,
+            Answer_1 = dto.Answers.ElementAtOrDefault(0) ?? "x",
+            Answer_2 = dto.Answers.ElementAtOrDefault(1) ?? "x",
+            Answer_3 = dto.Answers.ElementAtOrDefault(2) ?? "x",
             Status = dto.Status
         };
 
@@ -172,9 +172,9 @@ public class SubmissionsController : Controller {
                 Quiz_Id = dto.Quiz_Id,
                 Ip_Address = dto.Ip_Address,
                 Submission_Time = dto.Submission_Time,
-                Answer_1 = dto.Answer_1,
-                Answer_2 = dto.Answer_2,
-                Answer_3 = dto.Answer_3,
+                Answer_1 = dto.Answers.ElementAtOrDefault(0) ?? "x",
+                Answer_2 = dto.Answers.ElementAtOrDefault(1) ?? "x",
+                Answer_3 = dto.Answers.ElementAtOrDefault(2) ?? "x",
                 Status = dto.Status
             };
             _context.Submissions.Add(submission);

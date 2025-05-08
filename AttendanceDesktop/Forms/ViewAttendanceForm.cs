@@ -88,7 +88,7 @@ namespace AttendanceDesktop
 
             // Class Label
             this.classLabel = new Label();
-            this.classLabel.Text = "Class:";
+            this.classLabel.Text = "Course:";
             this.classLabel.Font = new System.Drawing.Font("Segoe UI", 10F, FontStyle.Bold);
             this.classLabel.ForeColor = primaryColor;
             this.classLabel.Location = new System.Drawing.Point(50, 70);
@@ -200,9 +200,6 @@ namespace AttendanceDesktop
                     {
                         classComboBox.Items.Add(course);
                     }
-
-                    classComboBox.DisplayMember = "CourseName";
-                    classComboBox.ValueMember = "CourseId";
                 }
             }
             catch (Exception ex)
@@ -235,10 +232,13 @@ namespace AttendanceDesktop
                             .Where(element =>
                                 element.TryGetProperty("course_Id", out var cidProp) &&
                                 cidProp.GetString() == courseId &&
-                                element.TryGetProperty("session_Date", out _)) //&&
-                                //element.TryGetProperty("quizId", out _))
+                                element.TryGetProperty("session_Date", out _)) 
                             .Select(element =>
-                                $"{element.GetProperty("session_Date").GetString()}")
+                            {
+                                string rawDate = element.GetProperty("session_Date").GetString();
+                                DateTime parsedDate = DateTime.Parse(rawDate);
+                                return parsedDate.ToString("yyyy-MM-dd");
+                            })  
                             .ToList();
 
 
@@ -824,17 +824,20 @@ namespace AttendanceDesktop
                                 return;
                             }
 
+                            // Capitalize the first letter of the new status
+                            string capitalizedStatus = char.ToUpper(newStatus[0]) + newStatus.Substring(1).ToLower();
+
                             // Update only the status while preserving existing answers
                             bool success = await UpdateStatusInDatabase(
                                 submission.submission_Id,
                                 currentSubmission.answer_1,  // original answer 1
                                 currentSubmission.answer_2,  // original answer 2
                                 currentSubmission.answer_3,  // original answer 3
-                                newStatus.ToLower());
+                                capitalizedStatus);
                             
                             if (success)
                             {
-                                submission.status = newStatus.ToLower();
+                                submission.status = char.ToUpper(newStatus[0]) + newStatus.Substring(1).ToLower();
                                 this.attendanceDataGridView.Refresh();
                                 MessageBox.Show($"Status updated to {newStatus} for {submission.student_Name}");
                             }
@@ -1077,7 +1080,7 @@ namespace AttendanceDesktop
             public string CourseName { get; set; }
             public override string ToString()
             {
-                return CourseName; // Ensures the name shows in the dropdown
+                return $"{CourseId} - {CourseName}"; // Ensures the course id and name shows in the dropdown
             }
         }
 

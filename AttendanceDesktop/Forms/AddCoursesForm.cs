@@ -45,7 +45,7 @@ public partial class AddCoursesForm : Form
             {
                 if (control is CourseEntryControl c)
                 {
-                    string courseId = c.CourseIdTextBox.Text.Trim();
+                    string courseId = c.CourseIdTextBox.Text.Replace(" ", "").Trim();
                     string courseName = c.CourseNameTextBox.Text.Trim();
                     string startTime = c.StartTimePicker.Value.ToString("HH:mm:ss");
                     string endTime = c.EndTimePicker.Value.ToString("HH:mm:ss");

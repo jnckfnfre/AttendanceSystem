@@ -55,16 +55,6 @@ namespace AttendanceDesktop
             questionBankGrid.Columns.Add("PoolName", "Pool Name");
             questionBankGrid.Columns.Add("course_Id", "Course ID");
 
-            questionBankGrid.Columns["QuestionId"].Width = 100;
-            questionBankGrid.Columns["Text"].Width = 350;
-            questionBankGrid.Columns["Option_A"].Width = 350;
-            questionBankGrid.Columns["Option_B"].Width = 350;
-            questionBankGrid.Columns["Option_C"].Width = 350;
-            questionBankGrid.Columns["Option_D"].Width = 350;
-            questionBankGrid.Columns["Correct_Answer"].Width = 100;
-            questionBankGrid.Columns["PoolName"].Width = 150;
-            questionBankGrid.Columns["course_Id"].Width = 120;
-
             questionBankGrid.EnableHeadersVisualStyles = false;
             questionBankGrid.ColumnHeadersDefaultCellStyle.BackColor = secondaryColor;
             questionBankGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
@@ -83,7 +73,9 @@ namespace AttendanceDesktop
             questionBankGrid.BorderStyle = BorderStyle.None;
             questionBankGrid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             questionBankGrid.GridColor = Color.FromArgb(224, 224, 224);
+            questionBankGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
         }
+
 
         private async Task LoadClassSectionsAsync()
         {
@@ -106,7 +98,7 @@ namespace AttendanceDesktop
                         })
                         .ToList();
 
-                    classSections.Insert(0, new ClassSection { course_Id = "all", CourseName = "All Sections" });
+                    classSections.Insert(0, new ClassSection { course_Id = "all", CourseName = "All Courses" });
 
                     classFilterComboBox.Items.Clear();
                     foreach (var section in classSections)
@@ -114,8 +106,8 @@ namespace AttendanceDesktop
                         classFilterComboBox.Items.Add(section);
                     }
 
-                    classFilterComboBox.DisplayMember = "CourseName";
-                    classFilterComboBox.ValueMember = "course_Id";
+                    // classFilterComboBox.DisplayMember = "CourseName";
+                    // classFilterComboBox.ValueMember = "course_Id";
                     classFilterComboBox.SelectedIndex = 0;
                 }
             }
@@ -251,7 +243,7 @@ namespace AttendanceDesktop
 
             public override string ToString()
             {
-                return CourseName;
+                return $"{course_Id} - {CourseName}"; // Ensures the course id and name shows in the dropdown
             }
         }
     }

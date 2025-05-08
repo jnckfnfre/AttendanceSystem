@@ -78,9 +78,6 @@ namespace AttendanceDesktop
             this.searchPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.searchPanel.Height = 100; // Increased height to accommodate class filter
             this.searchPanel.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
-            this.searchPanel.Controls.Add(this.searchTextBox);
-            this.searchPanel.Controls.Add(this.searchButton);
-            this.searchPanel.Controls.Add(this.refreshButton);
             this.searchPanel.Controls.Add(this.classFilterLabel);
             this.searchPanel.Controls.Add(this.classFilterComboBox);
             this.searchPanel.Name = "searchPanel";
@@ -106,79 +103,6 @@ namespace AttendanceDesktop
             this.classFilterComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.classFilterComboBox.Name = "classFilterComboBox";
             this.classFilterComboBox.SelectedIndexChanged += new System.EventHandler(this.classFilterComboBox_SelectedIndexChanged);
-           
-            //
-            // searchTextBox
-            //
-            this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchTextBox.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.searchTextBox.Location = new System.Drawing.Point(15, 55);
-            this.searchTextBox.Size = new System.Drawing.Size(500, 32);
-            this.searchTextBox.PlaceholderText = "Search by question text or pool name...";
-            this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-           
-            //
-            // searchButton
-            //
-            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchButton.BackColor = primaryColor;
-            this.searchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.searchButton.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.searchButton.ForeColor = System.Drawing.Color.White;
-            this.searchButton.Location = new System.Drawing.Point(530, 55);
-            this.searchButton.Size = new System.Drawing.Size(120, 32);
-            this.searchButton.Text = "Search";
-            this.searchButton.UseVisualStyleBackColor = false;
-            this.searchButton.Name = "searchButton";
-            this.searchButton.FlatAppearance.BorderSize = 0;
-            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
-           
-            //
-            // refreshButton
-            //
-            this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.refreshButton.BackColor = secondaryColor;
-            this.refreshButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.refreshButton.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.refreshButton.ForeColor = System.Drawing.Color.White;
-            this.refreshButton.Location = new System.Drawing.Point(660, 55);
-            this.refreshButton.Size = new System.Drawing.Size(120, 32);
-            this.refreshButton.Text = "Refresh";
-            this.refreshButton.UseVisualStyleBackColor = false;
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.FlatAppearance.BorderSize = 0;
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
-           
-            //
-            // statusPanel
-            //
-            this.statusPanel.BackColor = System.Drawing.Color.White;
-            this.statusPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusPanel.Height = 30;
-            this.statusPanel.Controls.Add(this.statusLabel);
-            this.statusPanel.Controls.Add(this.loadingPictureBox);
-            this.statusPanel.Name = "statusPanel";
-            this.statusPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-           
-            //
-            // statusLabel
-            //
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.statusLabel.ForeColor = secondaryColor;
-            this.statusLabel.Location = new System.Drawing.Point(35, 5);
-            this.statusLabel.Text = "Ready";
-            this.statusLabel.Name = "statusLabel";
-           
-            //
-            // loadingPictureBox
-            //
-            this.loadingPictureBox.Location = new System.Drawing.Point(10, 5);
-            this.loadingPictureBox.Size = new System.Drawing.Size(20, 20);
-            this.loadingPictureBox.Visible = false;
-            this.loadingPictureBox.Name = "loadingPictureBox";
-            this.loadingPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
            
             //
             // questionBankGrid

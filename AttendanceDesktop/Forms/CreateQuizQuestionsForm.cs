@@ -192,12 +192,10 @@ namespace AttendanceDesktop
         private async void createQuizButton_Click(object sender, EventArgs e)
         {
             List<CourseQuestionPoolQuestion> selectedQuestions = new List<CourseQuestionPoolQuestion>();
-            // Validate that at least one question is selected and no more than 3 questions are selected
+
             foreach (DataGridViewRow row in questionsDataGridView.Rows)
             {
                 bool isChecked = Convert.ToBoolean(row.Cells["Select"].Value);
-                // Check if the checkbox is checked
-                // If checked, add the question to the selectedQuestions list
                 if (isChecked)
                 {
                     var question = new CourseQuestionPoolQuestion
@@ -215,7 +213,7 @@ namespace AttendanceDesktop
                     selectedQuestions.Add(question);
                 }
             }
-            
+
             if (selectedQuestions.Count == 0)
             {
                 MessageBox.Show("Please select at least one question.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -227,12 +225,12 @@ namespace AttendanceDesktop
                 MessageBox.Show("You can select up to 3 questions only.", "Selection Limit Exceeded", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            // Validate that the course is selected and session date is valid
+
             try
             {
                 int poolId = selectedQuestions.First().PoolId;
                 string sessionDateInput = sessionTextBox.Text.Trim();
-                
+
                 if (!DateTime.TryParse(sessionDateInput, out DateTime dueDate))
                 {
                     MessageBox.Show("Invalid session date format. Please use YYYY-MM-DD.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -248,6 +246,18 @@ namespace AttendanceDesktop
 
                 using (HttpClient client = new HttpClient())
                 {
+                    // Check enrolled students FIRST
+                    string studentsUrl = $"http://localhost:5257/api/CourseStudents/by-course/{selectedCourse.CourseId}";
+                    var studentsJson = await client.GetStringAsync(studentsUrl);
+                    var students = JsonSerializer.Deserialize<List<Student>>(studentsJson);
+
+                    if (students == null || students.Count == 0)
+                    {
+                        MessageBox.Show("No students are enrolled in this course. Please enroll students before creating a quiz.", 
+                                        "No Enrolled Students", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     // Create quiz
                     var quizDto = new
                     {
@@ -255,14 +265,8 @@ namespace AttendanceDesktop
                         Pool_Id = poolId
                     };
 
-                    // This API endpoint is responsible for creating a new quiz
-                    // It expects a JSON object with the due date and pool ID
                     string quizApiUrl = "http://localhost:5257/api/quiz";
                     var quizContent = new StringContent(JsonSerializer.Serialize(quizDto), Encoding.UTF8, "application/json");
-                    // string json = quizContent.ReadAsStringAsync().Result;
-                    // MessageBox.Show(json, "Serialized Quiz Content");
-                    
-                    // Send POST request to create quiz
                     HttpResponseMessage quizResponse = await client.PostAsync(quizApiUrl, quizContent);
                     if (!quizResponse.IsSuccessStatusCode)
                     {
@@ -270,23 +274,17 @@ namespace AttendanceDesktop
                         MessageBox.Show($"Failed to create quiz.\nServer Response: {error}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    
-                    // Deserialize the response to get the quiz ID
+
                     var quizJson = await quizResponse.Content.ReadAsStringAsync();
                     int createdQuizId = JsonSerializer.Deserialize<JsonElement>(quizJson).GetProperty("quiz_Id").GetInt32();
 
-                    // Prepare for rollback if needed
                     bool rollbackNeeded = true;
                     try
                     {
                         // Assign questions to quiz
                         foreach (var question in selectedQuestions)
-                        {
                             question.QuizId = createdQuizId;
-                        }
 
-                        // Create a list of anonymous objects to send in the request body
-                        // This is necessary because the API expects a specific structure for the request body
                         var updateDtos = selectedQuestions.Select(q => new
                         {
                             Questions_Id = q.QuestionId,
@@ -300,13 +298,8 @@ namespace AttendanceDesktop
                             Pool_Id = q.PoolId
                         }).ToList();
 
-                        // Send POST request to assign quiz to questions
-                        // This API endpoint is responsible for updating the questions with the quiz ID
                         string assignUrl = "http://localhost:5257/api/questions/AssignQuizToQuestions";
                         var assignContent = new StringContent(JsonSerializer.Serialize(updateDtos), Encoding.UTF8, "application/json");
-
-                        // Send the request to assign quiz to questions
-                        // This is a bulk update operation, so we send all selected questions in one request
                         HttpResponseMessage assignResponse = await client.PostAsync(assignUrl, assignContent);
                         if (!assignResponse.IsSuccessStatusCode)
                         {
@@ -314,7 +307,7 @@ namespace AttendanceDesktop
                             throw new Exception($"Failed to update questions with quiz ID: {error}");
                         }
 
-                       // Create class session
+                        // Create class session
                         var classSessionDto = new
                         {
                             Course_Id = selectedCourse.CourseId,
@@ -323,12 +316,8 @@ namespace AttendanceDesktop
                             Quiz_Id = createdQuizId
                         };
 
-                        // Send POST request to create class session
-                        // This API endpoint is responsible for creating a new class session
                         string classSessionApiUrl = "http://localhost:5257/api/classsession";
                         var classSessionContent = new StringContent(JsonSerializer.Serialize(classSessionDto), Encoding.UTF8, "application/json");
-
-                        // Send the request to create class session
                         HttpResponseMessage sessionResponse = await client.PostAsync(classSessionApiUrl, classSessionContent);
                         if (!sessionResponse.IsSuccessStatusCode)
                         {
@@ -336,12 +325,7 @@ namespace AttendanceDesktop
                             throw new Exception($"Failed to create Class Session: {error}");
                         }
 
-                        // Create submissions for all students
-                        string studentsUrl = $"http://localhost:5257/api/CourseStudents/by-course/{selectedCourse.CourseId}";
-                        var studentsJson = await client.GetStringAsync(studentsUrl);
-                        var students = JsonSerializer.Deserialize<List<Student>>(studentsJson);
-
-                        // Check if students are enrolled in the course
+                        // Create submissions for students
                         var submissionDtos = students.Select(s => new
                         {
                             Course_Id = selectedCourse.CourseId,
@@ -353,36 +337,28 @@ namespace AttendanceDesktop
                             Answer_1 = "x",
                             Answer_2 = "x",
                             Answer_3 = "x",
-                            Status = "absent"
+                            Status = "Absent"
                         }).ToList();
-                        
-                        // Send POST request to create submissions
-                        // This API endpoint is responsible for creating submissions for all students in the class session
+
                         var submissionContent = new StringContent(JsonSerializer.Serialize(submissionDtos), Encoding.UTF8, "application/json");
                         var submissionResponse = await client.PostAsync("http://localhost:5257/api/submissions/bulk-create", submissionContent);
-                        
-                        // Check if the response indicates success
-                        // If not, throw an exception to trigger rollback
                         if (!submissionResponse.IsSuccessStatusCode)
                         {
                             string error = await submissionResponse.Content.ReadAsStringAsync();
-                            throw new Exception($"Failed to create submissions: {error} Please check if students are enrolled in course.");
+                            throw new Exception($"Failed to create submissions: {error}");
                         }
 
-                        // If we got here, everything succeeded
                         rollbackNeeded = false;
-                        MessageBox.Show("Quiz, Class Session, and Absences created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Quiz, Class Session, and Submissions created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         ResetForm();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show($"Error during creation process: {ex.Message}\nRolling back created resources.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        
                         if (rollbackNeeded)
                         {
                             try
                             {
-                                // Attempt to delete the quiz if it was created
                                 await client.DeleteAsync($"{quizApiUrl}/{createdQuizId}");
                             }
                             catch (Exception rollbackEx)
@@ -398,6 +374,7 @@ namespace AttendanceDesktop
                 MessageBox.Show($"Error creating quiz or class session: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
 
         // Method to load courses from the API
@@ -536,7 +513,4 @@ namespace AttendanceDesktop
         [JsonPropertyName("utd_Id")]
         public string Utd_Id { get; set; }
     }
-
-
-
 }

@@ -184,6 +184,27 @@ public class SubmissionsController : Controller {
         return Ok(new { created = submissions.Count });
     }
 
+    // Eduardo Zamora
+    // PUT: api/Submissions/{id}
+    // Updates only modifiable fields of a submission (answers and status)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateSubmission(int id, [FromBody] SubmissionUpdateDto dto) {
+        var submission = await _context.Submissions.FindAsync(id);
+
+        if (submission == null) {
+            return NotFound();
+        }
+
+        // Only update modifiable fields
+        submission.Answer_1 = dto.Answer_1;
+        submission.Answer_2 = dto.Answer_2;
+        submission.Answer_3 = dto.Answer_3;
+
+        submission.Status = dto.Status;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
     
     // David Sajdak 5/7/2025

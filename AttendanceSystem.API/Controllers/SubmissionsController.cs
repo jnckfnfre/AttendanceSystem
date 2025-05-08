@@ -239,6 +239,10 @@ public class SubmissionsController : Controller {
             return NotFound();
         }
 
+        if (submission.Status == "Present") {
+            return BadRequest("Cannot update a submission that is already marked as present.");
+        }
+
         // Get the client IP
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
         var now = DateTime.Now;
